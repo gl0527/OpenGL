@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef GLNGIN_CAMERA_HPP
+#define GLNGIN_CAMERA_HPP
 
 #include "Mat4.hpp"
 #include "Vec4.hpp"
@@ -13,12 +13,12 @@ class Cam {
 public:
     Cam ();
 
-    const Vec4& GetPosition () const;
-    const Vec4& GetAhead () const;
+    const Math::Vec4& GetPosition () const;
+    const Math::Vec4& GetAhead () const;
 
-    const Mat4& GetViewMatrix () const;
-    const Mat4& GetProjMatrix () const;
-    const Mat4& GetRayDirMatrix () const;
+    const Math::Mat4& GetViewMatrix () const;
+    const Math::Mat4& GetProjMatrix () const;
+    const Math::Mat4& GetRayDirMatrix () const;
 
     void Animate (double dt);
 
@@ -31,12 +31,12 @@ private:
     float farPlane;
     float speed;
     bool m_keys[256];
-    Vec4 m_position;
-    Vec4 m_ahead;
-    Vec4 m_up;
-    Mat4 m_viewMat;
-    Mat4 m_rayDirMat;
-    Mat4 m_projMat;
+    Math::Vec4 m_position;
+    Math::Vec4 m_ahead;
+    Math::Vec4 m_up;
+    Math::Mat4 m_viewMat;
+    Math::Mat4 m_rayDirMat;
+    Math::Mat4 m_projMat;
 
     void CalcViewMatrix ();
     void CalcProjMatrix ();
@@ -45,11 +45,11 @@ private:
 struct Camera {
 	Camera ();
 
-	Mat4 V();
-	Mat4 P();
+    Math::Mat4 V();
+    Math::Mat4 P();
 
-	Mat4 Vinv();
-	Mat4 Pinv();
+    Math::Mat4 Vinv();
+    Math::Mat4 Pinv();
 
     void Animate(float t);
 	
@@ -60,4 +60,4 @@ private:
 
 }	// namespace GLngine
 
-#endif	// #ifndef CAMERA_HPP
+#endif	// #ifndef GLNGIN_CAMERA_HPP

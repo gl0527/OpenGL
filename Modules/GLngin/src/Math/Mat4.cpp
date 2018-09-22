@@ -1,9 +1,12 @@
 #include "Mat4.hpp"
-#include "Vec4.hpp"
+
 #include <cmath>
+
+#include "Vec4.hpp"
 
 
 namespace GLngin {
+namespace Math {
 
 Mat4::Mat4 () :
     m_array {{},{},{},{}}
@@ -12,20 +15,20 @@ Mat4::Mat4 () :
 
 
 Mat4::Mat4(float m00, float m01, float m02, float m03,
-	float m10, float m11, float m12, float m13,
-	float m20, float m21, float m22, float m23,
-	float m30, float m31, float m32, float m33) :
+    float m10, float m11, float m12, float m13,
+    float m20, float m21, float m22, float m23,
+    float m30, float m31, float m32, float m33) :
     m_array {	{m00, m01, m02, m03},
-		{m10, m11, m12, m13},
-		{m20, m21, m22, m23},
-		{m30, m31, m32, m33}}
+        {m10, m11, m12, m13},
+        {m20, m21, m22, m23},
+        {m30, m31, m32, m33}}
 {
 }
 
 
 Mat4::Mat4 (float (&arr)[16])
 {
-	for (unsigned char i = 0; i < 16; ++i)
+    for (unsigned char i = 0; i < 16; ++i)
         m_array[i/4][i%4] = arr[i];
 }
 
@@ -40,63 +43,63 @@ Mat4::Mat4 (float (&arr)[4][4])
 
 Mat4 Mat4::operator+ (const Mat4& right) const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = m_array[i][j] + right.m_array[i][j];
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
 Mat4 Mat4::operator- (const Mat4& right) const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = m_array[i][j] - right.m_array[i][j];
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
 Mat4 Mat4::operator* (const Mat4& right) const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = 0;
             for (unsigned char k = 0; k < 4; k++)
                 result.m_array[i][j] += m_array[i][k] * right.m_array[k][j];
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
 Mat4 Mat4::operator* (float scaler) const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = m_array[i][j] * scaler;
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
 Mat4 Mat4::operator% (const Mat4& right) const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = m_array[i][j] * right.m_array[i][j];
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
@@ -112,98 +115,103 @@ const float* Mat4::operator[] (unsigned char rowIdx) const
 }
 
 
-void Mat4::operator+= (const Mat4& right)
+Mat4& Mat4::operator+= (const Mat4& right)
 {
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             m_array[i][j] += right.m_array[i][j];
-		}
-	}
+        }
+    }
+    return *this;
 }
 
 
-void Mat4::operator-= (const Mat4& right)
+Mat4& Mat4::operator-= (const Mat4& right)
 {
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             m_array[i][j] -= right.m_array[i][j];
-		}
-	}
+        }
+    }
+    return *this;
 }
 
 
-void Mat4::operator*= (const Mat4& right)
+Mat4& Mat4::operator*= (const Mat4& right)
 {
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             m_array[i][j] = 0;
             for (unsigned char k = 0; k < 4; k++)
                 m_array[i][j] += m_array[i][k] * right.m_array[k][j];
-		}
-	}
+        }
+    }
+    return *this;
 }
 
 
-void Mat4::operator*= (float scaler)
+Mat4& Mat4::operator*= (float scaler)
 {
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             m_array[i][j] *= scaler;
-		}
-	}
+        }
+    }
+    return *this;
 }
 
 
-void Mat4::operator%= (const Mat4& right)
+Mat4& Mat4::operator%= (const Mat4& right)
 {
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             m_array[i][j] *= right.m_array[i][j];
-		}
-	}
+        }
+    }
+    return *this;
 }
 
 
 Mat4 Mat4::Transpose () const
 {
-	Mat4 result;
+    Mat4 result;
     for (unsigned char i = 0; i < 4; i++) {
         for (unsigned char j = 0; j < 4; j++) {
             result.m_array[i][j] = m_array[j][i];
-		}
-	}
-	return result;
+        }
+    }
+    return result;
 }
 
 
 Mat4 Mat4::InvertImpl () const
 {
-	float det;
-	float d10, d20, d21, d31, d32, d03;
-	Mat4 inv;
-	
-	/* Inverse = adjoint / det. (See linear algebra texts.)*/
-	
-	/* pre-compute 2x2 dets for last two rows when computing */
-	/* cofactors of first two rows. */
+    float det;
+    float d10, d20, d21, d31, d32, d03;
+    Mat4 inv;
+
+    /* Inverse = adjoint / det. (See linear algebra texts.)*/
+
+    /* pre-compute 2x2 dets for last two rows when computing */
+    /* cofactors of first two rows. */
     d10 = (m_array[0][2]*m_array[1][3]-m_array[0][3]*m_array[1][2]);
     d20 = (m_array[0][2]*m_array[2][3]-m_array[0][3]*m_array[2][2]);
     d21 = (m_array[1][2]*m_array[2][3]-m_array[1][3]*m_array[2][2]);
     d31 = (m_array[1][2]*m_array[3][3]-m_array[1][3]*m_array[3][2]);
     d32 = (m_array[2][2]*m_array[3][3]-m_array[2][3]*m_array[3][2]);
     d03 = (m_array[3][2]*m_array[0][3]-m_array[3][3]*m_array[0][2]);
-	
+
     inv.m_array[0][0] =  (m_array[1][1] * d32 - m_array[2][1] * d31 + m_array[3][1] * d21);
     inv.m_array[0][1] = -(m_array[0][1] * d32 + m_array[2][1] * d03 + m_array[3][1] * d20);
     inv.m_array[0][2] =  (m_array[0][1] * d31 + m_array[1][1] * d03 + m_array[3][1] * d10);
     inv.m_array[0][3] = -(m_array[0][1] * d21 - m_array[1][1] * d20 + m_array[2][1] * d10);
-	
-	/* Compute determinant as early as possible using these cofactors. */
+
+    /* Compute determinant as early as possible using these cofactors. */
     det = m_array[0][0] * inv.m_array[0][0] + m_array[1][0] * inv.m_array[0][1] + m_array[2][0] * inv.m_array[0][2] + m_array[3][0] * inv.m_array[0][3];
-	
-	/* Run singularity test. */
+
+    /* Run singularity test. */
     if (fabsf (det) < 1e-6f)
-		return Identity ();
+        return Identity ();
 
     float invDet = 1.0f / det;
     /* Compute rest of inverse. */
@@ -242,27 +250,27 @@ Mat4 Mat4::InvertImpl () const
 Mat4 Mat4::Invert() const
 {
     if (m_array[0][3] != 0.0f || m_array[1][3] != 0.0f || m_array[2][3] != 0.0f || m_array[3][3] != 1.0f) {
-	   return InvertImpl ();
-	}
+       return InvertImpl ();
+    }
 
-	Mat4 inv;
+    Mat4 inv;
 
-	/* Inverse = adjoint / det. */
+    /* Inverse = adjoint / det. */
     inv.m_array[0][0] = m_array[1][1] * m_array[2][2] - m_array[2][1] * m_array[1][2];
     inv.m_array[0][1] = m_array[2][1] * m_array[0][2] - m_array[0][1] * m_array[2][2];
     inv.m_array[0][2] = m_array[0][1] * m_array[1][2] - m_array[1][1] * m_array[0][2];
 
-	/* Compute determinant as early as possible using these cofactors. */
+    /* Compute determinant as early as possible using these cofactors. */
     float det = m_array[0][0] * inv.m_array[0][0] + m_array[1][0] * inv.m_array[0][1] + m_array[2][0] * inv.m_array[0][2];
 
-	/* Run singularity test. */
+    /* Run singularity test. */
     if (fabsf (det) < 1e-6f)
-	   return Identity ();
+       return Identity ();
 
     float d10, d20, d21, d31, d32, d03;
     float im00, im10, im20, im30;
 
-    det = 1.0f / det;
+    det = 1 / det;
 
     /* Compute rest of inverse. */
     inv.m_array[0][0] *= det;
@@ -304,21 +312,21 @@ Mat4 Mat4::Invert() const
 
 Mat4 Mat4::Translate (const Vec4& v) const
 {
-	Mat4 id = Identity ();
+    Mat4 id = Identity ();
     id.m_array[3][0] = v[0];
     id.m_array[3][1] = v[1];
     id.m_array[3][2] = v[2];
-	return *this * id;
+    return *this * id;
 }
 
 
 Mat4 Mat4::Scale (const Vec4& v) const
 {
-	Mat4 id = Identity ();
+    Mat4 id = Identity ();
     id.m_array[0][0] = v[0];
     id.m_array[1][1] = v[1];
     id.m_array[2][2] = v[2];
-	return *this * id;
+    return *this * id;
 }
 
 
@@ -354,4 +362,5 @@ const Mat4& Mat4::One ()
     return One;
 }
 
+}   // namespace Math
 }	// namespace GLngine

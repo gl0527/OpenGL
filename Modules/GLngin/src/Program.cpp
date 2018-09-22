@@ -1,66 +1,97 @@
 #include "Program.hpp"
 
+#include "Debug.hpp"
 #include "Mat4.hpp"
 #include "Shader.hpp"
-#include "Utils.hpp"
 #include "Vec4.hpp"
 
 
 namespace GLngin {
 
-Program::Program (	const std::shared_ptr<Shader>& vertShader,
-					const std::shared_ptr<Shader>& geomShader,
-					const std::shared_ptr<Shader>& fragShader,
-					const std::shared_ptr<Shader>& compShader)
+Program::Program () :
+    m_handle (0),
+    m_inited (false),
+    m_linked (false)
 {
-    GL_CALL (m_handle = glCreateProgram ());
-    if (m_handle == 0) {
-		LOG ("Error in shader program creation.");
-		exit (1);
-	}
-	
-	AddShader (vertShader);
-	AddShader (geomShader);
-	AddShader (fragShader);
-	AddShader (compShader);
-	
-	// Connect the fragmentColor to the frame buffer memory
-	//glBindFragDataLocation (handle, 0, fragmentOutputVarName);
-	
-	// program packaging
-    GL_CALL (glLinkProgram (m_handle));
-	GLint OK;
-    GL_CALL (glGetProgramiv (m_handle, GL_LINK_STATUS, &OK));
-	if (OK == 0) {
-		LOG ("Failed to link shader program!");
-        GetErrorInfo (m_handle);
-	}
 }
 
 
 Program::~Program ()
 {
-    for (auto it = m_shaders.begin (); it != m_shaders.end (); ++it)
+    if (!m_inited)
+        return;
+
+    for (auto it = m_shaders.begin (), itEnd = m_shaders.end (); it != itEnd; ++it)
         GL_CALL (glDetachShader (m_handle, it->second->GetHandle ()));
+
+    m_shaders.clear ();
 
     GL_CALL (glDeleteProgram (m_handle));
 }
 
 
-void Program::Bind () const
+void Program::Init (    const std::shared_ptr<Shader>& vertShader,
+                        const std::shared_ptr<Shader>& geomShader,
+                        const std::shared_ptr<Shader>& fragShader,
+                        const std::shared_ptr<Shader>& compShader)
 {
+    GL_CALL (m_handle = glCreateProgram ());
+    if (m_handle == 0)
+        LOG ("Error in shader program creation.");
+
+    AddShader (vertShader);
+    AddShader (geomShader);
+    AddShader (fragShader);
+    AddShader (compShader);
+
+    m_inited = true;
+}
+
+
+void Program::Link ()
+{
+    if (!m_inited)
+        return;
+
+    // glBind*Location before this call
+    GL_CALL (glLinkProgram (m_handle));
+    GLint OK;
+    GL_CALL (glGetProgramiv (m_handle, GL_LINK_STATUS, &OK));
+    if (OK == 0) {
+        LOG ("Failed to link shader program!");
+        GetErrorInfo (m_handle);
+    }
+    m_linked = true;
+    //glGet*Location after this call
+}
+
+
+void Program::Enable () const
+{
+    if (!m_linked)
+        return;
+
     GL_CALL (glUseProgram (m_handle));
 }
 
 
-void Program::UnBind () const
+void Program::Disable () const
 {
     GL_CALL (glUseProgram (0));
 }
 
 
-bool Program::SetMat4 (const char * uniformName, const Mat4& value) const
+unsigned int Program::GetHandle () const
 {
+    return m_handle;
+}
+
+
+bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const
+{
+    if (!m_linked)
+        return false;
+
     int location = -1;
     GL_CALL (location = glGetUniformLocation (m_handle, uniformName));
     if (location < 0)
@@ -70,13 +101,16 @@ bool Program::SetMat4 (const char * uniformName, const Mat4& value) const
 }
 
 
-bool Program::SetVec4 (const char * uniformName, const Vec4& value) const
+bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const
 {
+    if (!m_linked)
+        return false;
+
     int location = -1;
     GL_CALL (location = glGetUniformLocation (m_handle, uniformName));
     if (location < 0)
         return false;
-    GL_CALL (glUniform4fv (location, 4, value));
+    GL_CALL (glUniform4fv (location, 1, value));
     return true;
 }
 

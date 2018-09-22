@@ -1,12 +1,13 @@
 #pragma once
 
-#ifndef VEC4_HPP
-#define VEC4_HPP
+#ifndef GLNGIN_MATH_VEC4_HPP
+#define GLNGIN_MATH_VEC4_HPP
 
 #include "API.hpp"
 
 
 namespace GLngin {
+namespace Math {
 
 class Mat4;
 
@@ -30,22 +31,27 @@ public:
     Vec4&               operator/= (float scalar);
     Vec4                operator/ (float scalar) const;
 
-    float               Dot (const Vec4& vec) const;
-    Vec4                Hadamard (const Vec4& vec) const;
+    bool                operator== (const Vec4& vec) const;
+    bool                operator!= (const Vec4& vec) const;
 
     float               operator[] (unsigned char idx) const;
     float&              operator[] (unsigned char idx);
 
                         operator const float* () const;
 
+    float               Dot (const Vec4& vec) const;
+    Vec4                Hadamard (const Vec4& vec) const;
+
     static const Vec4&  Zero ();
     static const Vec4&  One ();
     static const Vec4&  UnitX ();
     static const Vec4&  UnitY ();
     static const Vec4&  UnitZ ();
+    static const Vec4&  UnitW ();
     static const Vec4&  NegativeUnitX ();
     static const Vec4&  NegativeUnitY ();
     static const Vec4&  NegativeUnitZ ();
+    static const Vec4&  NegativeUnitW ();
 
 private:
     float m_array[4];
@@ -57,6 +63,7 @@ public:
     float& w;
 };
 
+}   // namespace Math
 }	// namespace GLngine
 
-#endif	// #ifndef VEC4_HPP
+#endif	// #ifndef GLNGIN_MATH_VEC4_HPP

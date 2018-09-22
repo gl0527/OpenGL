@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef EXPORT_HPP
-#define EXPORT_HPP
+#ifndef GLNGIN_API_HPP
+#define GLNGIN_API_HPP
 
 #if defined (GLNGIN_DLL_CONFIG)
 #   if defined (_WIN32)
@@ -24,4 +24,4 @@
 #define USE_GLNGIN_API
 #endif
 
-#endif  // #ifndef EXPORT_HPP
+#endif  // #ifndef GLNGIN_API_HPP

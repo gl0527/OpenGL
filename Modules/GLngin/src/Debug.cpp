@@ -1,4 +1,6 @@
-#include "Utils.hpp"
+#include "Debug.hpp"
+
+#include <cmath>
 
 
 namespace GLngin {
@@ -36,4 +38,4 @@ std::string GetGLInfoString ()
     return buf;
 }
 
-}
+}   // namespace GLngin

@@ -1,10 +1,14 @@
 #include "Vec4.hpp"
-#include "Mat4.hpp"
 
-#include "Utils.hpp"
+#include <cassert>
+#include <cmath>
+
+#include "Mat4.hpp"
+#include "Math.hpp"
 
 
 namespace GLngin {
+namespace Math {
 
 Vec4::Vec4 (float x0/*=0.0f*/, float y0/*=0.0f*/, float z0/*=0.0f*/, float w0/*=1.0f*/) :
     m_array {x0, y0, z0, w0},
@@ -100,7 +104,7 @@ Vec4 Vec4::operator* (const Mat4& mat) const
 
 Vec4& Vec4::operator/= (float scalar)
 {
-    //ASSERT (scalar > 1e-7f);
+    assert (fabsf (scalar) > 1e-6f);
     float scalarInv = 1 / scalar;
     x *= scalarInv;
     y *= scalarInv;
@@ -112,20 +116,27 @@ Vec4& Vec4::operator/= (float scalar)
 
 Vec4 Vec4::operator/ (float scalar) const
 {
+    assert (fabsf (scalar) > 1e-6f);
     float scalarInv = 1 / scalar;
     return Vec4 (x * scalarInv, y * scalarInv, z * scalarInv, w * scalarInv);
 }
 
 
-float Vec4::Dot (const Vec4& vec) const
+bool Vec4::operator== (const Vec4& vec) const
 {
-    return x*vec.x + y*vec.y + z*vec.z + w*vec.w;
+    return  IsEqual (x, vec.x) &&
+            IsEqual (y, vec.y) &&
+            IsEqual (z, vec.z) &&
+            IsEqual (w, vec.w);
 }
 
 
-Vec4 Vec4::Hadamard (const Vec4& vec) const
+bool Vec4::operator!= (const Vec4& vec) const
 {
-    return Vec4 (x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+    return  !IsEqual (x, vec.x) ||
+            !IsEqual (y, vec.y) ||
+            !IsEqual (z, vec.z) ||
+            !IsEqual (w, vec.w);
 }
 
 
@@ -147,67 +158,96 @@ Vec4::operator const float* () const
 }
 
 
-const Vec4&  Zero ()
+float Vec4::Dot (const Vec4& vec) const
 {
-    static Vec4 Zero (0.0f, 0.0f, 0.0f);
+    return x*vec.x + y*vec.y + z*vec.z + w*vec.w;
+}
+
+
+Vec4 Vec4::Hadamard (const Vec4& vec) const
+{
+    return Vec4 (x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+}
+
+
+const Vec4& Vec4::Zero ()
+{
+    static Vec4 Zero (0.0f, 0.0f, 0.0f, 0.0f);
 
     return Zero;
 }
 
 
-const Vec4&  One ()
+const Vec4& Vec4::One ()
 {
-    static Vec4 One (1.0f, 1.0f, 1.0f);
+    static Vec4 One (1.0f, 1.0f, 1.0f, 1.0f);
 
     return One;
 }
 
 
-const Vec4&  UnitX ()
+const Vec4& Vec4::UnitX ()
 {
-    static Vec4 UnitX (1.0f, 0.0f, 0.0f);
+    static Vec4 UnitX (1.0f, 0.0f, 0.0f, 0.0f);
 
     return UnitX;
 }
 
 
-const Vec4&  UnitY ()
+const Vec4& Vec4::UnitY ()
 {
-    static Vec4 UnitY (0.0f, 1.0f, 0.0f);
+    static Vec4 UnitY (0.0f, 1.0f, 0.0f, 0.0f);
 
     return UnitY;
 }
 
 
-const Vec4&  UnitZ ()
+const Vec4& Vec4::UnitZ ()
 {
-    static Vec4 UnitZ (0.0f, 0.0f, 1.0f);
+    static Vec4 UnitZ (0.0f, 0.0f, 1.0f, 0.0f);
 
     return UnitZ;
 }
 
 
-const Vec4&  NegativeUnitX ()
+const Vec4& Vec4::UnitW ()
 {
-    static Vec4 NegativeUnitX (-1.0f, 0.0f, 0.0f);
+    static Vec4 UnitW (0.0f, 0.0f, 0.0f, 1.0f);
+
+    return UnitW;
+}
+
+
+const Vec4& Vec4::NegativeUnitX ()
+{
+    static Vec4 NegativeUnitX (-1.0f, 0.0f, 0.0f, 0.0f);
 
     return NegativeUnitX;
 }
 
 
-const Vec4&  NegativeUnitY ()
+const Vec4& Vec4::NegativeUnitY ()
 {
-    static Vec4 NegativeUnitY (0.0f, -1.0f, 0.0f);
+    static Vec4 NegativeUnitY (0.0f, -1.0f, 0.0f, 0.0f);
 
     return NegativeUnitY;
 }
 
 
-const Vec4&  NegativeUnitZ ()
+const Vec4& Vec4::NegativeUnitZ ()
 {
-    static Vec4 NegativeUnitZ (0.0f, 0.0f, -1.0f);
+    static Vec4 NegativeUnitZ (0.0f, 0.0f, -1.0f, 0.0f);
 
     return NegativeUnitZ;
 }
 
+
+const Vec4& Vec4::NegativeUnitW ()
+{
+    static Vec4 NegativeUnitW (0.0f, 0.0f, 0.0f, -1.0f);
+
+    return NegativeUnitW;
+}
+
+}   // namespace Math
 }	// namespace GLngine

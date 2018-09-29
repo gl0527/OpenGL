@@ -47,8 +47,8 @@ void Shader::Init (const char * fileName)
     GL_CALL (glGetShaderiv (m_handle, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
         LOG ("Error in compiling shader.");
-        GetErrorInfo (m_handle);
-        exit (1);
+        GetShaderErrorInfo (m_handle);
+        exit (-1);
     }
 
     m_inited = true;

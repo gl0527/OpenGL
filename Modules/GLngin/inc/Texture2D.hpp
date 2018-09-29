@@ -8,7 +8,7 @@
 
 namespace GLngin {
 
-class GLNGIN_API Texture2D {
+class GLNGIN_API Texture2D final {
 public:
                     Texture2D (int width, int height);
                     ~Texture2D ();

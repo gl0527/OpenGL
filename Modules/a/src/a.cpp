@@ -15,6 +15,7 @@ const unsigned int windowWidth = 600, windowHeight = 600;
 // 2D camera
 static GLngin::Camera camera;
 
+
 static std::unique_ptr<GLngin::Program> program (new GLngin::Program);
 
 class Triangle {

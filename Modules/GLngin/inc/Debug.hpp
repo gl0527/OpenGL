@@ -23,17 +23,18 @@
 
 #define LOG(msg) std::cerr << __FILE__ << "(" << __LINE__ << "): " << msg << std::endl
 
+#define ASSERT(b) if (!(b)) DBBREAK
+
 #ifndef NDEBUG
 #define GL_CALL(glExpr)                                     \
     do {                                                    \
+        while (glGetError () != GL_NO_ERROR);               \
         glExpr;                                             \
-        unsigned int error = glGetError ();                 \
-        if (error != GL_NO_ERROR) {                         \
+        while (unsigned int error = glGetError ()) {        \
             LOG ("Error occurred during \'" #glExpr "\'")   \
             << "Error string: \'" << gluErrorString (error) \
             << "\'" << std::endl;                           \
             DBBREAK;                                        \
-            exit (-1);                                      \
         }                                                   \
 	} while (0)
 #else
@@ -42,7 +43,8 @@
 
 
 namespace GLngin {
-    GLNGIN_API void         GetErrorInfo (unsigned int handle);
+    GLNGIN_API void         GetShaderErrorInfo (unsigned int handle);
+    GLNGIN_API void         GetProgramErrorInfo (unsigned int handle);
     GLNGIN_API std::string  GetGLInfoString ();
 }   // namespace GLngine
 

@@ -21,3 +21,4 @@ add_definitions(${OPENGL_DEFINITIONS})
 
 add_subdirectory (GLngin)
 add_subdirectory (a)
+add_subdirectory (Fractals)

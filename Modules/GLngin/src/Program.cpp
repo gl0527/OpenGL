@@ -53,16 +53,15 @@ void Program::Link ()
     if (!m_inited)
         return;
 
-    // glBind*Location before this call
     GL_CALL (glLinkProgram (m_handle));
-    GLint OK;
+    int OK = 0;
     GL_CALL (glGetProgramiv (m_handle, GL_LINK_STATUS, &OK));
     if (OK == 0) {
         LOG ("Failed to link shader program!");
-        GetErrorInfo (m_handle);
+        GetProgramErrorInfo (m_handle);
+        exit (-1);
     }
     m_linked = true;
-    //glGet*Location after this call
 }
 
 
@@ -89,7 +88,7 @@ unsigned int Program::GetHandle () const
 
 bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const
 {
-    if (!m_linked)
+    if (!m_inited)
         return false;
 
     int location = -1;
@@ -103,7 +102,7 @@ bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
 
 bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const
 {
-    if (!m_linked)
+    if (!m_inited)
         return false;
 
     int location = -1;
@@ -117,10 +116,10 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
 
 void Program::AddShader (const std::shared_ptr<Shader>& shader)
 {
-	if (shader != nullptr) {
+    if (shader != nullptr) {
         GL_CALL (glAttachShader (m_handle, shader->GetHandle ()));
         m_shaders[shader->GetType ()] = shader;
-	}
+    }
 }
 
 }	// namespace GLngine

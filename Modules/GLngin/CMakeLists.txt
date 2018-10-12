@@ -1,6 +1,9 @@
 get_filename_component (TARGET_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 string (REPLACE " " "_" TARGET_NAME ${TARGET_NAME})
 
+cmake_minimum_required (VERSION 3.5.1)
+project (${TARGET_NAME})
+
 include_directories(inc/)
 include_directories(inc/Math/)
 
@@ -13,7 +16,7 @@ add_library (${TARGET_NAME} SHARED ${SOURCES} ${INCLUDES})
 
 target_link_libraries (${TARGET_NAME} ${OPENGL_LIBRARY} ${GLEW_LIBRARY})
 
-set (BINDIR ${PROJECT_SOURCE_DIR}/../Bin/${TARGET_NAME})
+set (BINDIR ${CMAKE_SOURCE_DIR}/../Bin/${TARGET_NAME})
 
 set_target_properties (${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BINDIR})
 set_target_properties (${TARGET_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BINDIR})

@@ -313,9 +313,9 @@ Mat4 Mat4::Invert() const
 Mat4 Mat4::Translate (const Vec4& v) const
 {
     Mat4 id = Identity ();
-    id.m_array[3][0] = v[0];
-    id.m_array[3][1] = v[1];
-    id.m_array[3][2] = v[2];
+    id.m_array[3][0] = v.x;
+    id.m_array[3][1] = v.y;
+    id.m_array[3][2] = v.z;
     return *this * id;
 }
 
@@ -323,9 +323,9 @@ Mat4 Mat4::Translate (const Vec4& v) const
 Mat4 Mat4::Scale (const Vec4& v) const
 {
     Mat4 id = Identity ();
-    id.m_array[0][0] = v[0];
-    id.m_array[1][1] = v[1];
-    id.m_array[2][2] = v[2];
+    id.m_array[0][0] = v.x;
+    id.m_array[1][1] = v.y;
+    id.m_array[2][2] = v.z;
     return *this * id;
 }
 

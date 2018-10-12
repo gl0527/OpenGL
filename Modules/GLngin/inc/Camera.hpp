@@ -31,6 +31,7 @@ private:
     float farPlane;
     float speed;
     bool m_keys[256];
+
     Math::Vec4 m_position;
     Math::Vec4 m_ahead;
     Math::Vec4 m_up;

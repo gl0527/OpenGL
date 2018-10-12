@@ -13,7 +13,8 @@ class Mat4;
 
 class GLNGIN_API Vec4 final {
 public:
-    explicit            Vec4 (float x=0.0f, float y=0.0f, float z=0.0f, float w=1.0f);
+                        Vec4 (float x0, float y0, float z0, float w0);
+    explicit            Vec4 (float f);
                         Vec4 (float (&vec)[4]);
 
     Vec4&               operator+ ();
@@ -34,11 +35,6 @@ public:
     bool                operator== (const Vec4& vec) const;
     bool                operator!= (const Vec4& vec) const;
 
-    float               operator[] (unsigned char idx) const;
-    float&              operator[] (unsigned char idx);
-
-                        operator const float* () const;
-
     float               Dot (const Vec4& vec) const;
     Vec4                Hadamard (const Vec4& vec) const;
 
@@ -53,14 +49,11 @@ public:
     static const Vec4&  NegativeUnitZ ();
     static const Vec4&  NegativeUnitW ();
 
-private:
-    float m_array[4];
-
 public:
-    float& x;
-    float& y;
-    float& z;
-    float& w;
+    float x;
+    float y;
+    float z;
+    float w;
 };
 
 }   // namespace Math

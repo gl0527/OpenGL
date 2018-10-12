@@ -42,12 +42,18 @@ double Min (double d1, double d2)
 }
 
 
-float UniformRandomVariable (float a, float b)
+float Random (float a, float b)
 {
     const float min = Min (a, b);
     const float max = Max (a, b);
 
     return (max - min) * static_cast<float> (rand ()) / RAND_MAX + min;
+}
+
+
+int Random (int a, int b)
+{
+    return rand () % (b - a + 1) + a;
 }
 
 }   // namespace Math

@@ -15,13 +15,6 @@ static GLngin::Program program;
 
 static void onInitialization()
 {
-    glewExperimental = true;
-    if (glewInit() != GLEW_OK)
-    {
-        printf("Cannot initialize GLEW\n");
-        exit(-1);
-    }
-
     glClearColor(0.4f, 0.6f, 0.8f, 1.0f);
     quad.Init();
 
@@ -36,6 +29,7 @@ static void onInitialization()
     program.Enable ();
 }
 
+
 static void onDisplay()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -46,7 +40,8 @@ static void onDisplay()
 }
 
 
-static void onKeyboard(unsigned char key, int /*pX*/, int /*pY*/) {
+static void onKeyboard(unsigned char key, int /*pX*/, int /*pY*/)
+{
     switch (key) {
         case 27:
             program.Disable ();
@@ -67,7 +62,10 @@ int main(int argc, char* argv[])
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow(argv[0]);
     glewExperimental = true;
-    glewInit();
+    if (glewInit () != GLEW_OK) {
+        printf("Cannot initialize GLEW\n");
+        exit (-1);
+    }
 
     std::cout << GLngin::GetGLInfoString () << std::endl;
 

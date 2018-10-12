@@ -8,6 +8,23 @@
 
 namespace GLngin {
 
+namespace {
+
+void GetProgramErrorInfo (unsigned int handle)
+{
+    int logLen;
+    GL_CALL (glGetProgramiv (handle, GL_INFO_LOG_LENGTH, &logLen));
+    if (logLen > 0) {
+        char * log = new char[logLen];
+        int written;
+        GL_CALL (glGetProgramInfoLog (handle, logLen, &written, &log[0]));
+        std::cerr << "Program log:\n" << log << std::endl;
+        delete[] log;
+    }
+}
+
+}   // namepace
+
 Program::Program () :
     m_handle (0),
     m_inited (false),
@@ -109,7 +126,7 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
     GL_CALL (location = glGetUniformLocation (m_handle, uniformName));
     if (location < 0)
         return false;
-    GL_CALL (glUniform4fv (location, 1, value));
+    GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
     return true;
 }
 

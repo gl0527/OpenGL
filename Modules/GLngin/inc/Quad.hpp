@@ -14,14 +14,16 @@ public:
             ~Quad ();
 
     void    Init ();
-    void    Render ();
-    void    Render (int width, int height);
+    void    Render () const;
+    void    Render (int lowerLeftX, int lowerLeftY, int width, int height) const;
 
 private:
     unsigned int    m_vertexArray;
     unsigned int    m_vertexBuffer;
     unsigned int    m_texCoordBuffer;
     bool            m_inited;
+
+    void    RenderImpl () const;
 };
 
 }   // namespace GLngin

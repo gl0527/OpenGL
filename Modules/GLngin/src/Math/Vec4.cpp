@@ -10,22 +10,29 @@
 namespace GLngin {
 namespace Math {
 
-Vec4::Vec4 (float x0/*=0.0f*/, float y0/*=0.0f*/, float z0/*=0.0f*/, float w0/*=1.0f*/) :
-    m_array {x0, y0, z0, w0},
-    x (m_array[0]),
-    y (m_array[1]),
-    z (m_array[2]),
-    w (m_array[3])
+Vec4::Vec4 (float x0, float y0, float z0, float w0) :
+    x (x0),
+    y (y0),
+    z (z0),
+    w (w0)
+{
+}
+
+
+Vec4::Vec4 (float f) :
+    x (f),
+    y (f),
+    z (f),
+    w (f)
 {
 }
 
 
 Vec4::Vec4 (float (&vec)[4]) :
-    m_array {vec[0], vec[1], vec[2], vec[3]},
-    x (m_array[0]),
-    y (m_array[1]),
-    z (m_array[2]),
-    w (m_array[3])
+    x (vec[0]),
+    y (vec[1]),
+    z (vec[2]),
+    w (vec[3])
 {
 }
 
@@ -92,13 +99,10 @@ Vec4 Vec4::operator* (float scalar) const
 
 Vec4 Vec4::operator* (const Mat4& mat) const
 {
-    Vec4 result;
-    for (unsigned char j = 0; j < 4; j++) {
-        result.m_array[j] = 0;
-        for (unsigned char i = 0; i < 4; i++)
-            result.m_array[j] += m_array[i] * mat[i][j];
-    }
-    return result;
+    return Vec4 (   Dot (Vec4 (mat[0][0], mat[1][0], mat[2][0], mat[3][0])),
+                    Dot (Vec4 (mat[0][1], mat[1][1], mat[2][1], mat[3][1])),
+                    Dot (Vec4 (mat[0][2], mat[1][2], mat[2][2], mat[3][2])),
+                    Dot (Vec4 (mat[0][3], mat[1][3], mat[2][3], mat[3][3])));
 }
 
 
@@ -137,24 +141,6 @@ bool Vec4::operator!= (const Vec4& vec) const
             !IsEqual (y, vec.y) ||
             !IsEqual (z, vec.z) ||
             !IsEqual (w, vec.w);
-}
-
-
-float Vec4::operator[] (unsigned char idx) const
-{
-    return m_array[idx];
-}
-
-
-float& Vec4::operator[] (unsigned char idx)
-{
-    return m_array[idx];
-}
-
-
-Vec4::operator const float* () const
-{
-    return m_array;
 }
 
 

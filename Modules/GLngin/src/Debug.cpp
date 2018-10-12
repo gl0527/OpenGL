@@ -5,34 +5,6 @@
 
 namespace GLngin {
 
-void GetShaderErrorInfo (unsigned int handle)
-{
-    int logLen;
-	GL_CALL (glGetShaderiv (handle, GL_INFO_LOG_LENGTH, &logLen));
-	if (logLen > 0) {
-		char * log = new char[logLen];
-        int written;
-        GL_CALL (glGetShaderInfoLog (handle, logLen, &written, &log[0]));   // TODO glGetProgramInfoLog kene a program eseten!!!
-        std::cerr << "Shader log:\n" << log << std::endl;
-		delete[] log;
-	}
-}
-
-
-void GetProgramErrorInfo (unsigned int handle)
-{
-    int logLen;
-    GL_CALL (glGetProgramiv (handle, GL_INFO_LOG_LENGTH, &logLen));
-    if (logLen > 0) {
-        char * log = new char[logLen];
-        int written;
-        GL_CALL (glGetProgramInfoLog (handle, logLen, &written, &log[0]));
-        std::cerr << "Program log:\n" << log << std::endl;
-        delete[] log;
-    }
-}
-
-
 std::string GetGLInfoString ()
 {
     int majorVersion, minorVersion;

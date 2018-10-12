@@ -4,14 +4,13 @@
 #define GLNGIN_SHADER_HPP
 
 #include "API.hpp"
-#include <string>
 
 
 namespace GLngin {
 
 class GLNGIN_API Shader final {
 public:
-                    Shader (unsigned int t);
+    explicit        Shader (unsigned int t);
                     ~Shader ();
 	
     void            Init (const char * fileName);

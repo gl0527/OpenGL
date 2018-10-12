@@ -20,5 +20,6 @@ link_directories (${OPENGL_LIBRARIES})
 add_definitions(${OPENGL_DEFINITIONS})
 
 add_subdirectory (GLngin)
-add_subdirectory (a)
+add_subdirectory (a EXCLUDE_FROM_ALL)
 add_subdirectory (Fractals)
+add_subdirectory (NBody)

@@ -15,7 +15,6 @@ const unsigned int windowWidth = 600, windowHeight = 600;
 // 2D camera
 static GLngin::Camera camera;
 
-
 static std::unique_ptr<GLngin::Program> program (new GLngin::Program);
 
 class Triangle {
@@ -119,8 +118,8 @@ public:
 
         GLngin::Math::Vec4 wVertex = GLngin::Math::Vec4 (cX, cY, 0, 1) * camera.Pinv () * camera.Vinv ();
         // fill interleaved data
-        vertexData[5 * nVertices]     = wVertex[0];
-        vertexData[5 * nVertices + 1] = wVertex[1];
+        vertexData[5 * nVertices]     = wVertex.x;
+        vertexData[5 * nVertices + 1] = wVertex.x;
         vertexData[5 * nVertices + 2] = 1; // red
         vertexData[5 * nVertices + 3] = 1; // green
         vertexData[5 * nVertices + 4] = 0; // blue

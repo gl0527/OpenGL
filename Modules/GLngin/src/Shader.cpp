@@ -7,6 +7,23 @@
 
 namespace GLngin {
 
+namespace {
+
+void GetShaderErrorInfo (unsigned int handle)
+{
+    int logLen;
+    GL_CALL (glGetShaderiv (handle, GL_INFO_LOG_LENGTH, &logLen));
+    if (logLen > 0) {
+        char * log = new char[logLen];
+        int written;
+        GL_CALL (glGetShaderInfoLog (handle, logLen, &written, &log[0]));
+        std::cerr << "Shader log:\n" << log << std::endl;
+        delete[] log;
+    }
+}
+
+}   // namespace
+
 Shader::Shader (unsigned int t) :
     m_handle (0),
     m_type (t),
@@ -43,7 +60,7 @@ void Shader::Init (const char * fileName)
     const char * contentCStr = content.c_str ();
     GL_CALL (glShaderSource (m_handle, 1, &contentCStr, nullptr));
     GL_CALL (glCompileShader (m_handle));
-    GLint OK;
+    int OK;
     GL_CALL (glGetShaderiv (m_handle, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
         LOG ("Error in compiling shader.");

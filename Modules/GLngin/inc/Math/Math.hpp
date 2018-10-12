@@ -17,7 +17,8 @@ GLNGIN_API float    Min (float f1, float f2);
 GLNGIN_API double   Max (double d1, double d2);
 GLNGIN_API double   Min (double d1, double d2);
 
-GLNGIN_API float    UniformRandomVariable (float a, float b);
+GLNGIN_API float    Random (float a, float b);
+GLNGIN_API int      Random (int a, int b);
 
 }   // namespace Math
 }   // namespace GLngin

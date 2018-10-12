@@ -43,9 +43,9 @@
 
 
 namespace GLngin {
-    GLNGIN_API void         GetShaderErrorInfo (unsigned int handle);
-    GLNGIN_API void         GetProgramErrorInfo (unsigned int handle);
-    GLNGIN_API std::string  GetGLInfoString ();
+
+    GLNGIN_API std::string GetGLInfoString ();
+
 }   // namespace GLngine
 
 #endif	// #ifndef GLNGIN_DEBUG_HPP

@@ -14,7 +14,7 @@ class Mat4;
 class GLNGIN_API Vec4 final {
 public:
                         Vec4 (float x0, float y0, float z0, float w0);
-    explicit            Vec4 (float f);
+    explicit            Vec4 (float f = 0.0f);
                         Vec4 (float (&vec)[4]);
 
     Vec4&               operator+ ();

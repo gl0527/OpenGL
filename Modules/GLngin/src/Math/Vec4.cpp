@@ -19,7 +19,7 @@ Vec4::Vec4 (float x0, float y0, float z0, float w0) :
 }
 
 
-Vec4::Vec4 (float f) :
+Vec4::Vec4 (float f/*= 0.0f*/) :
     x (f),
     y (f),
     z (f),

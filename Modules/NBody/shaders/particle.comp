@@ -4,14 +4,14 @@
 
 layout(std430, binding = 0) buffer dataBuffer
 {
-    vec4 position[];
+    vec4 particleData[];
 };
 
 layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
 
-const float dt = 0.0001;
+const float dt = 1e-5;
 const float eps = 2.0;
-const float G = 0.5;
+const float G = 6.67384e1;
 
 void main()
 {
@@ -21,15 +21,15 @@ void main()
 
     for (uint i = 0; i < threadCount; ++i) {
         if (i != gid) {
-            vec2 r = position[i].xy - position[gid].xy;
+            vec2 r = particleData[i].xy - particleData[gid].xy;
             float l = length (r);
             F += r / pow (l*l + eps*eps, 1.5);
         }
     }
     F *= G;
 
-    vec2 vel = position[gid].zw + F * dt;
-    vec2 pos = position[gid].xy + vel * dt;
+    vec2 vel = particleData[gid].zw + F * dt;
+    vec2 pos = particleData[gid].xy + vel * dt;
 
-    position[gid] = vec4 (pos, vel);
+    particleData[gid] = vec4 (pos, vel);
 }

@@ -38,8 +38,8 @@ Program::~Program ()
     if (!m_inited)
         return;
 
-    for (auto it = m_shaders.begin (), itEnd = m_shaders.end (); it != itEnd; ++it)
-        GL_CALL (glDetachShader (m_handle, it->second->GetHandle ()));
+    for (auto& s : m_shaders)
+        GL_CALL (glDetachShader (m_handle, s.GetHandle ()));
 
     m_shaders.clear ();
 
@@ -47,21 +47,20 @@ Program::~Program ()
 }
 
 
-void Program::Init (    const std::shared_ptr<Shader>& vertShader,
-                        const std::shared_ptr<Shader>& geomShader,
-                        const std::shared_ptr<Shader>& fragShader,
-                        const std::shared_ptr<Shader>& compShader)
+void Program::Init ()
 {
     GL_CALL (m_handle = glCreateProgram ());
     if (m_handle == 0)
         LOG ("Error in shader program creation.");
 
-    AddShader (vertShader);
-    AddShader (geomShader);
-    AddShader (fragShader);
-    AddShader (compShader);
-
     m_inited = true;
+}
+
+
+void Program::AddShader (const Shader& shader)
+{
+    m_shaders.push_back (shader);
+    GL_CALL (glAttachShader (m_handle, m_shaders[m_shaders.size () - 1].GetHandle ()));
 }
 
 
@@ -128,15 +127,6 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
         return false;
     GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
     return true;
-}
-
-
-void Program::AddShader (const std::shared_ptr<Shader>& shader)
-{
-    if (shader != nullptr) {
-        GL_CALL (glAttachShader (m_handle, shader->GetHandle ()));
-        m_shaders[shader->GetType ()] = shader;
-    }
 }
 
 }	// namespace GLngine

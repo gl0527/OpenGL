@@ -12,10 +12,11 @@
 
 const unsigned int windowWidth = 600, windowHeight = 600;
 
+
 // 2D camera
 static GLngin::Camera camera;
 
-static std::unique_ptr<GLngin::Program> program (new GLngin::Program);
+static GLngin::Program program;
 
 class Triangle {
 	unsigned int vao;	// vertex array object id
@@ -80,7 +81,7 @@ public:
         GLngin::Math::Mat4 MVPTransform = Mscale * Mtranslate * camera.V () * camera.P ();
 
 		// set GPU uniform matrix variable MVP with the content of CPU variable MVPTransform
-        if (!program->SetUniformMat4 ("MVP", MVPTransform))
+        if (!program.SetUniformMat4 ("MVP", MVPTransform))
             printf ("uniform MVP cannot be set\n");
 
 		glBindVertexArray (vao);	// make the vao and its vbos active playing the role of the data source
@@ -132,7 +133,7 @@ public:
         if (nVertices > 0) {
             GLngin::Math::Mat4 VPTransform = camera.V () * camera.P ();
 
-            if (!program->SetUniformMat4 ("MVP", VPTransform))
+            if (!program.SetUniformMat4 ("MVP", VPTransform))
                 printf ("uniform MVP cannot be set\n");
 
             glBindVertexArray (vao);
@@ -152,24 +153,26 @@ static void onInitialization () {
 
     triangle.Create ();
 
-    std::shared_ptr<GLngin::Shader> pVs (new GLngin::Shader (GL_VERTEX_SHADER));
-    std::shared_ptr<GLngin::Shader> pFs (new GLngin::Shader (GL_FRAGMENT_SHADER));
+    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
+    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
-    pVs->Init ("/home/lui/dev/cpp/gfx/Modules/a/shaders/a.vert");
-    pFs->Init ("/home/lui/dev/cpp/gfx/Modules/a/shaders/a.frag");
+    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/a/shaders/a.vert");
+    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/a/shaders/a.frag");
 
-    program->Init (pVs, nullptr, pFs, nullptr);
+    program.Init ();
+
+    program.AddShader (vertexShader);
+    program.AddShader (fragmentShader);
 
     // before linking we bind vertex shader attributes and fragment shader outputs
-    GL_CALL (glBindFragDataLocation (program->GetHandle (), 0, "fragmentColor"));
+    GL_CALL (glBindFragDataLocation (program.GetHandle (), 0, "fragmentColor"));
 
-    program->Link ();
-	program->Enable ();
+    program.Link ();
+    program.Enable ();
 }
 
 static void onExit () {
-    program->Disable ();
-	program.reset ();
+    program.Disable ();
 	printf ("exit");
 }
 

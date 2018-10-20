@@ -4,8 +4,7 @@
 #define GLNGIN_PROGRAM_HPP
 
 #include "API.hpp"
-#include <memory>
-#include <map>
+#include <vector>
 
 
 namespace GLngin {
@@ -24,10 +23,8 @@ public:
                     Program (const Program&) = delete;
     Program&        operator= (const Program&) = delete;
 
-    void            Init (const std::shared_ptr<Shader>& vertShader,
-                          const std::shared_ptr<Shader>& geomShader,
-                          const std::shared_ptr<Shader>& fragShader,
-                          const std::shared_ptr<Shader>& compShader);
+    void            Init ();
+    void            AddShader (const Shader& shader);
 
     void            Link ();
 	
@@ -41,12 +38,10 @@ public:
 
 private:
     unsigned int                                    m_handle;
-    std::map<unsigned int, std::shared_ptr<Shader>> m_shaders;
+    std::vector<Shader>                             m_shaders;
 
     bool                                            m_inited;
     bool                                            m_linked;
-	
-    void            AddShader (const std::shared_ptr<Shader>& shader);
 };
 
 }	// namespace GLngine

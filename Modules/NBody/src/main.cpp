@@ -50,20 +50,23 @@ static void onInitialization ()
     // Set point primitive size
     GL_CALL (glPointSize (4.0f));
 
-    std::shared_ptr<GLngin::Shader> pVs (new GLngin::Shader (GL_VERTEX_SHADER));
-    std::shared_ptr<GLngin::Shader> pFs (new GLngin::Shader (GL_FRAGMENT_SHADER));
-    std::shared_ptr<GLngin::Shader> pCs (new GLngin::Shader (GL_COMPUTE_SHADER));
+    // initialize shaders
+    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
+    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
+    GLngin::Shader computeShader (GL_COMPUTE_SHADER);
 
-    pVs->Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.vert");
-    pFs->Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.frag");
-    pCs->Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.comp");
+    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.vert");
+    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.frag");
+    computeShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.comp");
 
-    // TODO a shadereket nem kene a heap-en foglalni
-    // TODO minden shader tipusbol lehet egyszerre tobb is egy adott programhoz csatolva, ez jelenleg nem megoldhato
-    // TODO tesszellacios shadereket sem lehet a jelenlegi modellben abrazolni
-    computeProgram.Init (nullptr, nullptr, nullptr, pCs);
+    // initialize programs
+    computeProgram.Init ();
+    computeProgram.AddShader (computeShader);
     computeProgram.Link ();
-    renderProgram.Init (pVs, pFs, nullptr, nullptr);
+
+    renderProgram.Init ();
+    renderProgram.AddShader (vertexShader);
+    renderProgram.AddShader (fragmentShader);
     renderProgram.Link ();
 
     // Initialize the ssbo

@@ -18,13 +18,15 @@ static void onInitialization()
     glClearColor(0.4f, 0.6f, 0.8f, 1.0f);
     quad.Init();
 
-    std::shared_ptr<GLngin::Shader> pVs (new GLngin::Shader (GL_VERTEX_SHADER));
-    std::shared_ptr<GLngin::Shader> pFs (new GLngin::Shader (GL_FRAGMENT_SHADER));
+    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
+    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
-    pVs->Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/passthrough.vert");
-    pFs->Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/simple.frag");
+    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/passthrough.vert");
+    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/simple.frag");
 
-    program.Init (pVs, nullptr, pFs, nullptr);
+    program.Init ();
+    program.AddShader (vertexShader);
+    program.AddShader (fragmentShader);
     program.Link ();
     program.Enable ();
 }

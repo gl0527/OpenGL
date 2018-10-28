@@ -1,7 +1,8 @@
-#include "Shader.hpp"
-#include "Program.hpp"
 #include "Debug.hpp"
+#include "InputManager.hpp"
 #include "Math.hpp"
+#include "Program.hpp"
+#include "Shader.hpp"
 #include "Vec4.hpp"
 
 #include <GL/freeglut.h>
@@ -18,6 +19,8 @@ static GLngin::Program computeProgram;
 
 static unsigned int ssbo;
 static unsigned int vao;
+
+static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
 
 static void FillSSBO ()
@@ -113,31 +116,29 @@ static void onDisplay ()
 }
 
 
-static void onKeyboard (unsigned char key, int /*pX*/, int /*pY*/)
-{
-    switch (key) {
-        case 27:
-            computeProgram.Disable ();
-            renderProgram.Disable ();
-
-            GL_CALL (glDeleteBuffers (1, &ssbo));
-            GL_CALL (glDeleteVertexArrays (1, &vao));
-
-            exit (0);
-
-        case 'R':
-        case 'r':
-            FillSSBO ();
-        break;
-
-        default:
-            break;
-    }
-}
-
-
 static void onIdle ()
 {
+    if (inputManager.IsKeyPressed (27)) {
+        computeProgram.Disable ();
+        renderProgram.Disable ();
+
+        GL_CALL (glDeleteBuffers (1, &ssbo));
+        GL_CALL (glDeleteVertexArrays (1, &vao));
+
+        exit (0);
+    }
+
+    if (inputManager.IsKeyReleased ('R') || inputManager.IsKeyReleased ('r')) {
+        FillSSBO ();
+    }
+
+    if (inputManager.IsRightMouseButtonDown ())
+        glutFullScreen();
+    else
+        glutLeaveFullScreen();
+
+    inputManager.Update ();
+
     glutPostRedisplay ();
 }
 
@@ -163,7 +164,9 @@ int main (int argc, char* argv[])
 
     onInitialization ();
     glutDisplayFunc (onDisplay);
-    glutKeyboardFunc (onKeyboard);
+
+    inputManager.Init ();
+
     glutIdleFunc (onIdle);
     glutMainLoop ();
 

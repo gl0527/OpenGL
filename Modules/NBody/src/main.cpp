@@ -48,6 +48,8 @@ static void FillSSBO ()
 
 static void onInitialization ()
 {
+    inputManager.Init ();
+
     GL_CALL (glClearColor (0.1f, 0.1f, 0.1f, 1.0f));
 
     // Set point primitive size
@@ -128,7 +130,7 @@ static void onIdle ()
         exit (0);
     }
 
-    if (inputManager.IsKeyReleased ('R') || inputManager.IsKeyReleased ('r')) {
+    if (inputManager.IsKeyReleased ('R') || inputManager.IsKeyDown ('r')) {
         FillSSBO ();
     }
 
@@ -136,6 +138,9 @@ static void onIdle ()
         glutFullScreen();
     else
         glutLeaveFullScreen();
+
+    if (inputManager.IsLeftMouseButtonDown ())
+        inputManager.Disable ();
 
     inputManager.Update ();
 
@@ -163,11 +168,10 @@ int main (int argc, char* argv[])
     std::cout << GLngin::GetGLInfoString () << std::endl;
 
     onInitialization ();
+
     glutDisplayFunc (onDisplay);
-
-    inputManager.Init ();
-
     glutIdleFunc (onIdle);
+
     glutMainLoop ();
 
     return 0;

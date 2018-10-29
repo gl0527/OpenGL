@@ -17,6 +17,9 @@ public:
 
     void                    Init ();
 
+    void                    Enable ();
+    void                    Disable ();
+
     bool                    IsKeyPressed (unsigned char key);
     bool                    IsKeyDown (unsigned char key);
     bool                    IsKeyReleased (unsigned char key);
@@ -25,7 +28,10 @@ public:
     bool                    IsSpecKeyDown (int key);
     bool                    IsSpecKeyReleased (int key);
 
-    void                    GetMousePosition (int * x, int * y);
+    void                    GetMouseCoordsInNDC (float * x, float * y);
+    void                    GetMouseCoordsInOpenGLWindowSpace (int * x, int * y);
+    void                    GetMouseCoordsInGLUTWindowSpace (int * x, int * y);
+
     bool                    IsLeftMouseButtonDown ();
     bool                    IsRightMouseButtonDown ();
     bool                    IsMiddleMouseButtonDown ();
@@ -36,6 +42,9 @@ private:
     static InputManager instance;
 
                             InputManager ();
+
+    void                    BindCallbacks ();
+    void                    UnBindCallbacks ();
 };
 
 }   // namespace GLngin

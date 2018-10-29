@@ -67,6 +67,13 @@ void OnMouseMotion (int x, int y)
     mouseY = y;
 }
 
+
+void OnMousePassiveMotion (int x, int y)
+{
+    mouseX = x;
+    mouseY = y;
+}
+
 }   // namespace
 
 
@@ -81,12 +88,24 @@ InputManager& InputManager::Instance ()
 
 void InputManager::Init ()
 {
-    glutKeyboardFunc (OnKeyDown);
-    glutKeyboardUpFunc (OnKeyUp);
-    glutSpecialFunc (OnSpecKeyDown);
-    glutSpecialUpFunc (OnSpecKeyUp);
-    glutMouseFunc (OnMouse);
-    glutMotionFunc (OnMouseMotion);
+    BindCallbacks ();
+}
+
+
+void InputManager::Enable ()
+{
+    BindCallbacks ();
+}
+
+
+void InputManager::Disable ()
+{
+    UnBindCallbacks ();
+
+    keyState[lastKey].isDown = false;
+    mouseState[GLUT_LEFT_BUTTON] = GLUT_UP;
+    mouseState[GLUT_MIDDLE_BUTTON] = GLUT_UP;
+    mouseState[GLUT_RIGHT_BUTTON] = GLUT_UP;
 }
 
 
@@ -126,8 +145,25 @@ bool InputManager::IsSpecKeyReleased (int key)
 }
 
 
-void InputManager::GetMousePosition (int * x, int * y)
+void InputManager::GetMouseCoordsInNDC (float * x, float * y)
 {
+    // Mouse coordinates in the normalized device coordinate system
+    *x = 2.0f * mouseX / glutGet (GLUT_WINDOW_WIDTH) - 1;
+    *y = 2.0f * (glutGet (GLUT_WINDOW_HEIGHT) - mouseY) / glutGet (GLUT_WINDOW_HEIGHT) - 1;
+}
+
+
+void InputManager::GetMouseCoordsInOpenGLWindowSpace (int * x, int * y)
+{
+    // Mouse coordinates in a coordinate system where the origin is at the bottom left corner of the window
+    *x = mouseX;
+    *y = glutGet (GLUT_WINDOW_HEIGHT) - mouseY;
+}
+
+
+void InputManager::GetMouseCoordsInGLUTWindowSpace (int * x, int * y)
+{
+    // Mouse coordinates in a coordinate system where the origin is at the top left corner of the window
     *x = mouseX;
     *y = mouseY;
 }
@@ -160,6 +196,36 @@ void InputManager::Update ()
 
 InputManager::InputManager ()
 {
+}
+
+
+void InputManager::BindCallbacks ()
+{
+    // keyboard-related callbacks
+    glutKeyboardFunc (OnKeyDown);
+    glutKeyboardUpFunc (OnKeyUp);
+    glutSpecialFunc (OnSpecKeyDown);
+    glutSpecialUpFunc (OnSpecKeyUp);
+
+    // mouse-related callbacks
+    glutMouseFunc (OnMouse);
+    glutMotionFunc (OnMouseMotion);
+    glutPassiveMotionFunc (OnMousePassiveMotion);
+}
+
+
+void InputManager::UnBindCallbacks ()
+{
+    // keyboard-related callbacks
+    glutKeyboardFunc (nullptr);
+    glutKeyboardUpFunc (nullptr);
+    glutSpecialFunc (nullptr);
+    glutSpecialUpFunc (nullptr);
+
+    // mouse-related callbacks
+    glutMouseFunc (nullptr);
+    glutMotionFunc (nullptr);
+    glutPassiveMotionFunc (nullptr);
 }
 
 }   // namespace GLngin

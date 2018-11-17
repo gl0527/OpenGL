@@ -15,11 +15,11 @@ public:
 	
     void            Init (const char * fileName);
 
-    unsigned int    GetHandle () const;
+    unsigned int    GetID () const;
     unsigned int    GetType () const;
 
 private:
-    unsigned int        m_handle;
+    unsigned int        m_id;
     const unsigned int  m_type;
     bool                m_inited;
 };

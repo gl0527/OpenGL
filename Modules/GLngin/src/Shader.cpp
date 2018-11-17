@@ -9,14 +9,14 @@ namespace GLngin {
 
 namespace {
 
-void GetShaderErrorInfo (unsigned int handle)
+void GetShaderErrorInfo (unsigned int id)
 {
     int logLen;
-    GL_CALL (glGetShaderiv (handle, GL_INFO_LOG_LENGTH, &logLen));
+    GL_CALL (glGetShaderiv (id, GL_INFO_LOG_LENGTH, &logLen));
     if (logLen > 0) {
         char * log = new char[logLen];
         int written;
-        GL_CALL (glGetShaderInfoLog (handle, logLen, &written, &log[0]));
+        GL_CALL (glGetShaderInfoLog (id, logLen, &written, &log[0]));
         std::cerr << "Shader log:\n" << log << std::endl;
         delete[] log;
     }
@@ -25,7 +25,7 @@ void GetShaderErrorInfo (unsigned int handle)
 }   // namespace
 
 Shader::Shader (unsigned int t) :
-    m_handle (0),
+    m_id (0),
     m_type (t),
     m_inited (false)
 {
@@ -37,15 +37,15 @@ Shader::~Shader ()
     if (!m_inited)
         return;
 
-    GL_CALL (glDeleteShader (m_handle));
+    GL_CALL (glDeleteShader (m_id));
 }
 
 
 void Shader::Init (const char * fileName)
 {
-    GL_CALL (m_handle = glCreateShader (m_type));
-    if (m_handle == 0) {
-        LOG ("Error occurred during shader creation.");
+    GL_CALL (m_id = glCreateShader (m_type));
+    if (m_id == 0) {
+        LOG (std::string ("Error occurred during the shader creation from \'") + std::string (fileName) + std::string ("\'"));
         exit (1);
     }
     std::string content;
@@ -54,17 +54,17 @@ void Shader::Init (const char * fileName)
         content = std::string {std::istreambuf_iterator<char> {ifs}, std::istreambuf_iterator<char> {}};
         ifs.close ();
     } else {
-        LOG ("Error occurred during shader file opening.");
+        LOG (std::string ("Error occurred during the opening of \'") + std::string (fileName) + std::string ("\'"));
         exit (1);
     }
     const char * contentCStr = content.c_str ();
-    GL_CALL (glShaderSource (m_handle, 1, &contentCStr, nullptr));
-    GL_CALL (glCompileShader (m_handle));
+    GL_CALL (glShaderSource (m_id, 1, &contentCStr, nullptr));
+    GL_CALL (glCompileShader (m_id));
     int OK;
-    GL_CALL (glGetShaderiv (m_handle, GL_COMPILE_STATUS, &OK));
+    GL_CALL (glGetShaderiv (m_id, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
-        LOG ("Error in compiling shader.");
-        GetShaderErrorInfo (m_handle);
+        LOG (std::string ("Error occurred during the compilation of \'") + std::string (fileName) + std::string ("\'"));
+        GetShaderErrorInfo (m_id);
         exit (-1);
     }
 
@@ -72,9 +72,9 @@ void Shader::Init (const char * fileName)
 }
 
 
-unsigned int Shader::GetHandle () const
+unsigned int Shader::GetID () const
 {
-    return m_handle;
+    return m_id;
 }
 
 

@@ -14,7 +14,7 @@ struct KeyData {
 };
 
 
-KeyData keyState[512] = { {false, false, false} };
+KeyData keyState[256] = { {false, false, false} };
 int mouseState[3] = { -1, -1, -1 };
 int lastKey = -1;
 int mouseX = -1;
@@ -39,7 +39,7 @@ void OnKeyUp (unsigned char key, int /*x*/, int /*y*/)
 
 void OnSpecKeyDown (int key, int /*x*/, int /*y*/)
 {
-    lastKey = key + 256;
+    lastKey = key + InputManager::specKeyOffset;
     keyState[lastKey].isPressed = true;
     keyState[lastKey].isDown = true;
 }
@@ -47,8 +47,8 @@ void OnSpecKeyDown (int key, int /*x*/, int /*y*/)
 
 void OnSpecKeyUp (int key, int /*x*/, int /*y*/)
 {
-    lastKey = key + 256;
-    keyState[lastKey].isPressed = true;
+    lastKey = key + InputManager::specKeyOffset;
+    keyState[lastKey].isReleased = true;
     keyState[lastKey].isDown = false;
 }
 
@@ -109,39 +109,21 @@ void InputManager::Disable ()
 }
 
 
-bool InputManager::IsKeyPressed (unsigned char key)
+bool InputManager::IsKeyPressed (KeyCode key)
 {
-    return keyState[key].isPressed;
+    return keyState[static_cast<unsigned char> (key)].isPressed;
 }
 
 
-bool InputManager::IsKeyDown (unsigned char key)
+bool InputManager::IsKeyDown (KeyCode key)
 {
-    return keyState[key].isDown;
+    return keyState[static_cast<unsigned char> (key)].isDown;
 }
 
 
-bool InputManager::IsKeyReleased (unsigned char key)
+bool InputManager::IsKeyReleased (KeyCode key)
 {
-    return keyState[key].isReleased;
-}
-
-
-bool InputManager::IsSpecKeyPressed (int key)
-{
-    return keyState[key + 256].isPressed;
-}
-
-
-bool InputManager::IsSpecKeyDown (int key)
-{
-    return keyState[key + 256].isDown;
-}
-
-
-bool InputManager::IsSpecKeyReleased (int key)
-{
-    return keyState[key + 256].isReleased;
+    return keyState[static_cast<unsigned char> (key)].isReleased;
 }
 
 

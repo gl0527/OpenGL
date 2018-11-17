@@ -18,9 +18,9 @@ public:
     void    Render (int lowerLeftX, int lowerLeftY, int width, int height) const;
 
 private:
-    unsigned int    m_vertexArray;
-    unsigned int    m_vertexBuffer;
-    unsigned int    m_texCoordBuffer;
+    unsigned int    m_vertexArrayID;
+    unsigned int    m_vertexBufferID;
+    unsigned int    m_texCoordBufferID;
     bool            m_inited;
 
     void    RenderImpl () const;

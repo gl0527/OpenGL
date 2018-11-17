@@ -3,15 +3,21 @@
 #ifndef GLNGIN_CAMERA_HPP
 #define GLNGIN_CAMERA_HPP
 
-#include "Mat4.hpp"
-#include "Vec4.hpp"
+#include "API.hpp"
 
 
 namespace GLngin {
+namespace Math {
+    class Mat4;
+}   // namespace Math
 
-class Camera {
+
+// TODO Vec3
+// TODO splines
+// TODO cinematic
+class GLNGIN_API Camera {
 public:
-	Camera ();
+    Camera (float cX = 0.0f, float cY = 0.0f, float width = 0.0f, float height = 0.0f);
 
     Math::Mat4 V();
     Math::Mat4 P();

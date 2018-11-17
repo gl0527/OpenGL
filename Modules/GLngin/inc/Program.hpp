@@ -31,17 +31,19 @@ public:
     void            Enable () const;
     void            Disable () const;
 
-    unsigned int    GetHandle () const;
+    unsigned int    GetID () const;
 
+    bool            SetUniformFloat (const char * uniformName, float value) const;
+    bool            SetUniformInt (const char * uniformName, int value) const;
     bool            SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const;
     bool            SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const;
 
 private:
-    unsigned int                                    m_handle;
-    std::vector<Shader>                             m_shaders;
+    unsigned int        m_id;
+    std::vector<Shader> m_shaders;
 
-    bool                                            m_inited;
-    bool                                            m_linked;
+    bool                m_inited;
+    bool                m_linked;
 };
 
 }	// namespace GLngine

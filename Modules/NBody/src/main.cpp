@@ -17,8 +17,8 @@ constexpr unsigned int particlesNum = 1024;
 static GLngin::Program renderProgram;
 static GLngin::Program computeProgram;
 
-static unsigned int ssbo;
-static unsigned int vao;
+static unsigned int ssboID;
+static unsigned int vaoID;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
@@ -75,18 +75,18 @@ static void onInitialization ()
     renderProgram.Link ();
 
     // Initialize the ssbo
-    GL_CALL (glGenBuffers (1, &ssbo));
-    GL_CALL (glBindBuffer (GL_SHADER_STORAGE_BUFFER, ssbo));
+    GL_CALL (glGenBuffers (1, &ssboID));
+    GL_CALL (glBindBuffer (GL_SHADER_STORAGE_BUFFER, ssboID));
     GL_CALL (glBufferData (GL_SHADER_STORAGE_BUFFER, particlesNum * sizeof (GLngin::Math::Vec4), nullptr, GL_STATIC_DRAW));
 
     FillSSBO ();
 
     // Binding ssbo to the pipeline
-    GL_CALL (glGenVertexArrays (1, &vao));
-    GL_CALL (glBindVertexArray (vao));
+    GL_CALL (glGenVertexArrays (1, &vaoID));
+    GL_CALL (glBindVertexArray (vaoID));
 
     GL_CALL (glEnableVertexAttribArray (0));
-    GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, ssbo));
+    GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, ssboID));
     GL_CALL (glVertexAttribPointer (0, 4, GL_FLOAT, GL_FALSE, 0, nullptr));
 
     GL_CALL (glBindVertexArray (0));
@@ -98,21 +98,19 @@ static void onDisplay ()
     GL_CALL (glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     // Update position and velocity
-    GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, ssbo));
+    GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, ssboID));
 
     computeProgram.Enable ();
     GL_CALL (glDispatchCompute (particlesNum / workgroupSize, 1, 1));
-    computeProgram.Disable ();
 
     // Synchronize between the compute and render shaders
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     // Render the particles
     renderProgram.Enable ();
-    GL_CALL (glBindVertexArray (vao));
+    GL_CALL (glBindVertexArray (vaoID));
     GL_CALL (glDrawArrays (GL_POINTS, 0, particlesNum));
     GL_CALL (glBindVertexArray (0));
-    renderProgram.Disable ();
 
     glutSwapBuffers ();
 }
@@ -120,17 +118,19 @@ static void onDisplay ()
 
 static void onIdle ()
 {
-    if (inputManager.IsKeyPressed (27)) {
+    if (inputManager.IsKeyPressed (GLngin::InputManager::KeyCode::KC_ESCAPE)) {
         computeProgram.Disable ();
         renderProgram.Disable ();
 
-        GL_CALL (glDeleteBuffers (1, &ssbo));
-        GL_CALL (glDeleteVertexArrays (1, &vao));
+        GL_CALL (glDeleteBuffers (1, &ssboID));
+        GL_CALL (glDeleteVertexArrays (1, &vaoID));
 
         exit (0);
     }
 
-    if (inputManager.IsKeyReleased ('R') || inputManager.IsKeyDown ('r')) {
+    if (inputManager.IsKeyReleased (GLngin::InputManager::KeyCode::KC_R) ||
+        inputManager.IsKeyDown (GLngin::InputManager::KeyCode::KC_r))
+    {
         FillSSBO ();
     }
 

@@ -7,7 +7,11 @@
 
 namespace GLngin {
 
-Camera::Camera ()
+Camera::Camera (float cX /*= 0.0f*/, float cY /*= 0.0f*/, float width /*= 0.0f*/, float height /*= 0.0f*/) :
+    wCx (cX),
+    wCy (cY),
+    wWx (width),
+    wWy (height)
 {
 	Animate (0);
 }
@@ -18,7 +22,7 @@ Math::Mat4 Camera::V ()
     return Math::Mat4 (	1, 0, 0, 0,
 					0, 1, 0, 0,
 					0, 0, 1, 0,
-					-wCx, -wCy, 0, 1);
+                    -wCx, -wCy, 0, 1);
 }
 
 
@@ -36,7 +40,7 @@ Math::Mat4 Camera::Vinv ()
     return Math::Mat4(1,     0, 0, 0,
 				    0,     1, 0, 0,
 			        0,     0, 1, 0,
-					wCx, wCy, 0, 1);
+                    wCx, wCy, 0, 1);
 }
 
 

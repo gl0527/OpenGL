@@ -165,7 +165,7 @@ static void onInitialization () {
     program.AddShader (fragmentShader);
 
     // before linking we bind vertex shader attributes and fragment shader outputs
-    GL_CALL (glBindFragDataLocation (program.GetHandle (), 0, "fragmentColor"));
+    GL_CALL (glBindFragDataLocation (program.GetID (), 0, "fragmentColor"));
 
     program.Link ();
     program.Enable ();

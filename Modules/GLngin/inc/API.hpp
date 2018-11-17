@@ -3,25 +3,16 @@
 #ifndef GLNGIN_API_HPP
 #define GLNGIN_API_HPP
 
-#if defined (GLNGIN_DLL_CONFIG)
-#   if defined (_WIN32)
-#       if defined (GLNGIN_DLL_EXPORT)
-#           define GLNGIN_API __declspec (dllexport)
-#       else
-#           define GLNGIN_API
-#       endif
-#       define USE_GLNGIN_API __declspec (dllimport)
+#if defined (_WIN32)
+#   if defined (GLNGIN_DYNAMIC_COMPILE)
+#       define GLNGIN_API __declspec (dllexport)
+#   elif defined (GLNGIN_STATIC_COMPILE)
+#       define GLNGIN_API
 #   else
-#       if defined (GLNGIN_DLL_EXPORT)
-#           define GLNGIN_API __attribute__ ((visibility ("default")))
-#       else
-#           define GLNGIN_API __attribute__ ((visibility ("hidden")))
-#       endif
-#       define USE_GLNGIN_API
+#       define GLNGIN_API __declspec (dllimport)
 #   endif
 #else
-#define GLNGIN_API
-#define USE_GLNGIN_API
+#       define GLNGIN_API
 #endif
 
 #endif  // #ifndef GLNGIN_API_HPP

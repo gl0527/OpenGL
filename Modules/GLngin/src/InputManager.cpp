@@ -17,8 +17,12 @@ struct KeyData {
 KeyData keyState[256] = { {false, false, false} };
 int mouseState[3] = { -1, -1, -1 };
 int lastKey = -1;
+unsigned char anyKey = static_cast<unsigned char> (InputManager::KeyCode::KC_ANY);
+
 int mouseX = -1;
 int mouseY = -1;
+int dMouseX = 0;
+int dMouseY = 0;
 
 
 void OnKeyDown (unsigned char key, int /*x*/, int /*y*/)
@@ -26,6 +30,9 @@ void OnKeyDown (unsigned char key, int /*x*/, int /*y*/)
     lastKey = key;
     keyState[lastKey].isPressed = true;
     keyState[lastKey].isDown = true;
+
+    keyState[anyKey].isPressed = true;
+    keyState[anyKey].isDown = true;
 }
 
 
@@ -34,6 +41,9 @@ void OnKeyUp (unsigned char key, int /*x*/, int /*y*/)
     lastKey = key;
     keyState[lastKey].isReleased = true;
     keyState[lastKey].isDown = false;
+
+    keyState[anyKey].isReleased = true;
+    keyState[anyKey].isDown = false;
 }
 
 
@@ -42,6 +52,9 @@ void OnSpecKeyDown (int key, int /*x*/, int /*y*/)
     lastKey = key + InputManager::specKeyOffset;
     keyState[lastKey].isPressed = true;
     keyState[lastKey].isDown = true;
+
+    keyState[anyKey].isPressed = true;
+    keyState[anyKey].isDown = true;
 }
 
 
@@ -50,12 +63,17 @@ void OnSpecKeyUp (int key, int /*x*/, int /*y*/)
     lastKey = key + InputManager::specKeyOffset;
     keyState[lastKey].isReleased = true;
     keyState[lastKey].isDown = false;
+
+    keyState[anyKey].isReleased = true;
+    keyState[anyKey].isDown = false;
 }
 
 
 void OnMouse (int button, int state, int x, int y)
 {
     mouseState[button] = state;
+    dMouseX = mouseX > 0 ? x - mouseX : 0;
+    dMouseY = mouseY > 0 ? y - mouseY : 0;
     mouseX = x;
     mouseY = y;
 }
@@ -63,6 +81,8 @@ void OnMouse (int button, int state, int x, int y)
 
 void OnMouseMotion (int x, int y)
 {
+    dMouseX = mouseX > 0 ? x - mouseX : 0;
+    dMouseY = mouseY > 0 ? y - mouseY : 0;
     mouseX = x;
     mouseY = y;
 }
@@ -70,6 +90,8 @@ void OnMouseMotion (int x, int y)
 
 void OnMousePassiveMotion (int x, int y)
 {
+    dMouseX = mouseX > 0 ? x - mouseX : 0;
+    dMouseY = mouseY > 0 ? y - mouseY : 0;
     mouseX = x;
     mouseY = y;
 }
@@ -86,19 +108,19 @@ InputManager& InputManager::Instance ()
 }
 
 
-void InputManager::Init ()
+void InputManager::Init () const
 {
     BindCallbacks ();
 }
 
 
-void InputManager::Enable ()
+void InputManager::Enable () const
 {
     BindCallbacks ();
 }
 
 
-void InputManager::Disable ()
+void InputManager::Disable () const
 {
     UnBindCallbacks ();
 
@@ -109,25 +131,25 @@ void InputManager::Disable ()
 }
 
 
-bool InputManager::IsKeyPressed (KeyCode key)
+bool InputManager::IsKeyPressed (KeyCode key) const
 {
     return keyState[static_cast<unsigned char> (key)].isPressed;
 }
 
 
-bool InputManager::IsKeyDown (KeyCode key)
+bool InputManager::IsKeyDown (KeyCode key) const
 {
     return keyState[static_cast<unsigned char> (key)].isDown;
 }
 
 
-bool InputManager::IsKeyReleased (KeyCode key)
+bool InputManager::IsKeyReleased (KeyCode key) const
 {
     return keyState[static_cast<unsigned char> (key)].isReleased;
 }
 
 
-void InputManager::GetMouseCoordsInNDC (float * x, float * y)
+void InputManager::GetMouseCoordsInNDC (float * x, float * y) const
 {
     // Mouse coordinates in the normalized device coordinate system
     *x = 2.0f * mouseX / glutGet (GLUT_WINDOW_WIDTH) - 1;
@@ -135,7 +157,7 @@ void InputManager::GetMouseCoordsInNDC (float * x, float * y)
 }
 
 
-void InputManager::GetMouseCoordsInOpenGLWindowSpace (int * x, int * y)
+void InputManager::GetMouseCoordsInOpenGLWindowSpace (int * x, int * y) const
 {
     // Mouse coordinates in a coordinate system where the origin is at the bottom left corner of the window
     *x = mouseX;
@@ -143,7 +165,7 @@ void InputManager::GetMouseCoordsInOpenGLWindowSpace (int * x, int * y)
 }
 
 
-void InputManager::GetMouseCoordsInGLUTWindowSpace (int * x, int * y)
+void InputManager::GetMouseCoordsInGLUTWindowSpace (int * x, int * y) const
 {
     // Mouse coordinates in a coordinate system where the origin is at the top left corner of the window
     *x = mouseX;
@@ -151,28 +173,38 @@ void InputManager::GetMouseCoordsInGLUTWindowSpace (int * x, int * y)
 }
 
 
-bool InputManager::IsLeftMouseButtonDown ()
+void InputManager::GetMouseDelta (int * dx, int * dy) const
+{
+    *dx = dMouseX;
+    *dy = -dMouseY; // coordinate transform from GLUT to OpenGL
+}
+
+
+bool InputManager::IsLeftMouseButtonDown () const
 {
     return mouseState[GLUT_LEFT_BUTTON] == GLUT_DOWN;
 }
 
 
-bool InputManager::IsRightMouseButtonDown ()
+bool InputManager::IsRightMouseButtonDown () const
 {
     return mouseState[GLUT_RIGHT_BUTTON] == GLUT_DOWN;
 }
 
 
-bool InputManager::IsMiddleMouseButtonDown ()
+bool InputManager::IsMiddleMouseButtonDown () const
 {
     return mouseState[GLUT_MIDDLE_BUTTON] == GLUT_DOWN;
 }
 
 
-void InputManager::Update ()
+void InputManager::Update () const
 {
     keyState[lastKey].isPressed = false;
     keyState[lastKey].isReleased = false;
+
+    dMouseX = 0;
+    dMouseY = 0;
 }
 
 
@@ -181,7 +213,7 @@ InputManager::InputManager ()
 }
 
 
-void InputManager::BindCallbacks ()
+void InputManager::BindCallbacks () const
 {
     // keyboard-related callbacks
     glutKeyboardFunc (OnKeyDown);
@@ -196,7 +228,7 @@ void InputManager::BindCallbacks ()
 }
 
 
-void InputManager::UnBindCallbacks ()
+void InputManager::UnBindCallbacks () const
 {
     // keyboard-related callbacks
     glutKeyboardFunc (nullptr);

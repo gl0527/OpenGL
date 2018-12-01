@@ -14,7 +14,9 @@ class GLNGIN_API InputManager final {
 public:
     static constexpr unsigned char specKeyOffset = 128;
 
-    enum class KeyCode {
+    enum class KeyCode : unsigned char {
+        KC_ANY          = 0,
+
         KC_BACKSPACE    = 8,
         KC_TAB          = '\t',
         KC_ENTER        = '\r',
@@ -119,32 +121,34 @@ public:
                             InputManager (const InputManager&) = delete;
     InputManager&           operator= (const InputManager&) = delete;
 
-    void                    Init ();
+    void                    Init () const;
 
-    void                    Enable ();
-    void                    Disable ();
+    void                    Enable () const;
+    void                    Disable () const;
 
-    bool                    IsKeyPressed (KeyCode key);
-    bool                    IsKeyDown (KeyCode key);
-    bool                    IsKeyReleased (KeyCode key);
+    bool                    IsKeyPressed (KeyCode key) const;
+    bool                    IsKeyDown (KeyCode key) const;
+    bool                    IsKeyReleased (KeyCode key) const;
 
-    void                    GetMouseCoordsInNDC (float * x, float * y);
-    void                    GetMouseCoordsInOpenGLWindowSpace (int * x, int * y);
-    void                    GetMouseCoordsInGLUTWindowSpace (int * x, int * y);
+    void                    GetMouseCoordsInNDC (float * x, float * y) const;
+    void                    GetMouseCoordsInOpenGLWindowSpace (int * x, int * y) const;
+    void                    GetMouseCoordsInGLUTWindowSpace (int * x, int * y) const;
 
-    bool                    IsLeftMouseButtonDown ();
-    bool                    IsRightMouseButtonDown ();
-    bool                    IsMiddleMouseButtonDown ();
+    void                    GetMouseDelta (int * dx, int * dy) const;
 
-    void                    Update ();
+    bool                    IsLeftMouseButtonDown () const;
+    bool                    IsRightMouseButtonDown () const;
+    bool                    IsMiddleMouseButtonDown () const;
+
+    void                    Update () const;
 
 private:
     static InputManager instance;
 
                             InputManager ();
 
-    void                    BindCallbacks ();
-    void                    UnBindCallbacks ();
+    void                    BindCallbacks () const;
+    void                    UnBindCallbacks () const;
 };
 
 }   // namespace GLngin

@@ -3,6 +3,7 @@
 #include "Debug.hpp"
 #include "Mat4.hpp"
 #include "Shader.hpp"
+#include "Vec3.hpp"
 #include "Vec4.hpp"
 
 
@@ -103,12 +104,8 @@ unsigned int Program::GetID () const
 
 
 bool Program::SetUniformFloat (const char * uniformName, float value) const
-{
-    if (!m_inited)
-        return false;
-
-    int location = -1;
-    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
+{    
+    int location = GetLocation (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform1f (location, value));
@@ -118,11 +115,7 @@ bool Program::SetUniformFloat (const char * uniformName, float value) const
 
 bool Program::SetUniformInt (const char * uniformName, int value) const
 {
-    if (!m_inited)
-        return false;
-
-    int location = -1;
-    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
+    int location = GetLocation (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform1i (location, value));
@@ -132,11 +125,7 @@ bool Program::SetUniformInt (const char * uniformName, int value) const
 
 bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const
 {
-    if (!m_inited)
-        return false;
-
-    int location = -1;
-    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
+    int location = GetLocation (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniformMatrix4fv (location, 1, GL_TRUE, value));
@@ -144,17 +133,36 @@ bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
 }
 
 
+bool Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const
+{
+    int location = GetLocation (uniformName);
+    if (location < 0)
+        return false;
+    GL_CALL (glUniform3f (location, value.x, value.y, value.z));
+    return true;
+}
+
+
 bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const
 {
-    if (!m_inited)
-        return false;
-
-    int location = -1;
-    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
+    int location = GetLocation (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
     return true;
+}
+
+
+int Program::GetLocation (const char * uniformName) const
+{
+    int location = -1;
+
+    if (!m_inited)
+        return location;
+
+    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
+
+    return location;
 }
 
 }	// namespace GLngine

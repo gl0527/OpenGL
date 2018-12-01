@@ -1,10 +1,8 @@
 #include "Vec4.hpp"
 
-#include <cassert>
-#include <cmath>
-
 #include "Mat4.hpp"
 #include "Math.hpp"
+#include "Vec3.hpp"
 
 
 namespace GLngin {
@@ -34,6 +32,36 @@ Vec4::Vec4 (float (&vec)[4]) :
     z (vec[2]),
     w (vec[3])
 {
+}
+
+
+Vec4::Vec4 (const Vec3& vec3, float w0) :
+    x (vec3.x),
+    y (vec3.y),
+    z (vec3.z),
+    w (w0)
+{
+}
+
+
+Vec4::Vec4 (float x0, const Vec3& vec3) :
+    x (x0),
+    y (vec3.x),
+    z (vec3.y),
+    w (vec3.z)
+{
+}
+
+
+Vec3 Vec4::xyz () const
+{
+    return Vec3 (x, y, z);
+}
+
+
+Vec3 Vec4::yzw () const
+{
+    return Vec3 (y, z, w);
 }
 
 
@@ -108,7 +136,6 @@ Vec4 Vec4::operator* (const Mat4& mat) const
 
 Vec4& Vec4::operator/= (float scalar)
 {
-    assert (fabsf (scalar) > 1e-6f);
     float scalarInv = 1 / scalar;
     x *= scalarInv;
     y *= scalarInv;
@@ -120,7 +147,6 @@ Vec4& Vec4::operator/= (float scalar)
 
 Vec4 Vec4::operator/ (float scalar) const
 {
-    assert (fabsf (scalar) > 1e-6f);
     float scalarInv = 1 / scalar;
     return Vec4 (x * scalarInv, y * scalarInv, z * scalarInv, w * scalarInv);
 }

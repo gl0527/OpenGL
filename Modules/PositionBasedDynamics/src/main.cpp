@@ -46,6 +46,9 @@ void onInitialization ()
 {
     inputManager.Init ();
 
+    camera.SetView (GLngin::Math::Vec3 (0,0,2), GLngin::Math::Vec3 (0,0,-1));
+    camera.SetAspect (static_cast<float> (windowWidth) / windowHeight);
+
     GL_CALL (glClearColor (0.1f, 0.1f, 0.1f, 1.0f));
 
     // Set point primitive size
@@ -157,7 +160,7 @@ void onDisplay ()
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 1, positionBufferTmp));
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 2, velocityBuffer));
 
-    const float dt = 0.01f;
+    const float dt = 0.002f;
 
     gravityProgram.Enable ();
     if (!gravityProgram.SetUniformFloat ("dt", dt)) {
@@ -171,7 +174,7 @@ void onDisplay ()
     const int NITER = 50;
     for (int i = 0; i < NITER; ++i) {
         collisionProgram.Enable ();
-        if (!collisionProgram.SetUniformFloat ("ConstraintWeight", 0.1f)) {
+        if (!collisionProgram.SetUniformFloat ("ConstraintWeight", 0.0f)) {
             LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
             exit (-1);
         }
@@ -180,7 +183,7 @@ void onDisplay ()
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
         distanceProgram.Enable ();
-        if (!distanceProgram.SetUniformFloat ("ConstraintWeight", 0.3f)) {
+        if (!distanceProgram.SetUniformFloat ("ConstraintWeight", 0.25f)) {
             LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
             exit (-1);
         }
@@ -200,7 +203,7 @@ void onDisplay ()
 	
 	// Render the particles
     renderProgram.Enable ();
-    if (!renderProgram.SetUniformMat4 ("viewproj", camera.V () * camera.P ())) {
+    if (!renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ())) {
         LOG ("Cannot set \'viewproj\' as a float uniform variable.");
         exit (-1);
     }
@@ -214,6 +217,8 @@ void onDisplay ()
 
 void onIdle ()
 {
+    float sec = glutGet (GLUT_ELAPSED_TIME) * 1e-3f;
+
     if (inputManager.IsKeyReleased (GLngin::InputManager::KeyCode::KC_ESCAPE)) {
         renderProgram.Disable ();
         finalUpdateProgram.Disable ();
@@ -229,6 +234,8 @@ void onIdle ()
 
         exit (0);
     }
+
+    camera.Animate (sec);
 
     inputManager.Update ();
 

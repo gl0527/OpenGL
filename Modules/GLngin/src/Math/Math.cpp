@@ -6,6 +6,21 @@
 namespace GLngin {
 namespace Math {
 
+const float Pi = 3.14159265f;
+
+
+float AngleToRadian (float angle)
+{
+    return angle * Pi / 180;
+}
+
+
+float RadianToAngle (float radian)
+{
+    return radian * 180 / Pi;
+}
+
+
 bool IsEqual (float f1, float f2)
 {
     return fabsf (f1 - f2) < 1e-4f;

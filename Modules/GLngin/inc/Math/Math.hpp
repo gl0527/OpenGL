@@ -9,6 +9,11 @@
 namespace GLngin {
 namespace Math {
 
+extern const float  Pi;
+
+GLNGIN_API float    AngleToRadian (float angle);
+GLNGIN_API float    RadianToAngle (float radian);
+
 GLNGIN_API bool     IsEqual (float f1, float f2);
 GLNGIN_API bool     IsEqual (double d1, double d2);
 

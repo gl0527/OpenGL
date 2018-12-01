@@ -78,7 +78,7 @@ public:
                         0,   0,  1, 0,
 			          wTx, wTy,  0, 1); // model matrix
 
-        GLngin::Math::Mat4 MVPTransform = Mscale * Mtranslate * camera.V () * camera.P ();
+        GLngin::Math::Mat4 MVPTransform = Mscale * Mtranslate * camera.GetViewMatrix () * camera.GetProjMatrix ();
 
 		// set GPU uniform matrix variable MVP with the content of CPU variable MVPTransform
         if (!program.SetUniformMat4 ("MVP", MVPTransform))
@@ -117,7 +117,7 @@ public:
         glBindBuffer (GL_ARRAY_BUFFER, vbo);
         if (nVertices >= 20) return;
 
-        GLngin::Math::Vec4 wVertex = GLngin::Math::Vec4 (cX, cY, 0, 1) * camera.Pinv () * camera.Vinv ();
+        GLngin::Math::Vec4 wVertex = GLngin::Math::Vec4 (cX, cY, 0, 1) * camera.GetProjMatrix ().Invert () * camera.GetViewMatrix ().Invert ();
         // fill interleaved data
         vertexData[5 * nVertices]     = wVertex.x;
         vertexData[5 * nVertices + 1] = wVertex.x;
@@ -131,7 +131,7 @@ public:
 
     void Draw () {
         if (nVertices > 0) {
-            GLngin::Math::Mat4 VPTransform = camera.V () * camera.P ();
+            GLngin::Math::Mat4 VPTransform = camera.GetViewMatrix () * camera.GetProjMatrix ();
 
             if (!program.SetUniformMat4 ("MVP", VPTransform))
                 printf ("uniform MVP cannot be set\n");

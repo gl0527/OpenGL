@@ -10,6 +10,7 @@
 namespace GLngin {
 namespace Math {
     class Mat4;
+    class Vec3;
     class Vec4;
 }   // namespace Math
 
@@ -36,6 +37,7 @@ public:
     bool            SetUniformFloat (const char * uniformName, float value) const;
     bool            SetUniformInt (const char * uniformName, int value) const;
     bool            SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const;
+    bool            SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const;
     bool            SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const;
 
 private:
@@ -44,6 +46,8 @@ private:
 
     bool                m_inited;
     bool                m_linked;
+
+    int             GetLocation (const char * uniformName) const;
 };
 
 }	// namespace GLngine

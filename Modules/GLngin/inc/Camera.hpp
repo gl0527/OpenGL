@@ -4,32 +4,50 @@
 #define GLNGIN_CAMERA_HPP
 
 #include "API.hpp"
+#include "Mat4.hpp"
+#include "Vec3.hpp"
 
 
 namespace GLngin {
-namespace Math {
-    class Mat4;
-}   // namespace Math
 
-
-// TODO Vec3
 // TODO splines
 // TODO cinematic
+// TODO lookat
 class GLNGIN_API Camera {
 public:
-    Camera (float cX = 0.0f, float cY = 0.0f, float width = 0.0f, float height = 0.0f);
+    Camera ();
 
-    Math::Mat4 V();
-    Math::Mat4 P();
+    const Math::Vec3& GetPosition () const;
+    const Math::Vec3& GetDirection () const;
 
-    Math::Mat4 Vinv();
-    Math::Mat4 Pinv();
+    const Math::Mat4& GetViewMatrix () const;
+    const Math::Mat4& GetProjMatrix () const;
+    const Math::Mat4& GetRayDirMatrix () const;
 
-    void Animate(float t);
+    void SetView (const Math::Vec3& eye, const Math::Vec3& ahead);
+    void SetProj (float fov, float aspect, float nearPlane, float farPlane);
+    void SetAspect (float aspect);
+
+    void Animate (float dt);
 	
 private:
-	float wCx, wCy;	// center in world coordinates
-	float wWx, wWy;	// width and height in world coordinates
+    Math::Vec3 m_eye;
+    Math::Vec3 m_ahead;
+    Math::Vec3 m_right;
+
+    Math::Mat4 m_viewMat;
+    Math::Mat4 m_projMat;
+    Math::Mat4 m_rayDirMat;
+
+    float m_yaw;
+    float m_pitch;
+    float m_fov;
+    float m_aspect;
+    float m_front;
+    float m_back;
+
+    void UpdateView ();
+    void UpdateProj ();
 };
 
 }	// namespace GLngine

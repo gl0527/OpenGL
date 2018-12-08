@@ -39,6 +39,7 @@ public:
     bool            SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const;
     bool            SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const;
     bool            SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const;
+    bool            SetUniformTexture (const char * uniformName, unsigned int texID, unsigned int unitID);
 
 private:
     unsigned int        m_id;

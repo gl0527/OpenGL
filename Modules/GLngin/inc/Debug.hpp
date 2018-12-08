@@ -5,8 +5,6 @@
 
 #include "API.hpp"
 #include <iostream>
-#include <string>
-#include <GL/glew.h>
 
 #ifdef __linux__
 #include <signal.h>
@@ -37,8 +35,21 @@
             DBBREAK;                                        \
         }                                                   \
 	} while (0)
+
+#define IL_CALL(ilExpr)                                     \
+    do {                                                    \
+        while (ilGetError () != IL_NO_ERROR);               \
+        ilExpr;                                             \
+        while (unsigned int error = ilGetError ()) {        \
+            LOG ("Error occurred during \'" #ilExpr "\'")   \
+            << "Error string: \'" << iluErrorString (error) \
+            << "\'" << std::endl;                           \
+            DBBREAK;                                        \
+        }                                                   \
+    } while (0)
 #else
 #define GL_CALL(glExpr) glExpr
+#define IL_CALL(ilExpr) ilExpr
 #endif
 
 

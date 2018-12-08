@@ -17,10 +17,11 @@ find_package (GLEW REQUIRED)
 include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
 link_directories (${OPENGL_LIBRARIES})
 
-add_definitions(${OPENGL_DEFINITIONS})
+add_definitions (${OPENGL_DEFINITIONS})
 
 add_subdirectory (GLngin)
 add_subdirectory (a)
 add_subdirectory (Fractals)
 add_subdirectory (NBody)
 add_subdirectory (PositionBasedDynamics)
+add_subdirectory (ImageProcessing)

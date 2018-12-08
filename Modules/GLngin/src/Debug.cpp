@@ -1,6 +1,6 @@
 #include "Debug.hpp"
 
-#include <cmath>
+#include <GL/glew.h>
 
 
 namespace GLngin {

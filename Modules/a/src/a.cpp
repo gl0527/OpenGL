@@ -1,13 +1,15 @@
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
+#include <iostream>
+#include <cmath>
+
 #include "Shader.hpp"
 #include "Program.hpp"
 #include "Vec4.hpp"
 #include "Camera.hpp"
 #include "Mat4.hpp"
 #include "Debug.hpp"
-
-#include <iostream>
-#include <cmath>
-#include <GL/freeglut.h>
 
 
 const unsigned int windowWidth = 600, windowHeight = 600;

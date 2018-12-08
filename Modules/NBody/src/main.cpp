@@ -1,11 +1,12 @@
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 #include "Debug.hpp"
 #include "InputManager.hpp"
 #include "Math.hpp"
 #include "Program.hpp"
 #include "Shader.hpp"
 #include "Vec4.hpp"
-
-#include <GL/freeglut.h>
 
 
 constexpr unsigned int windowWidth = 600;

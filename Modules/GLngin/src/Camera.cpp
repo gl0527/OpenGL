@@ -24,8 +24,8 @@ Camera::Camera () :
     SetAspect (m_aspect);
 
     Math::Vec3 zAxis = m_ahead.Normalize ();
-    Math::Vec3 xAxis = Math::Vec3::UnitY ().Cross (zAxis).Normalize ();
-    Math::Vec3 yAxis = zAxis.Cross (xAxis);
+    Math::Vec3 xAxis = zAxis.Cross (Math::Vec3::UnitY ()).Normalize ();
+    Math::Vec3 yAxis = xAxis.Cross (zAxis);
 
     m_viewMat = Math::Mat4 (xAxis.x,                    yAxis.x,                zAxis.x,                0.0f,
                             xAxis.y,                    yAxis.y,                zAxis.y,                0.0f,
@@ -75,8 +75,8 @@ const Math::Mat4& Camera::GetRayDirMatrix () const
 void Camera::UpdateView ()
 {
     Math::Vec3 zAxis = m_ahead.Normalize ();
-    Math::Vec3 xAxis = Math::Vec3::UnitY ().Cross (zAxis).Normalize ();
-    Math::Vec3 yAxis = zAxis.Cross (xAxis);
+    Math::Vec3 xAxis = zAxis.Cross (Math::Vec3::UnitY ()).Normalize ();
+    Math::Vec3 yAxis = xAxis.Cross (zAxis);
 
     m_viewMat = Math::Mat4 (xAxis.x,                    yAxis.x,                zAxis.x,                0.0f,
                             xAxis.y,                    yAxis.y,                zAxis.y,                0.0f,

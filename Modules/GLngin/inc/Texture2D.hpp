@@ -8,25 +8,18 @@
 
 namespace GLngin {
 
-// TODO TextureCube
-// TODO http://www.opengl-tutorial.org/hu/beginners-tutorials/tutorial-5-a-textured-cube/#loading-bmp-images-yourself
 class GLNGIN_API Texture2D final {
 public:
-                    Texture2D (int width, int height);
+                    Texture2D ();
                     ~Texture2D ();
 
     void            Init ();
+    bool            Load (const char * fileName);
 
     unsigned int    GetID () const;
-    int             GetWidth () const;
-    int             GetHeight () const;
-
-    void            SetData (float * data);
 	
 private:
     unsigned int    m_id;
-    const int       m_width;
-    const int       m_height;
     bool            m_inited;
 };
 

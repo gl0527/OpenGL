@@ -6,6 +6,8 @@
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
+#include <GL/glew.h>
+
 
 namespace GLngin {
 
@@ -149,6 +151,20 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
     if (location < 0)
         return false;
     GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
+    return true;
+}
+
+
+bool Program::SetUniformTexture (const char * uniformName, unsigned int texID, unsigned int unitID)
+{
+    int location = GetLocation (uniformName);
+    if (location < 0)
+        return false;
+
+    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
+    GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
+    GL_CALL (glUniform1i (location, unitID));
+
     return true;
 }
 

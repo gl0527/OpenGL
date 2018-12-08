@@ -1,14 +1,16 @@
 #include "Texture2D.hpp"
-
 #include "Debug.hpp"
+
+#include <GL/glew.h>
+
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 
 namespace GLngin {
 
-Texture2D::Texture2D (int width, int height) :
+Texture2D::Texture2D () :
     m_id (0),
-    m_width (width),
-    m_height (height),
     m_inited (false)
 {
 }
@@ -32,40 +34,62 @@ void Texture2D::Init ()
     GL_CALL (glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     GL_CALL (glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     GL_CALL (glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-    GL_CALL (glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA32F, m_width, m_height, 0, GL_RGBA, GL_FLOAT, nullptr));
 
     GL_CALL (glBindTexture (GL_TEXTURE_2D, 0));
 
+    IL_CALL (ilInit ());    // TODO ennek nem itt lenne a helye
+
     m_inited = true;
+}
+
+
+bool Texture2D::Load (const char * fileName)
+{
+    if (!m_inited)
+        return false;
+
+    unsigned int imageID;
+    IL_CALL (ilGenImages (1, &imageID));
+    IL_CALL (ilBindImage (imageID));
+
+    bool success = false;
+    IL_CALL (success = ilLoadImage (fileName));
+
+    if (!success)
+        return false;
+
+    ILinfo imageInfo;
+    iluGetImageInfo (&imageInfo);
+    if (imageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+        iluFlipImage();
+
+    IL_CALL (success = ilConvertImage (IL_RGB, IL_UNSIGNED_BYTE));
+
+    if (!success)
+        return false;
+
+    GL_CALL (glBindTexture (GL_TEXTURE_2D, m_id));
+    GL_CALL (glTexImage2D (GL_TEXTURE_2D,
+                           0,
+                           ilGetInteger (IL_IMAGE_FORMAT),
+                           ilGetInteger (IL_IMAGE_WIDTH),
+                           ilGetInteger (IL_IMAGE_HEIGHT),
+                           0,
+                           ilGetInteger (IL_IMAGE_FORMAT),
+                           ilGetInteger (IL_IMAGE_TYPE),
+                           ilGetData ()));
+    GL_CALL (glBindTexture (GL_TEXTURE_2D, 0));
+
+    IL_CALL (ilDeleteImages (1, &imageID));
+    IL_CALL (ilBindImage (0));
+
+    return true;
 }
 
 
 unsigned int Texture2D::GetID () const
 {
     return m_id;
-}
-
-
-int Texture2D::GetWidth () const
-{
-    return m_width;
-}
-
-
-int Texture2D::GetHeight () const
-{
-    return m_height;
-}
-
-
-void Texture2D::SetData (float * data)
-{
-    if (!m_inited)
-        return;
-
-    GL_CALL (glBindTexture (GL_TEXTURE_2D, m_id));
-    GL_CALL (glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA32F, m_width, m_height, 0, GL_RGBA, GL_FLOAT, data));
-    GL_CALL (glBindTexture (GL_TEXTURE_2D, 0));
 }
 
 }   // namespace GLngin

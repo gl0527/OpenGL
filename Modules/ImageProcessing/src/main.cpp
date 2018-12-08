@@ -5,6 +5,7 @@
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "Quad.hpp"
+#include "Texture2D.hpp"
 
 
 constexpr unsigned int windowWidth = 600;
@@ -12,6 +13,7 @@ constexpr unsigned int windowHeight = 600;
 
 static GLngin::Quad quad;
 static GLngin::Program program;
+static GLngin::Texture2D tex;
 
 
 static void onInitialization()
@@ -23,14 +25,20 @@ static void onInitialization()
     GLngin::Shader vertexShader (GL_VERTEX_SHADER);
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
-    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/passthrough.vert");
-    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/Fractals/shaders/simple.frag");
+    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/ImageProcessing/shaders/ImageProcessing.vert");
+    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/ImageProcessing/shaders/ImageProcessing.frag");
 
     program.Init ();
     program.AddShader (vertexShader);
     program.AddShader (fragmentShader);
     program.Link ();
     program.Enable ();
+
+    tex.Init ();
+    tex.Load ("/home/lui/dev/cpp/gfx/Modules/ImageProcessing/assets/lena.jpg");
+
+    if (!program.SetUniformTexture ("tex", tex.GetID (), 0))
+        LOG ("Texture setting error");
 }
 
 

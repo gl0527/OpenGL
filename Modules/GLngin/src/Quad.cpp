@@ -33,16 +33,16 @@ void Quad::Init ()
     GL_CALL (glBindVertexArray (m_vertexArrayID));
 
     constexpr float vertices[] = {    // the values are in screen coordinates
-        -1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f,
         -1.0f, -1.0f, 0.0f,
         -1.0f, -1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f
+         1.0f,  1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f
     };
     GL_CALL (glGenBuffers (1, &m_vertexBufferID));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, m_vertexBufferID));
-    GL_CALL (glBufferData (GL_ARRAY_BUFFER, sizeof (float) * 18, vertices, GL_STATIC_DRAW));
+    GL_CALL (glBufferData (GL_ARRAY_BUFFER, sizeof (vertices), vertices, GL_STATIC_DRAW));
     GL_CALL (glEnableVertexAttribArray (0));
     GL_CALL (glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, nullptr));
 
@@ -56,7 +56,7 @@ void Quad::Init ()
     };
     GL_CALL (glGenBuffers (1, &m_texCoordBufferID));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, m_texCoordBufferID));
-    GL_CALL (glBufferData (GL_ARRAY_BUFFER, sizeof (float) * 12, texCoords, GL_STATIC_DRAW));
+    GL_CALL (glBufferData (GL_ARRAY_BUFFER, sizeof (texCoords), texCoords, GL_STATIC_DRAW));
     GL_CALL (glEnableVertexAttribArray (1));
     GL_CALL (glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
 

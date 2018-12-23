@@ -8,7 +8,6 @@
 
 namespace GLngin {
 
-// TODO index buffer hasznalata, hogy ne kelljen a vertexeket duplikalni
 class GLNGIN_API Quad final {
 public:
             Quad ();

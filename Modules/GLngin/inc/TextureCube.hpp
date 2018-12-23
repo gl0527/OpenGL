@@ -9,7 +9,19 @@
 namespace GLngin {
 
 class GLNGIN_API TextureCube final {
+public:
+                    TextureCube ();
+                    ~TextureCube ();
 
+    void            Init ();
+    bool            Load (const char * right, const char * left, const char * top, const char * bottom, const char * front, const char * back);
+    bool            Load (const char* (&arr)[6]);
+
+    unsigned int    GetID () const;
+
+private:
+    unsigned int    m_id;
+    bool            m_inited;
 };
 
 }	// namespace GLngin

@@ -24,28 +24,29 @@
 #define ASSERT(b) if (!(b)) DBBREAK
 
 #ifndef NDEBUG
-#define GL_CALL(glExpr)                                     \
-    do {                                                    \
-        while (glGetError () != GL_NO_ERROR);               \
-        glExpr;                                             \
-        while (unsigned int error = glGetError ()) {        \
-            LOG ("Error occurred during \'" #glExpr "\'")   \
-            << "Error string: \'" << gluErrorString (error) \
-            << "\'" << std::endl;                           \
-            DBBREAK;                                        \
-        }                                                   \
+#define GL_CALL(glExpr)                                         \
+    do {                                                        \
+        while (glGetError () != GL_NO_ERROR);                   \
+        glExpr;                                                 \
+        while (unsigned int error = glGetError ()) {            \
+            LOG ("Error occurred during \'" #glExpr "\'")       \
+            << "Error string: \'" << gluErrorString (error)     \
+            << "\'" << "\nError enum: \'" <<                    \
+            GLngin::GetGLEnumStr (error) << "\'" << std::endl;  \
+            DBBREAK;                                            \
+        }                                                       \
 	} while (0)
 
-#define IL_CALL(ilExpr)                                     \
-    do {                                                    \
-        while (ilGetError () != IL_NO_ERROR);               \
-        ilExpr;                                             \
-        while (unsigned int error = ilGetError ()) {        \
-            LOG ("Error occurred during \'" #ilExpr "\'")   \
-            << "Error string: \'" << iluErrorString (error) \
-            << "\'" << std::endl;                           \
-            DBBREAK;                                        \
-        }                                                   \
+#define IL_CALL(ilExpr)                                         \
+    do {                                                        \
+        while (ilGetError () != IL_NO_ERROR);                   \
+        ilExpr;                                                 \
+        while (unsigned int error = ilGetError ()) {            \
+            LOG ("Error occurred during \'" #ilExpr "\'") <<    \
+            "Error enum: \'" << GLngin::GetILEnumStr (error) << \
+            "\'" << std::endl;                                  \
+            DBBREAK;                                            \
+        }                                                       \
     } while (0)
 #else
 #define GL_CALL(glExpr) glExpr
@@ -54,9 +55,10 @@
 
 
 namespace GLngin {
-
     GLNGIN_API std::string GetGLInfoString ();
-
+    GLNGIN_API const char * GetGLEnumStr (unsigned int enumElem);
+    GLNGIN_API const char * GetILEnumStr (unsigned int enumElem);
+    // TODO call stack kiiratasa hiba eseten!!!
 }   // namespace GLngine
 
 #endif	// #ifndef GLNGIN_DEBUG_HPP

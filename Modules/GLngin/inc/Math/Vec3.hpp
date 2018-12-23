@@ -37,6 +37,7 @@ public:
     Vec3                Cross (const Vec3& vec) const;
 
     float               Length () const;
+    float               LengthSqr () const;
     Vec3                Normalize () const;
 
     static const Vec3&  Zero ();

@@ -17,7 +17,7 @@ struct KeyData {
 KeyData keyState[256] = { {false, false, false} };
 int mouseState[3] = { -1, -1, -1 };
 int lastKey = -1;
-unsigned char anyKey = static_cast<unsigned char> (InputManager::KeyCode::KC_ANY);
+unsigned char anyKey = static_cast<unsigned char> (InputManager::Key::ANY);
 
 int mouseX = -1;
 int mouseY = -1;
@@ -131,19 +131,19 @@ void InputManager::Disable () const
 }
 
 
-bool InputManager::IsKeyPressed (KeyCode key) const
+bool InputManager::IsKeyPressed (Key key) const
 {
     return keyState[static_cast<unsigned char> (key)].isPressed;
 }
 
 
-bool InputManager::IsKeyDown (KeyCode key) const
+bool InputManager::IsKeyDown (Key key) const
 {
     return keyState[static_cast<unsigned char> (key)].isDown;
 }
 
 
-bool InputManager::IsKeyReleased (KeyCode key) const
+bool InputManager::IsKeyReleased (Key key) const
 {
     return keyState[static_cast<unsigned char> (key)].isReleased;
 }
@@ -205,11 +205,6 @@ void InputManager::Update () const
 
     dMouseX = 0;
     dMouseY = 0;
-}
-
-
-InputManager::InputManager ()
-{
 }
 
 

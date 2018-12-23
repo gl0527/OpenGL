@@ -141,9 +141,15 @@ float Vec3::Length () const
 }
 
 
+float Vec3::LengthSqr () const
+{
+    return x * x + y * y + z * z;
+}
+
+
 Vec3 Vec3::Normalize () const
 {
-    return *this * (1 / (Length () + 1e-7f));
+    return *this * (1 / (Length () + 1e-8f));
 }
 
 

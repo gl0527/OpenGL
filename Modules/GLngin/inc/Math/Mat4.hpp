@@ -9,6 +9,7 @@
 namespace GLngin {
 namespace Math {
 
+class Vec3;
 class Vec4;
 
 class GLNGIN_API Mat4 final {
@@ -20,6 +21,8 @@ public:
                                 float m30, float m31, float m32, float m33);
                         Mat4 (float (&arr)[16]);
                         Mat4 (float (&arr)[4][4]);
+                        Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation);
+                        Mat4 (const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3);
 
     Mat4                operator+ (const Mat4& right) const;
     Mat4                operator- (const Mat4& right) const;
@@ -39,8 +42,14 @@ public:
     Mat4                Transpose () const;
     Mat4                Invert () const;
 
-    Mat4                Translate (const Vec4& v) const;
-    Mat4                Scale (const Vec4& v) const;
+    Mat4                Translate (const Vec3& v) const;
+    Mat4                Scale (const Vec3& v) const;
+
+    Mat4                SetTranslation (const Vec3& translation) const;
+
+    static Mat4         Translation (const Vec3& position);
+    static Mat4         Rotation (const Vec3& right, const Vec3& up, const Vec3& ahead);
+    static Mat4         Scaling (const Vec3& scaler);
 
     static const Mat4&  Identity ();
     static const Mat4&  Zero ();

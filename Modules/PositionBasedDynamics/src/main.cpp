@@ -8,6 +8,8 @@
 #include "Vec4.hpp"
 #include "Mat4.hpp"
 #include "InputManager.hpp"
+#include "Cube.hpp"
+#include "TextureCube.hpp"
 
 
 const unsigned int windowWidth = 600;
@@ -22,7 +24,9 @@ const unsigned int vNum = N*N;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
-static GLngin::Camera camera;
+static GLngin::Camera camera (GLngin::Math::Vec3 (0, 0.5, 2), GLngin::Math::Vec3::NegativeUnitZ (), GLngin::Math::Vec3::UnitY ());
+static GLngin::Cube skybox;
+static GLngin::TextureCube skyboxTexture;
 
 //compute shaders
 static GLngin::Program gravityProgram;
@@ -32,6 +36,7 @@ static GLngin::Program bendingProgram;
 static GLngin::Program finalUpdateProgram;
 //standard pipeline
 static GLngin::Program renderProgram;
+static GLngin::Program skyboxProgram;
 
 // Position buffer
 static GLuint positionBuffer; //x
@@ -46,8 +51,17 @@ void onInitialization ()
 {
     inputManager.Init ();
 
-    camera.SetView (GLngin::Math::Vec3 (0,0,2), GLngin::Math::Vec3 (0,0,-1));
-    camera.SetAspect (static_cast<float> (windowWidth) / windowHeight);
+    camera.LookAt (GLngin::Math::Vec3 (5, -20, -50));
+
+    skybox.Init ();
+    skyboxTexture.Init ();
+
+    skyboxTexture.Load ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_rt.tga",
+                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_lf.tga",
+                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_up.tga",
+                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_dn.tga",
+                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_bk.tga",
+                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_ft.tga");
 
     GL_CALL (glClearColor (0.1f, 0.1f, 0.1f, 1.0f));
 
@@ -66,6 +80,9 @@ void onInitialization ()
     GLngin::Shader vertexShader (GL_VERTEX_SHADER);
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
+    GLngin::Shader skyboxVertexShader (GL_VERTEX_SHADER);
+    GLngin::Shader skyboxFragmentShader (GL_FRAGMENT_SHADER);
+
     gravityShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/gravity.comp");
     collisionShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/collision.comp");
     distanceShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/distance.comp");
@@ -73,6 +90,8 @@ void onInitialization ()
     finalUpdateShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/finalUpdate.comp");
     vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/render.vert");
     fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/render.frag");
+    skyboxVertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/skybox.vert");
+    skyboxFragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/skybox.frag");
 
     // initialize programs
     gravityProgram.Init ();
@@ -99,6 +118,44 @@ void onInitialization ()
     renderProgram.AddShader (vertexShader);
     renderProgram.AddShader (fragmentShader);
     renderProgram.Link ();
+
+    skyboxProgram.Init ();
+    skyboxProgram.AddShader (skyboxVertexShader);
+    skyboxProgram.AddShader (skyboxFragmentShader);
+    skyboxProgram.Link ();
+
+    // set up constant uniform variables
+    const float dt = 0.002f;
+
+    gravityProgram.Use ();
+    if (!gravityProgram.SetUniformFloat ("dt", dt)) {
+        LOG ("Cannot set \'dt\' as a float uniform variable.");
+        exit (-1);
+    }
+
+    collisionProgram.Use ();
+    if (!collisionProgram.SetUniformFloat ("ConstraintWeight", 0.1f)) {
+        LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
+        exit (-1);
+    }
+
+    distanceProgram.Use ();
+    if (!distanceProgram.SetUniformFloat ("ConstraintWeight", 0.125f)) {
+        LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
+        exit (-1);
+    }
+
+    finalUpdateProgram.Use ();
+    if (!finalUpdateProgram.SetUniformFloat ("dt", dt)) {
+        LOG ("Cannot set \'dt\' as a float uniform variable.");
+        exit (-1);
+    }
+
+    skyboxProgram.Use ();
+    if (!skyboxProgram.SetUniformTextureCube ("cubeMap", skyboxTexture.GetID (), 0)) {
+        LOG ("Cannot set \'cubeMap\' as a TextureCube uniform variable.");
+        exit (-1);
+    }
 
 	// Initialize the particle position buffer
     GL_CALL (glGenBuffers (1, &positionBuffer));
@@ -160,53 +217,49 @@ void onDisplay ()
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 1, positionBufferTmp));
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 2, velocityBuffer));
 
-    const float dt = 0.002f;
-
-    gravityProgram.Enable ();
-    if (!gravityProgram.SetUniformFloat ("dt", dt)) {
-        LOG ("Cannot set \'dt\' as a float uniform variable.");
-        exit (-1);
-    }
+    gravityProgram.Use ();
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 	
     const int NITER = 50;
     for (int i = 0; i < NITER; ++i) {
-        collisionProgram.Enable ();
-        if (!collisionProgram.SetUniformFloat ("ConstraintWeight", 0.0f)) {
-            LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
-            exit (-1);
-        }
+        collisionProgram.Use ();
         GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
-        distanceProgram.Enable ();
-        if (!distanceProgram.SetUniformFloat ("ConstraintWeight", 0.25f)) {
-            LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
-            exit (-1);
-        }
+        distanceProgram.Use ();
         GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 	}
 	
-    finalUpdateProgram.Enable ();
-    if (!finalUpdateProgram.SetUniformFloat ("dt", dt)) {
-        LOG ("Cannot set \'dt\' as a float uniform variable.");
-        exit (-1);
-    }
+    finalUpdateProgram.Use ();
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
-	
-	// Render the particles
-    renderProgram.Enable ();
-    if (!renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ())) {
-        LOG ("Cannot set \'viewproj\' as a float uniform variable.");
+
+    // Render skybox
+    skyboxProgram.Use ();
+    GLngin::Math::Mat4 viewMat = camera.GetViewMatrix ().SetTranslation (GLngin::Math::Vec3::Zero ());
+
+    if (!skyboxProgram.SetUniformMat4 ("viewProj", camera.GetProjMatrix () * viewMat)) {
+        LOG ("Cannot set \'viewProj\' as a mat4 uniform variable.");
         exit (-1);
     }
+
+    GL_CALL (glDepthMask (GL_FALSE));
+    skybox.Render ();
+    GL_CALL (glDepthMask (GL_TRUE));
+
+    // Render the particles
+    renderProgram.Use ();
+    if (!renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ())) {
+        LOG ("Cannot set \'viewproj\' as a mat4 uniform variable.");
+        exit (-1);
+    }
+
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, N*N));
     GL_CALL (glBindVertexArray (0));
@@ -219,13 +272,13 @@ void onIdle ()
 {
     float sec = glutGet (GLUT_ELAPSED_TIME) * 1e-3f;
 
-    if (inputManager.IsKeyReleased (GLngin::InputManager::KeyCode::KC_ESCAPE)) {
-        renderProgram.Disable ();
-        finalUpdateProgram.Disable ();
-        bendingProgram.Disable ();
-        distanceProgram.Disable ();
-        collisionProgram.Disable ();
-        gravityProgram.Disable ();
+    if (inputManager.IsKeyReleased (GLngin::InputManager::Key::ESCAPE)) {
+        renderProgram.UnUse ();
+        finalUpdateProgram.UnUse ();
+        bendingProgram.UnUse ();
+        distanceProgram.UnUse ();
+        collisionProgram.UnUse ();
+        gravityProgram.UnUse ();
 
         GL_CALL (glDeleteBuffers (1, &velocityBuffer));
         GL_CALL (glDeleteBuffers (1, &positionBufferTmp));

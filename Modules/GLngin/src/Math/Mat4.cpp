@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "Vec3.hpp"
 #include "Vec4.hpp"
 
 
@@ -19,9 +20,9 @@ Mat4::Mat4(float m00, float m01, float m02, float m03,
     float m20, float m21, float m22, float m23,
     float m30, float m31, float m32, float m33) :
     m_array {	{m00, m01, m02, m03},
-        {m10, m11, m12, m13},
-        {m20, m21, m22, m23},
-        {m30, m31, m32, m33}}
+                {m10, m11, m12, m13},
+                {m20, m21, m22, m23},
+                {m30, m31, m32, m33}}
 {
 }
 
@@ -38,6 +39,24 @@ Mat4::Mat4 (float (&arr)[4][4])
     for (unsigned char i = 0; i < 4; ++i)
         for (unsigned char j = 0; j < 4; ++j)
             m_array[i][j] = arr[i][j];
+}
+
+
+Mat4::Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation) :
+    m_array {{basisX.x,         basisX.y,       basisX.z,       0.0f},
+             {basisY.x,         basisY.y,       basisY.z,       0.0f},
+             {basisZ.x,         basisZ.y,       basisZ.z,       0.0f},
+             {translation.x,    translation.y,  translation.z,  1.0f}}
+{
+}
+
+
+Mat4::Mat4 (const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3) :
+    m_array {{row0.x, row0.y, row0.z, row0.w},
+             {row1.x, row1.y, row1.z, row1.w},
+             {row2.x, row2.y, row2.z, row2.w},
+             {row3.x, row3.y, row3.z, row3.w}}
+{
 }
 
 
@@ -310,23 +329,62 @@ Mat4 Mat4::Invert() const
 }
 
 
-Mat4 Mat4::Translate (const Vec4& v) const
+Mat4 Mat4::Translate (const Vec3& v) const
 {
-    Mat4 id = Identity ();
-    id.m_array[3][0] = v.x;
-    id.m_array[3][1] = v.y;
-    id.m_array[3][2] = v.z;
-    return *this * id;
+    Mat4 mat = *this;
+    mat.m_array[3][0] += v.x;
+    mat.m_array[3][1] += v.y;
+    mat.m_array[3][2] += v.z;
+    return mat;
 }
 
 
-Mat4 Mat4::Scale (const Vec4& v) const
+Mat4 Mat4::Scale (const Vec3& v) const
 {
     Mat4 id = Identity ();
     id.m_array[0][0] = v.x;
     id.m_array[1][1] = v.y;
     id.m_array[2][2] = v.z;
     return *this * id;
+}
+
+
+Mat4 Mat4::SetTranslation (const Vec3& translation) const
+{
+    Mat4 mat = *this;
+    mat.m_array[3][0] = translation.x;
+    mat.m_array[3][1] = translation.y;
+    mat.m_array[3][2] = translation.z;
+    return mat;
+}
+
+
+Mat4 Mat4::Translation (const Vec3& position)
+{
+    Mat4 mat = Identity ();
+    mat.m_array[3][0] = position.x;
+    mat.m_array[3][1] = position.y;
+    mat.m_array[3][2] = position.z;
+    return mat;
+}
+
+
+Mat4 Mat4::Rotation (const Vec3& right, const Vec3& up, const Vec3& ahead)
+{
+    return Mat4 (   right.x,    right.y,    right.z,    0.0f,
+                    up.x,       up.y,       up.z,       0.0f,
+                    ahead.x,    ahead.y,    ahead.z,    0.0f,
+                    0.0f,       0.0f,       0.0f,       1.0f);
+}
+
+
+Mat4 Mat4::Scaling (const Vec3& scaler)
+{
+    Mat4 mat = Identity ();
+    mat.m_array[0][0] = scaler.x;
+    mat.m_array[1][1] = scaler.y;
+    mat.m_array[2][2] = scaler.z;
+    return mat;
 }
 
 

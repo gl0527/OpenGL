@@ -7,6 +7,7 @@
 #include "Shader.hpp"
 #include "Program.hpp"
 #include "Vec4.hpp"
+#include "Vec3.hpp"
 #include "Camera.hpp"
 #include "Mat4.hpp"
 #include "Debug.hpp"
@@ -16,7 +17,7 @@ const unsigned int windowWidth = 600, windowHeight = 600;
 
 
 // 2D camera
-static GLngin::Camera camera;
+static GLngin::Camera camera (GLngin::Math::Vec3 (0,2,10), GLngin::Math::Vec3::NegativeUnitZ (), GLngin::Math::Vec3::UnitY ());
 
 static GLngin::Program program;
 
@@ -170,11 +171,11 @@ static void onInitialization () {
     GL_CALL (glBindFragDataLocation (program.GetID (), 0, "fragmentColor"));
 
     program.Link ();
-    program.Enable ();
+    program.Use ();
 }
 
 static void onExit () {
-    program.Disable ();
+    program.UnUse ();
 	printf ("exit");
 }
 

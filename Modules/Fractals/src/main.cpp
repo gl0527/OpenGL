@@ -30,7 +30,7 @@ static void onInitialization()
     program.AddShader (vertexShader);
     program.AddShader (fragmentShader);
     program.Link ();
-    program.Enable ();
+    program.Use ();
 }
 
 
@@ -48,7 +48,7 @@ static void onKeyboard(unsigned char key, int /*pX*/, int /*pY*/)
 {
     switch (key) {
         case 27:
-            program.Disable ();
+            program.UnUse ();
             exit (0);
 
         default: break;

@@ -101,14 +101,14 @@ static void onDisplay ()
     // Update position and velocity
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, ssboID));
 
-    computeProgram.Enable ();
+    computeProgram.Use ();
     GL_CALL (glDispatchCompute (particlesNum / workgroupSize, 1, 1));
 
     // Synchronize between the compute and render shaders
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     // Render the particles
-    renderProgram.Enable ();
+    renderProgram.Use ();
     GL_CALL (glBindVertexArray (vaoID));
     GL_CALL (glDrawArrays (GL_POINTS, 0, particlesNum));
     GL_CALL (glBindVertexArray (0));
@@ -119,9 +119,9 @@ static void onDisplay ()
 
 static void onIdle ()
 {
-    if (inputManager.IsKeyPressed (GLngin::InputManager::KeyCode::KC_ESCAPE)) {
-        computeProgram.Disable ();
-        renderProgram.Disable ();
+    if (inputManager.IsKeyPressed (GLngin::InputManager::Key::ESCAPE)) {
+        computeProgram.UnUse ();
+        renderProgram.UnUse ();
 
         GL_CALL (glDeleteBuffers (1, &ssboID));
         GL_CALL (glDeleteVertexArrays (1, &vaoID));
@@ -129,8 +129,8 @@ static void onIdle ()
         exit (0);
     }
 
-    if (inputManager.IsKeyReleased (GLngin::InputManager::KeyCode::KC_R) ||
-        inputManager.IsKeyDown (GLngin::InputManager::KeyCode::KC_r))
+    if (inputManager.IsKeyReleased (GLngin::InputManager::Key::R) ||
+        inputManager.IsKeyDown (GLngin::InputManager::Key::r))
     {
         FillSSBO ();
     }

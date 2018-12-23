@@ -84,7 +84,7 @@ void Program::Link ()
 }
 
 
-void Program::Enable () const
+void Program::Use () const
 {
     if (!m_linked)
         return;
@@ -93,7 +93,7 @@ void Program::Enable () const
 }
 
 
-void Program::Disable () const
+void Program::UnUse () const
 {
     GL_CALL (glUseProgram (0));
 }
@@ -155,7 +155,7 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
 }
 
 
-bool Program::SetUniformTexture (const char * uniformName, unsigned int texID, unsigned int unitID)
+bool Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID)
 {
     int location = GetLocation (uniformName);
     if (location < 0)
@@ -163,6 +163,20 @@ bool Program::SetUniformTexture (const char * uniformName, unsigned int texID, u
 
     GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
     GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
+    GL_CALL (glUniform1i (location, unitID));
+
+    return true;
+}
+
+
+bool Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID)
+{
+    int location = GetLocation (uniformName);
+    if (location < 0)
+        return false;
+
+    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
+    GL_CALL (glBindTexture (GL_TEXTURE_CUBE_MAP, texID));
     GL_CALL (glUniform1i (location, unitID));
 
     return true;

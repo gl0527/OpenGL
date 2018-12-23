@@ -32,12 +32,12 @@ static void onInitialization()
     program.AddShader (vertexShader);
     program.AddShader (fragmentShader);
     program.Link ();
-    program.Enable ();
+    program.Use ();
 
     tex.Init ();
     tex.Load ("/home/lui/dev/cpp/gfx/Modules/ImageProcessing/assets/lena.jpg");
 
-    if (!program.SetUniformTexture ("tex", tex.GetID (), 0))
+    if (!program.SetUniformTexture2D ("tex", tex.GetID (), 0))
         LOG ("Texture setting error");
 }
 
@@ -56,7 +56,7 @@ static void onKeyboard(unsigned char key, int /*pX*/, int /*pY*/)
 {
     switch (key) {
         case 27:
-            program.Disable ();
+            program.UnUse ();
             exit (0);
 
         default: break;

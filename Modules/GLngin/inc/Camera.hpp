@@ -12,32 +12,31 @@ namespace GLngin {
 
 // TODO splines
 // TODO cinematic
-// TODO lookat
 class GLNGIN_API Camera {
 public:
-    Camera ();
+                        Camera (const Math::Vec3& eye, const Math::Vec3& ahead, const Math::Vec3& up);
 
-    const Math::Vec3& GetPosition () const;
-    const Math::Vec3& GetDirection () const;
+    const Math::Vec3&   GetPosition () const;
+    const Math::Vec3&   GetDirection () const;
 
-    const Math::Mat4& GetViewMatrix () const;
-    const Math::Mat4& GetProjMatrix () const;
-    const Math::Mat4& GetRayDirMatrix () const;
+    const Math::Mat4&   GetViewMatrix () const;
+    const Math::Mat4&   GetProjMatrix () const;
 
-    void SetView (const Math::Vec3& eye, const Math::Vec3& ahead);
-    void SetProj (float fov, float aspect, float nearPlane, float farPlane);
-    void SetAspect (float aspect);
+    void                SetView (const Math::Vec3& eye, const Math::Vec3& ahead, const Math::Vec3& up);
+    void                SetProj (float fov, float aspect, float nearPlane, float farPlane);
+    void                SetAspect (float aspect);
+    void                LookAt (const Math::Vec3& target);
 
-    void Animate (float dt);
+    void                Animate (float dt);
 	
 private:
     Math::Vec3 m_eye;
     Math::Vec3 m_ahead;
     Math::Vec3 m_right;
+    Math::Vec3 m_up;
 
     Math::Mat4 m_viewMat;
     Math::Mat4 m_projMat;
-    Math::Mat4 m_rayDirMat;
 
     float m_yaw;
     float m_pitch;
@@ -46,7 +45,6 @@ private:
     float m_front;
     float m_back;
 
-    void UpdateView ();
     void UpdateProj ();
 };
 

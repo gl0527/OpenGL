@@ -59,9 +59,9 @@ bool Texture2D::Load (const char * fileName)
         return false;
 
     ILinfo imageInfo;
-    iluGetImageInfo (&imageInfo);
+    IL_CALL (iluGetImageInfo (&imageInfo));
     if (imageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-        iluFlipImage();
+        IL_CALL (iluFlipImage());
 
     IL_CALL (success = ilConvertImage (IL_RGB, IL_UNSIGNED_BYTE));
 
@@ -69,21 +69,27 @@ bool Texture2D::Load (const char * fileName)
         return false;
 
     GL_CALL (glBindTexture (GL_TEXTURE_2D, m_id));
-    GL_CALL (glTexImage2D (GL_TEXTURE_2D,
-                           0,
-                           ilGetInteger (IL_IMAGE_FORMAT),
-                           ilGetInteger (IL_IMAGE_WIDTH),
-                           ilGetInteger (IL_IMAGE_HEIGHT),
-                           0,
-                           ilGetInteger (IL_IMAGE_FORMAT),
-                           ilGetInteger (IL_IMAGE_TYPE),
-                           ilGetData ()));
+    GL_CALL (IL_CALL (glTexImage2D (GL_TEXTURE_2D,
+                                    0,
+                                    ilGetInteger (IL_IMAGE_FORMAT),
+                                    ilGetInteger (IL_IMAGE_WIDTH),
+                                    ilGetInteger (IL_IMAGE_HEIGHT),
+                                    0,
+                                    ilGetInteger (IL_IMAGE_FORMAT),
+                                    ilGetInteger (IL_IMAGE_TYPE),
+                                    ilGetData ())));
     GL_CALL (glBindTexture (GL_TEXTURE_2D, 0));
 
     IL_CALL (ilDeleteImages (1, &imageID));
     IL_CALL (ilBindImage (0));
 
     return true;
+}
+
+
+bool Texture2D::Load (const std::string & fileName)
+{
+    return Load (fileName.c_str ());
 }
 
 

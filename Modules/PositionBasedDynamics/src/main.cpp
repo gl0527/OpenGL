@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "Camera.hpp"
 #include "Shader.hpp"
@@ -24,7 +26,7 @@ const unsigned int vNum = N*N;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
-static GLngin::Camera camera (GLngin::Math::Vec3 (0, 0.5, 2), GLngin::Math::Vec3::NegativeUnitZ (), GLngin::Math::Vec3::UnitY ());
+static GLngin::Camera camera (GLngin::Math::Vec3 (0, 0.5, 3), GLngin::Math::Vec3::NegativeUnitZ (), GLngin::Math::Vec3::UnitY ());
 static GLngin::Cube skybox;
 static GLngin::TextureCube skyboxTexture;
 
@@ -49,20 +51,6 @@ static GLuint vao;
 
 void onInitialization ()
 {
-    inputManager.Init ();
-
-    camera.LookAt (GLngin::Math::Vec3 (5, -20, -50));
-
-    skybox.Init ();
-    skyboxTexture.Init ();
-
-    skyboxTexture.Load ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_rt.tga",
-                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_lf.tga",
-                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_up.tga",
-                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_dn.tga",
-                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_bk.tga",
-                        "/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/assets/morning_ft.tga");
-
     GL_CALL (glClearColor (0.1f, 0.1f, 0.1f, 1.0f));
 
     // Set point primitive size
@@ -70,6 +58,19 @@ void onInitialization ()
 
     GL_CALL (glEnable (GL_BLEND));
     GL_CALL (glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    std::string currFolder (FOLDER);
+
+    inputManager.Init ();
+
+    skybox.Init ();
+    skyboxTexture.Init ();
+    skyboxTexture.Load (currFolder + "../assets/morning_rt.tga",
+                        currFolder + "../assets/morning_lf.tga",
+                        currFolder + "../assets/morning_up.tga",
+                        currFolder + "../assets/morning_dn.tga",
+                        currFolder + "../assets/morning_bk.tga",
+                        currFolder + "../assets/morning_ft.tga");
 
     // initialize shaders
     GLngin::Shader gravityShader (GL_COMPUTE_SHADER);
@@ -83,15 +84,15 @@ void onInitialization ()
     GLngin::Shader skyboxVertexShader (GL_VERTEX_SHADER);
     GLngin::Shader skyboxFragmentShader (GL_FRAGMENT_SHADER);
 
-    gravityShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/gravity.comp");
-    collisionShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/collision.comp");
-    distanceShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/distance.comp");
-    bendingShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/bending.comp");
-    finalUpdateShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/finalUpdate.comp");
-    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/render.vert");
-    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/render.frag");
-    skyboxVertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/skybox.vert");
-    skyboxFragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/PositionBasedDynamics/shaders/skybox.frag");
+    gravityShader.Init (currFolder + "../shaders/gravity.comp");
+    collisionShader.Init (currFolder + "../shaders/collision.comp");
+    distanceShader.Init (currFolder + "../shaders/distance.comp");
+    bendingShader.Init (currFolder + "../shaders/bending.comp");
+    finalUpdateShader.Init (currFolder + "../shaders/finalUpdate.comp");
+    vertexShader.Init (currFolder + "../shaders/render.vert");
+    fragmentShader.Init (currFolder + "../shaders/render.frag");
+    skyboxVertexShader.Init (currFolder + "../shaders/skybox.vert");
+    skyboxFragmentShader.Init (currFolder + "../shaders/skybox.frag");
 
     // initialize programs
     gravityProgram.Init ();

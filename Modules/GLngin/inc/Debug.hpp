@@ -53,6 +53,14 @@
 #define IL_CALL(ilExpr) ilExpr
 #endif
 
+#define FOLDER [] () -> std::string                     \
+    {                                                   \
+        char folderPath[] = __FILE__;                   \
+        char* pLastSlash = strrchr (folderPath, '/');   \
+        *(++pLastSlash) = '\0';                         \
+        return folderPath;                              \
+    } ().c_str ()
+
 
 namespace GLngin {
     GLNGIN_API std::string GetGLInfoString ();

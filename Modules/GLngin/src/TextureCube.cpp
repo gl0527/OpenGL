@@ -50,6 +50,13 @@ bool TextureCube::Load (const char * right, const char * left, const char * top,
 }
 
 
+bool TextureCube::Load (const std::string& right, const std::string& left, const std::string& top, const std::string& bottom, const std::string& front, const std::string& back)
+{
+    const char * arr[] = { right.c_str (), left.c_str (), top.c_str (), bottom.c_str (), front.c_str (), back.c_str () };
+    return Load (arr);
+}
+
+
 bool TextureCube::Load (const char* (&arr)[6])
 {
     if (!m_inited)
@@ -69,12 +76,12 @@ bool TextureCube::Load (const char* (&arr)[6])
             return false;
 
         ILinfo imageInfo;
-        iluGetImageInfo (&imageInfo);
-        iluFlipImage();
+        IL_CALL (iluGetImageInfo (&imageInfo));
+        IL_CALL (iluFlipImage());
         if (i == 2) // top image
-            iluRotate (-90);
+            IL_CALL (iluRotate (-90));
         else if (i == 3)    // bottom image
-            iluRotate (90);
+            IL_CALL (iluRotate (90));
 
         IL_CALL (success = ilConvertImage (IL_RGB, IL_UNSIGNED_BYTE));
 

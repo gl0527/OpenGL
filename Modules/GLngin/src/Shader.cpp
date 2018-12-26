@@ -73,6 +73,12 @@ void Shader::Init (const char * fileName)
 }
 
 
+void Shader::Init (const std::string & fileName)
+{
+    Init (fileName.c_str ());
+}
+
+
 unsigned int Shader::GetID () const
 {
     return m_id;

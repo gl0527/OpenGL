@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "Debug.hpp"
 #include "InputManager.hpp"
@@ -56,14 +58,16 @@ static void onInitialization ()
     // Set point primitive size
     GL_CALL (glPointSize (4.0f));
 
+    std::string currFolder (FOLDER);
+
     // initialize shaders
     GLngin::Shader vertexShader (GL_VERTEX_SHADER);
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
     GLngin::Shader computeShader (GL_COMPUTE_SHADER);
 
-    vertexShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.vert");
-    fragmentShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.frag");
-    computeShader.Init ("/home/lui/dev/cpp/gfx/Modules/NBody/shaders/particle.comp");
+    vertexShader.Init (currFolder + "../shaders/particle.vert");
+    fragmentShader.Init (currFolder + "../shaders/particle.frag");
+    computeShader.Init (currFolder + "../shaders/particle.comp");
 
     // initialize programs
     computeProgram.Init ();

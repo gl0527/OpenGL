@@ -4,6 +4,7 @@
 #define GLNGIN_SHADER_HPP
 
 #include "API.hpp"
+#include <string>
 
 
 namespace GLngin {
@@ -14,6 +15,7 @@ public:
                     ~Shader ();
 	
     void            Init (const char * fileName);
+    void            Init (const std::string & fileName);
 
     unsigned int    GetID () const;
     unsigned int    GetType () const;

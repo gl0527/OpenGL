@@ -4,6 +4,7 @@
 #define GLNGIN_TEXTURE_2D_HPP
 
 #include "API.hpp"
+#include <string>
 
 
 namespace GLngin {
@@ -15,6 +16,7 @@ public:
 
     void            Init ();
     bool            Load (const char * fileName);
+    bool            Load (const std::string & fileName);
 
     unsigned int    GetID () const;
 	

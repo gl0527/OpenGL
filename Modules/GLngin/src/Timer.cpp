@@ -1,5 +1,30 @@
 #include "Timer.hpp"
-#include <GL/freeglut.h>
+
+#ifdef WINDOWS
+#include <windows.h>
+#elif __linux__
+#include <sys/time.h>
+#endif
+
+
+#ifdef __linux__
+namespace {
+
+unsigned int timeGetTime ()
+{
+    static struct timeval start;
+    static bool first = true;
+    if (first) {
+        gettimeofday (&start, nullptr);
+        first = false;
+    }
+    struct timeval now;
+    gettimeofday (&now, nullptr);
+    return now.tv_usec / 1000 + (now.tv_sec - start.tv_sec) * 1000;
+}
+
+}
+#endif
 
 
 namespace GLngin {
@@ -7,20 +32,25 @@ namespace GLngin {
 Timer::Timer () :
     m_prevTime (0.0f),
     m_upTime (0.0f),
-    m_deltaTime (0.0f)
+    m_deltaTime (0.0f),
+    m_isRunning (true)
 {
 }
 
 
 void Timer::Tick ()
 {
-    m_upTime = glutGet (GLUT_ELAPSED_TIME) * 1e-3f;
+    if (!m_isRunning)
+        return;
 
-    if (m_prevTime < 1.0e-4f)
-        m_prevTime = m_upTime;
+    float currTime = timeGetTime () * 1e-3f;
 
-    m_deltaTime = m_upTime - m_prevTime;
-    m_prevTime = m_upTime;
+    if (m_prevTime < 1e-4f)
+        m_prevTime = currTime;
+
+    m_deltaTime = currTime - m_prevTime;
+    m_upTime += m_deltaTime;
+    m_prevTime = currTime;
 }
 
 
@@ -34,7 +64,14 @@ void Timer::Reset ()
 
 void Timer::Pause ()
 {
-    m_prevTime = glutGet (GLUT_ELAPSED_TIME) * 1e-3f;
+    Reset ();
+    m_isRunning = false;
+}
+
+
+void Timer::Resume ()
+{
+    m_isRunning = true;
 }
 
 

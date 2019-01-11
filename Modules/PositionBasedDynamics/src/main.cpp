@@ -12,6 +12,7 @@
 #include "InputManager.hpp"
 #include "Cube.hpp"
 #include "TextureCube.hpp"
+#include "Timer.hpp"
 
 
 const unsigned int windowWidth = 600;
@@ -23,6 +24,8 @@ const unsigned int N = 64;
 const unsigned int Nwg = 32;
 // Number of vertices (resX=resY)
 const unsigned int vNum = N*N;
+
+static GLngin::Timer timer;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
@@ -65,12 +68,12 @@ void onInitialization ()
 
     skybox.Init ();
     skyboxTexture.Init ();
-    skyboxTexture.Load (currFolder + "../assets/morning_rt.tga",
-                        currFolder + "../assets/morning_lf.tga",
-                        currFolder + "../assets/morning_up.tga",
-                        currFolder + "../assets/morning_dn.tga",
-                        currFolder + "../assets/morning_bk.tga",
-                        currFolder + "../assets/morning_ft.tga");
+    skyboxTexture.Load (currFolder + "../assets/emerald_rt.tga",
+                        currFolder + "../assets/emerald_lf.tga",
+                        currFolder + "../assets/emerald_up.tga",
+                        currFolder + "../assets/emerald_dn.tga",
+                        currFolder + "../assets/emerald_bk.tga",
+                        currFolder + "../assets/emerald_ft.tga");
 
     // initialize shaders
     GLngin::Shader gravityShader (GL_COMPUTE_SHADER);
@@ -84,15 +87,15 @@ void onInitialization ()
     GLngin::Shader skyboxVertexShader (GL_VERTEX_SHADER);
     GLngin::Shader skyboxFragmentShader (GL_FRAGMENT_SHADER);
 
-    gravityShader.Init (currFolder + "../shaders/gravity.comp");
-    collisionShader.Init (currFolder + "../shaders/collision.comp");
-    distanceShader.Init (currFolder + "../shaders/distance.comp");
-    bendingShader.Init (currFolder + "../shaders/bending.comp");
-    finalUpdateShader.Init (currFolder + "../shaders/finalUpdate.comp");
-    vertexShader.Init (currFolder + "../shaders/render.vert");
-    fragmentShader.Init (currFolder + "../shaders/render.frag");
-    skyboxVertexShader.Init (currFolder + "../shaders/skybox.vert");
-    skyboxFragmentShader.Init (currFolder + "../shaders/skybox.frag");
+    gravityShader.LoadFromFile (currFolder + "../shaders/gravity.comp");
+    collisionShader.LoadFromFile (currFolder + "../shaders/collision.comp");
+    distanceShader.LoadFromFile (currFolder + "../shaders/distance.comp");
+    bendingShader.LoadFromFile (currFolder + "../shaders/bending.comp");
+    finalUpdateShader.LoadFromFile (currFolder + "../shaders/finalUpdate.comp");
+    vertexShader.LoadFromFile (currFolder + "../shaders/render.vert");
+    fragmentShader.LoadFromFile (currFolder + "../shaders/render.frag");
+    skyboxVertexShader.LoadFromFile (currFolder + "../shaders/skybox.vert");
+    skyboxFragmentShader.LoadFromFile (currFolder + "../shaders/skybox.frag");
 
     // initialize programs
     gravityProgram.Init ();
@@ -129,34 +132,19 @@ void onInitialization ()
     const float dt = 0.002f;
 
     gravityProgram.Use ();
-    if (!gravityProgram.SetUniformFloat ("dt", dt)) {
-        LOG ("Cannot set \'dt\' as a float uniform variable.");
-        exit (-1);
-    }
+    gravityProgram.SetUniformFloat ("dt", dt);
 
     collisionProgram.Use ();
-    if (!collisionProgram.SetUniformFloat ("ConstraintWeight", 0.1f)) {
-        LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
-        exit (-1);
-    }
+    collisionProgram.SetUniformFloat ("ConstraintWeight", 0.1f);
 
     distanceProgram.Use ();
-    if (!distanceProgram.SetUniformFloat ("ConstraintWeight", 0.125f)) {
-        LOG ("Cannot set \'ConstraintWeight\' as a float uniform variable.");
-        exit (-1);
-    }
+    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.125f);
 
     finalUpdateProgram.Use ();
-    if (!finalUpdateProgram.SetUniformFloat ("dt", dt)) {
-        LOG ("Cannot set \'dt\' as a float uniform variable.");
-        exit (-1);
-    }
+    finalUpdateProgram.SetUniformFloat ("dt", dt);
 
     skyboxProgram.Use ();
-    if (!skyboxProgram.SetUniformTextureCube ("cubeMap", skyboxTexture.GetID (), 0)) {
-        LOG ("Cannot set \'cubeMap\' as a TextureCube uniform variable.");
-        exit (-1);
-    }
+    skyboxProgram.SetUniformTextureCube ("cubeMap", skyboxTexture.GetID (), 0);
 
 	// Initialize the particle position buffer
     GL_CALL (glGenBuffers (1, &positionBuffer));
@@ -170,9 +158,9 @@ void onInitialization ()
                                                                       GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)));
     for (unsigned int i = 0; i < N; ++i)
         for (unsigned int j = 0; j < N; ++j)
-	{
-        pos[j*N+i] = GLngin::Math::Vec4 (static_cast<float> (i) / (N - 1.0f) - 0.5f, 0.0f, static_cast<float> (j) / (N - 1.0f) - 0.5f, 1.0f);
-	}
+        {
+            pos[j*N+i] = GLngin::Math::Vec4 (i / (N - 1.0f) - 0.5f, 0.0f, j / (N - 1.0f) - 0.5f, 1.0f);
+        }
     GL_CALL (glUnmapBuffer (GL_SHADER_STORAGE_BUFFER));
 
     GL_CALL (glGenBuffers (1, &positionBufferTmp));
@@ -244,23 +232,14 @@ void onDisplay ()
     // Render skybox
     skyboxProgram.Use ();
     GLngin::Math::Mat4 viewMat = camera.GetViewMatrix ().SetTranslation (GLngin::Math::Vec3::Zero ());
-
-    if (!skyboxProgram.SetUniformMat4 ("viewProj", camera.GetProjMatrix () * viewMat)) {
-        LOG ("Cannot set \'viewProj\' as a mat4 uniform variable.");
-        exit (-1);
-    }
-
+    skyboxProgram.SetUniformMat4 ("viewProj", camera.GetProjMatrix () * viewMat);
     GL_CALL (glDepthMask (GL_FALSE));
     skybox.Render ();
     GL_CALL (glDepthMask (GL_TRUE));
 
     // Render the particles
     renderProgram.Use ();
-    if (!renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ())) {
-        LOG ("Cannot set \'viewproj\' as a mat4 uniform variable.");
-        exit (-1);
-    }
-
+    renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ());
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, N*N));
     GL_CALL (glBindVertexArray (0));
@@ -271,10 +250,12 @@ void onDisplay ()
 
 void onIdle ()
 {
-    float sec = glutGet (GLUT_ELAPSED_TIME) * 1e-3f;
+    timer.Tick ();
+    const float dt = timer.GetDeltaTime ();
 
     if (inputManager.IsKeyReleased (GLngin::InputManager::Key::ESCAPE)) {
         renderProgram.UnUse ();
+        skyboxProgram.UnUse ();
         finalUpdateProgram.UnUse ();
         bendingProgram.UnUse ();
         distanceProgram.UnUse ();
@@ -289,8 +270,7 @@ void onIdle ()
         exit (0);
     }
 
-    camera.Animate (sec);
-
+    camera.Animate (dt);
     inputManager.Update ();
 
     glutPostRedisplay ();
@@ -301,7 +281,6 @@ int main (int argc, char* argv[])
 {
     glutInit (&argc, argv);
 
-    glutInitContextVersion (4, 3);
     glutInitWindowSize (windowWidth, windowHeight);
     glutInitWindowPosition (100, 100);
     glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -319,6 +298,7 @@ int main (int argc, char* argv[])
     onInitialization ();
     glutDisplayFunc (onDisplay);
     glutIdleFunc (onIdle);
+
     glutMainLoop ();
 
 	return 0;

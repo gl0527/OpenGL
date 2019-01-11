@@ -106,22 +106,22 @@ void Camera::LookAt (const Math::Vec3& target)
 void Camera::Animate (float dt)
 {
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::w)) {
-        m_eye += m_ahead * 0.001f * dt;
+        m_eye += m_ahead * dt;
     }
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::s)) {
-        m_eye -= m_ahead * 0.001f * dt;
+        m_eye -= m_ahead * dt;
     }
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::d)) {
-        m_eye += m_right * 0.001f * dt;
+        m_eye += m_right * dt;
     }
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::a)) {
-        m_eye -= m_right * 0.001f * dt;
+        m_eye -= m_right * dt;
     }
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::q)) {
-        m_eye += m_up * 0.001f * dt;
+        m_eye += m_up * dt;
     }
     if (InputManager::Instance ().IsKeyDown (InputManager::Key::e)) {
-        m_eye -= m_up * 0.001f * dt;
+        m_eye -= m_up * dt;
     }
 
     int dx, dy;

@@ -21,7 +21,7 @@ void GetProgramErrorInfo (unsigned int id)
         char * log = new char[logLen];
         int written;
         GL_CALL (glGetProgramInfoLog (id, logLen, &written, &log[0]));
-        std::cerr << "Program log:\n" << log << std::endl;
+        LOG (log);
         delete[] log;
     }
 }
@@ -60,17 +60,41 @@ void Program::Init ()
 }
 
 
-void Program::AddShader (const Shader& shader)
+bool Program::AddShader (const Shader& shader)
 {
+    if (!m_inited || m_linked)
+        return false;
+
     m_shaders.push_back (shader);
     GL_CALL (glAttachShader (m_id, m_shaders[m_shaders.size () - 1].GetID ()));
+    return true;
 }
 
 
-void Program::Link ()
+bool Program::BindAttribIndex (const char * attribName, unsigned int index) const
+{
+    if (!m_inited || m_linked)
+        return false;
+
+    GL_CALL (glBindAttribLocation (m_id, index, attribName));
+    return true;
+}
+
+
+bool Program::BindFragDataIndex (const char * attribName, unsigned int index) const
+{
+    if (!m_inited || m_linked)
+        return false;
+
+    GL_CALL (glBindFragDataLocation (m_id, index, attribName));
+    return true;
+}
+
+
+bool Program::Link ()
 {
     if (!m_inited)
-        return;
+        return false;
 
     GL_CALL (glLinkProgram (m_id));
     int OK = 0;
@@ -78,18 +102,20 @@ void Program::Link ()
     if (OK == 0) {
         LOG ("Failed to link shader program!");
         GetProgramErrorInfo (m_id);
-        exit (-1);
+        return false;
     }
     m_linked = true;
+    return true;
 }
 
 
-void Program::Use () const
+bool Program::Use () const
 {
     if (!m_linked)
-        return;
+        return false;
 
     GL_CALL (glUseProgram (m_id));
+    return true;
 }
 
 
@@ -107,7 +133,7 @@ unsigned int Program::GetID () const
 
 bool Program::SetUniformFloat (const char * uniformName, float value) const
 {    
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform1f (location, value));
@@ -117,7 +143,7 @@ bool Program::SetUniformFloat (const char * uniformName, float value) const
 
 bool Program::SetUniformInt (const char * uniformName, int value) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform1i (location, value));
@@ -127,7 +153,7 @@ bool Program::SetUniformInt (const char * uniformName, int value) const
 
 bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniformMatrix4fv (location, 1, GL_TRUE, value));
@@ -137,7 +163,7 @@ bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
 
 bool Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform3f (location, value.x, value.y, value.z));
@@ -147,7 +173,7 @@ bool Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value)
 
 bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
     GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
@@ -155,43 +181,50 @@ bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
 }
 
 
-bool Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID)
+bool Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
 
     GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
     GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
     GL_CALL (glUniform1i (location, unitID));
-
     return true;
 }
 
 
-bool Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID)
+bool Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID) const
 {
-    int location = GetLocation (uniformName);
+    int location = GetUniformIndex (uniformName);
     if (location < 0)
         return false;
 
     GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
     GL_CALL (glBindTexture (GL_TEXTURE_CUBE_MAP, texID));
     GL_CALL (glUniform1i (location, unitID));
-
     return true;
 }
 
 
-int Program::GetLocation (const char * uniformName) const
+int Program::GetAttribIndex (const char * attribName) const
 {
     int location = -1;
+    if (!m_linked)
+        return location;
 
-    if (!m_inited)
+    GL_CALL (location = glGetAttribLocation (m_id, attribName));
+    return location;
+}
+
+
+int Program::GetUniformIndex (const char * uniformName) const
+{
+    int location = -1;
+    if (!m_linked)
         return location;
 
     GL_CALL (location = glGetUniformLocation (m_id, uniformName));
-
     return location;
 }
 

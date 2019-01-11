@@ -9,7 +9,7 @@
 namespace GLngin {
 namespace Math {
 
-extern const float  Pi;
+GLNGIN_API extern const float  Pi;
 
 GLNGIN_API float    AngleToRadian (float angle);
 GLNGIN_API float    RadianToAngle (float radian);

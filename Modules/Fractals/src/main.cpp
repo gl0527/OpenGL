@@ -27,8 +27,8 @@ static void onInitialization ()
     GLngin::Shader vertexShader (GL_VERTEX_SHADER);
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
-    vertexShader.Init (currFolder + "../shaders/passthrough.vert");
-    fragmentShader.Init (currFolder + "../shaders/simple.frag");
+    vertexShader.LoadFromFile (currFolder + "../shaders/passthrough.vert");
+    fragmentShader.LoadFromFile (currFolder + "../shaders/simple.frag");
 
     program.Init ();
     program.AddShader (vertexShader);

@@ -20,38 +20,34 @@ static GLngin::Texture2D tex;
 
 static void onInitialization ()
 {
-    glClearColor (0.4f, 0.6f, 0.8f, 1.0f);
+    GL_CALL (glClearColor (0.0f, 0.0f, 0.0f, 0.0f));
 
     std::string currFolder (FOLDER);
 
     quad.Init ();
 
+    tex.Init ();
+    tex.Load (currFolder + "../assets/lena.jpg");
+
     GLngin::Shader vertexShader (GL_VERTEX_SHADER);
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
 
-    vertexShader.Init (currFolder + "../shaders/ImageProcessing.vert");
-    fragmentShader.Init (currFolder + "../shaders/ImageProcessing.frag");
+    vertexShader.LoadFromFile (currFolder + "../shaders/ImageProcessing.vert");
+    fragmentShader.LoadFromFile (currFolder + "../shaders/ImageProcessing.frag");
 
     program.Init ();
     program.AddShader (vertexShader);
     program.AddShader (fragmentShader);
     program.Link ();
     program.Use ();
-
-    tex.Init ();
-    tex.Load (currFolder + "../assets/lena.jpg");
-
-    if (!program.SetUniformTexture2D ("tex", tex.GetID (), 0))
-        LOG ("Texture setting error");
+    program.SetUniformTexture2D ("tex", tex.GetID (), 0);
 }
 
 
 static void onDisplay ()
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     quad.Render ();
-
     glutSwapBuffers ();
 }
 
@@ -72,7 +68,6 @@ int main (int argc, char* argv[])
 {
     glutInit (&argc, argv);
 
-    glutInitContextVersion (3, 3);
     glutInitWindowSize (windowWidth, windowHeight);
     glutInitWindowPosition (100, 100);
     glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);

@@ -15,14 +15,16 @@ public:
     void    Tick ();
     void    Reset ();
     void    Pause ();
+    void    Resume ();
 
     float   GetUptime () const;
     float   GetDeltaTime () const;
 
 private:
-    float m_prevTime;
-    float m_upTime;
-    float m_deltaTime;
+    float   m_prevTime;
+    float   m_upTime;
+    float   m_deltaTime;
+    bool    m_isRunning;
 };
 
 }   // namespace GLngin

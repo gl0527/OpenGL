@@ -65,9 +65,9 @@ static void onInitialization ()
     GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
     GLngin::Shader computeShader (GL_COMPUTE_SHADER);
 
-    vertexShader.Init (currFolder + "../shaders/particle.vert");
-    fragmentShader.Init (currFolder + "../shaders/particle.frag");
-    computeShader.Init (currFolder + "../shaders/particle.comp");
+    vertexShader.LoadFromFile (currFolder + "../shaders/particle.vert");
+    fragmentShader.LoadFromFile (currFolder + "../shaders/particle.frag");
+    computeShader.LoadFromFile (currFolder + "../shaders/particle.comp");
 
     // initialize programs
     computeProgram.Init ();

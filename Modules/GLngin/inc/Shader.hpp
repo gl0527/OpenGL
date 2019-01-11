@@ -11,11 +11,13 @@ namespace GLngin {
 
 class GLNGIN_API Shader final {
 public:
-    explicit        Shader (unsigned int t);
+    explicit        Shader (unsigned int type);
                     ~Shader ();
 	
-    void            Init (const char * fileName);
-    void            Init (const std::string & fileName);
+    void            LoadFromFile (const char * fileName);
+    void            LoadFromFile (const std::string & fileName);
+    void            LoadFromString (const char * source);
+    void            LoadFromString (const std::string & source);
 
     unsigned int    GetID () const;
     unsigned int    GetType () const;

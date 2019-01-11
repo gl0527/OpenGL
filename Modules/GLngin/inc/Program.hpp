@@ -25,11 +25,14 @@ public:
     Program&        operator= (const Program&) = delete;
 
     void            Init ();
-    void            AddShader (const Shader& shader);
+    bool            AddShader (const Shader& shader);
 
-    void            Link ();
+    bool            BindAttribIndex (const char * attribName, unsigned int index) const;
+    bool            BindFragDataIndex (const char * attribName, unsigned int index) const;
+
+    bool            Link ();
 	
-    void            Use () const;
+    bool            Use () const;
     void            UnUse () const;
 
     unsigned int    GetID () const;
@@ -39,8 +42,11 @@ public:
     bool            SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const;
     bool            SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const;
     bool            SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const;
-    bool            SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID);
-    bool            SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID);
+    bool            SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID) const;
+    bool            SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID) const;
+
+    int             GetAttribIndex (const char * attribName) const;
+    int             GetUniformIndex (const char * uniformName) const;
 
 private:
     unsigned int        m_id;
@@ -48,8 +54,6 @@ private:
 
     bool                m_inited;
     bool                m_linked;
-
-    int             GetLocation (const char * uniformName) const;
 };
 
 }	// namespace GLngine

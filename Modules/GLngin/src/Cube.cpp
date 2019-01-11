@@ -30,6 +30,7 @@ void Cube::Init ()
     GL_CALL (glBindVertexArray (m_vertexArrayID));
 
     constexpr float coords[] = {
+        // back
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
          1.0f, -1.0f, -1.0f,
@@ -37,6 +38,7 @@ void Cube::Init ()
          1.0f,  1.0f, -1.0f,
         -1.0f,  1.0f, -1.0f,
 
+        // left
         -1.0f, -1.0f,  1.0f,
         -1.0f, -1.0f, -1.0f,
         -1.0f,  1.0f, -1.0f,
@@ -44,6 +46,7 @@ void Cube::Init ()
         -1.0f,  1.0f,  1.0f,
         -1.0f, -1.0f,  1.0f,
 
+        // right
          1.0f, -1.0f, -1.0f,
          1.0f, -1.0f,  1.0f,
          1.0f,  1.0f,  1.0f,
@@ -51,6 +54,7 @@ void Cube::Init ()
          1.0f,  1.0f, -1.0f,
          1.0f, -1.0f, -1.0f,
 
+         // front
         -1.0f, -1.0f,  1.0f,
         -1.0f,  1.0f,  1.0f,
          1.0f,  1.0f,  1.0f,
@@ -58,6 +62,7 @@ void Cube::Init ()
          1.0f, -1.0f,  1.0f,
         -1.0f, -1.0f,  1.0f,
 
+        // top
         -1.0f,  1.0f, -1.0f,
          1.0f,  1.0f, -1.0f,
          1.0f,  1.0f,  1.0f,
@@ -65,6 +70,7 @@ void Cube::Init ()
         -1.0f,  1.0f,  1.0f,
         -1.0f,  1.0f, -1.0f,
 
+        // bottom
         -1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f, -1.0f,

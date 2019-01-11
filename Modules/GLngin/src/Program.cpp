@@ -228,4 +228,4 @@ int Program::GetUniformIndex (const char * uniformName) const
     return location;
 }
 
-}	// namespace GLngine
+}   // namespace GLngine

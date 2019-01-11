@@ -146,7 +146,7 @@ void onInitialization ()
     skyboxProgram.Use ();
     skyboxProgram.SetUniformTextureCube ("cubeMap", skyboxTexture.GetID (), 0);
 
-	// Initialize the particle position buffer
+    // Initialize the particle position buffer
     GL_CALL (glGenBuffers (1, &positionBuffer));
     GL_CALL (glBindBuffer (GL_SHADER_STORAGE_BUFFER, positionBuffer));
     GL_CALL (glBufferData (GL_SHADER_STORAGE_BUFFER, vNum * sizeof (GLngin::Math::Vec4), nullptr, GL_STATIC_DRAW));
@@ -181,9 +181,9 @@ void onInitialization ()
     GL_CALL (vel = static_cast<GLngin::Math::Vec4*> (glMapBufferRange (GL_SHADER_STORAGE_BUFFER, 0, vNum * sizeof (GLngin::Math::Vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)));
     for (unsigned int i = 0; i < vNum; ++i) {
         vel[i] = GLngin::Math::Vec4 ();
-	}
+    }
     GL_CALL (glUnmapBuffer (GL_SHADER_STORAGE_BUFFER));
-			
+
     GL_CALL (glBindBuffer (GL_SHADER_STORAGE_BUFFER, 0));
 
     // Initialize the vertex array object with the position buffer
@@ -210,7 +210,7 @@ void onDisplay ()
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
-	
+
     const int NITER = 50;
     for (int i = 0; i < NITER; ++i) {
         collisionProgram.Use ();
@@ -222,8 +222,8 @@ void onDisplay ()
         GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
-	}
-	
+    }
+
     finalUpdateProgram.Use ();
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
 
@@ -301,5 +301,5 @@ int main (int argc, char* argv[])
 
     glutMainLoop ();
 
-	return 0;
+    return 0;
 }

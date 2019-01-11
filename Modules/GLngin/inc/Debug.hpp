@@ -35,7 +35,7 @@
             GLngin::GetGLEnumStr (error) << "\'" << std::endl;  \
             DBBREAK;                                            \
         }                                                       \
-	} while (0)
+    } while (0)
 
 #define IL_CALL(ilExpr)                                         \
     do {                                                        \
@@ -70,4 +70,4 @@ namespace GLngin {
     // TODO FPS, haromszogszam, ... kiiratasa a kepernyore
 }   // namespace GLngine
 
-#endif	// #ifndef GLNGIN_DEBUG_HPP
+#endif  // #ifndef GLNGIN_DEBUG_HPP

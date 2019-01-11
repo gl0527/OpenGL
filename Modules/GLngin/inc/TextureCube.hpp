@@ -26,6 +26,6 @@ private:
     bool            m_inited;
 };
 
-}	// namespace GLngin
+}   // namespace GLngin
 
-#endif	// #ifndef GLNGIN_TEXTURE_CUBE_HPP
+#endif  // #ifndef GLNGIN_TEXTURE_CUBE_HPP

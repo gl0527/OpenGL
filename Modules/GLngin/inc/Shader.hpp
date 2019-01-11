@@ -13,7 +13,7 @@ class GLNGIN_API Shader final {
 public:
     explicit        Shader (unsigned int type);
                     ~Shader ();
-	
+
     void            LoadFromFile (const char * fileName);
     void            LoadFromFile (const std::string & fileName);
     void            LoadFromString (const char * source);
@@ -28,6 +28,6 @@ private:
     bool                m_inited;
 };
 
-}	// namespace GLngine
+}   // namespace GLngine
 
-#endif	// #ifndef GLNGIN_SHADER_HPP
+#endif  // #ifndef GLNGIN_SHADER_HPP

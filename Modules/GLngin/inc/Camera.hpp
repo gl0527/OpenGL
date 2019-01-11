@@ -28,7 +28,7 @@ public:
     void                LookAt (const Math::Vec3& target);
 
     void                Animate (float dt);
-	
+
 private:
     Math::Vec3 m_eye;
     Math::Vec3 m_ahead;
@@ -48,6 +48,6 @@ private:
     void UpdateProj ();
 };
 
-}	// namespace GLngine
+}   // namespace GLngine
 
-#endif	// #ifndef GLNGIN_CAMERA_HPP
+#endif  // #ifndef GLNGIN_CAMERA_HPP

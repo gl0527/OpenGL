@@ -140,4 +140,4 @@ void Camera::Animate (float dt)
     SetView (m_eye, m_ahead, Math::Vec3::UnitY ());
 }
 
-}	// namespace GLngine
+}   // namespace GLngine

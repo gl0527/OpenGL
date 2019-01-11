@@ -62,6 +62,6 @@ private:
 };
 
 }   // namespace Math
-}	// namespace GLngine
+}   // namespace GLngine
 
-#endif	// #ifndef GLNGIN_MATH_MAT4_HPP
+#endif  // #ifndef GLNGIN_MATH_MAT4_HPP

@@ -19,12 +19,12 @@ public:
     bool            Load (const std::string & fileName);
 
     unsigned int    GetID () const;
-	
+
 private:
     unsigned int    m_id;
     bool            m_inited;
 };
 
-}	// namespace GLngin
+}   // namespace GLngin
 
-#endif	// #ifndef GLNGIN_TEXTURE_2D_HPP
+#endif  // #ifndef GLNGIN_TEXTURE_2D_HPP

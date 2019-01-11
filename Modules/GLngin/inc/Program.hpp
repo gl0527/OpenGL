@@ -20,7 +20,7 @@ class GLNGIN_API Program final {
 public:
                     Program ();
                     ~Program ();
-	
+
                     Program (const Program&) = delete;
     Program&        operator= (const Program&) = delete;
 
@@ -31,7 +31,7 @@ public:
     bool            BindFragDataIndex (const char * attribName, unsigned int index) const;
 
     bool            Link ();
-	
+
     bool            Use () const;
     void            UnUse () const;
 
@@ -56,6 +56,6 @@ private:
     bool                m_linked;
 };
 
-}	// namespace GLngine
+}   // namespace GLngine
 
-#endif	// #ifndef GLNGIN_PROGRAM_HPP
+#endif  // #ifndef GLNGIN_PROGRAM_HPP

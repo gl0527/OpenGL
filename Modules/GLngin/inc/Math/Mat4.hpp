@@ -19,8 +19,8 @@ public:
                                 float m10, float m11, float m12, float m13,
                                 float m20, float m21, float m22, float m23,
                                 float m30, float m31, float m32, float m33);
-                        Mat4 (float (&arr)[16]);
-                        Mat4 (float (&arr)[4][4]);
+                        Mat4 (const float (&arr)[16]);
+                        Mat4 (const float (&arr)[4][4]);
                         Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation);
                         Mat4 (const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3);
 
@@ -30,8 +30,8 @@ public:
     Mat4                operator* (float scaler) const;
     Mat4                operator% (const Mat4& right) const;
 
-                        operator const float*() const;
-    const float*        operator[] (unsigned char rowIdx) const;
+                        operator const float* () const;
+    Vec4                operator[] (unsigned char rowIdx) const;
 
     Mat4&               operator+= (const Mat4& right);
     Mat4&               operator-= (const Mat4& right);
@@ -39,8 +39,11 @@ public:
     Mat4&               operator*= (float scaler);
     Mat4&               operator%= (const Mat4& right);
 
+    Vec4                GetRow (unsigned char index) const;
+    Vec4                GetCol (unsigned char index) const;
+
     Mat4                Transpose () const;
-    Mat4                Invert () const;
+    bool                Invert (Mat4* mat) const;
 
     Mat4                Translate (const Vec3& v) const;
     Mat4                Scale (const Vec3& v) const;
@@ -58,7 +61,7 @@ public:
 private:
     float m_array[4][4];
 
-    Mat4                InvertImpl () const;
+    float               Cofactor (unsigned char i,  unsigned char j) const;
 };
 
 }   // namespace Math

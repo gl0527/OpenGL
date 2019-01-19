@@ -23,7 +23,7 @@ Vec3::Vec3 (float f /*= 0.0f*/) :
 }
 
 
-Vec3::Vec3 (float (&vec)[3]) :
+Vec3::Vec3 (const float (&vec)[3]) :
     x (vec[0]),
     y (vec[1]),
     z (vec[2])

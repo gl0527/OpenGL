@@ -27,14 +27,14 @@ Mat4::Mat4(float m00, float m01, float m02, float m03,
 }
 
 
-Mat4::Mat4 (float (&arr)[16])
+Mat4::Mat4 (const float (&arr)[16])
 {
     for (unsigned char i = 0; i < 16; ++i)
         m_array[i/4][i%4] = arr[i];
 }
 
 
-Mat4::Mat4 (float (&arr)[4][4])
+Mat4::Mat4 (const float (&arr)[4][4])
 {
     for (unsigned char i = 0; i < 4; ++i)
         for (unsigned char j = 0; j < 4; ++j)
@@ -122,15 +122,15 @@ Mat4 Mat4::operator% (const Mat4& right) const
 }
 
 
-Mat4::operator const float*() const
+Mat4::operator const float* () const
 {
     return &m_array[0][0];
 }
 
 
-const float* Mat4::operator[] (unsigned char rowIdx) const
+Vec4 Mat4::operator[] (unsigned char rowIdx) const
 {
-    return m_array[rowIdx];
+    return Vec4 (m_array[rowIdx]);
 }
 
 
@@ -191,6 +191,18 @@ Mat4& Mat4::operator%= (const Mat4& right)
 }
 
 
+Vec4 Mat4::GetRow (unsigned char index) const
+{
+    return Vec4 (m_array[index]);
+}
+
+
+Vec4 Mat4::GetCol (unsigned char index) const
+{
+    return Vec4 (m_array[0][index], m_array[1][index], m_array[2][index], m_array[3][index]);
+}
+
+
 Mat4 Mat4::Transpose () const
 {
     Mat4 result;
@@ -203,129 +215,45 @@ Mat4 Mat4::Transpose () const
 }
 
 
-Mat4 Mat4::InvertImpl () const
+float Mat4::Cofactor (unsigned char i,  unsigned char j) const
 {
-    float det;
-    float d10, d20, d21, d31, d32, d03;
-    Mat4 inv;
+    float m[9];
+    unsigned char siz = 0;
 
-    /* Inverse = adjoint / det. (See linear algebra texts.)*/
+    for (unsigned char row = 0; row < 4; ++row) {
+        for (unsigned char col = 0; col < 4; ++col) {
+            if (row == i || col == j)
+                continue;
+            m[siz++] = m_array[row][col];
+        }
+    }
 
-    /* pre-compute 2x2 dets for last two rows when computing */
-    /* cofactors of first two rows. */
-    d10 = (m_array[0][2]*m_array[1][3]-m_array[0][3]*m_array[1][2]);
-    d20 = (m_array[0][2]*m_array[2][3]-m_array[0][3]*m_array[2][2]);
-    d21 = (m_array[1][2]*m_array[2][3]-m_array[1][3]*m_array[2][2]);
-    d31 = (m_array[1][2]*m_array[3][3]-m_array[1][3]*m_array[3][2]);
-    d32 = (m_array[2][2]*m_array[3][3]-m_array[2][3]*m_array[3][2]);
-    d03 = (m_array[3][2]*m_array[0][3]-m_array[3][3]*m_array[0][2]);
+    float minor =   m[0] * (m[4] * m[8] - m[5] * m[7]) -
+                    m[1] * (m[3] * m[8] - m[5] * m[6]) +
+                    m[2] * (m[3] * m[7] - m[4] * m[6]);
 
-    inv.m_array[0][0] =  (m_array[1][1] * d32 - m_array[2][1] * d31 + m_array[3][1] * d21);
-    inv.m_array[0][1] = -(m_array[0][1] * d32 + m_array[2][1] * d03 + m_array[3][1] * d20);
-    inv.m_array[0][2] =  (m_array[0][1] * d31 + m_array[1][1] * d03 + m_array[3][1] * d10);
-    inv.m_array[0][3] = -(m_array[0][1] * d21 - m_array[1][1] * d20 + m_array[2][1] * d10);
-
-    /* Compute determinant as early as possible using these cofactors. */
-    det = m_array[0][0] * inv.m_array[0][0] + m_array[1][0] * inv.m_array[0][1] + m_array[2][0] * inv.m_array[0][2] + m_array[3][0] * inv.m_array[0][3];
-
-    /* Run singularity test. */
-    if (fabsf (det) < 1e-6f)
-        return Identity ();
-
-    float invDet = 1.0f / det;
-    /* Compute rest of inverse. */
-    inv.m_array[0][0] *= invDet;
-    inv.m_array[0][1] *= invDet;
-    inv.m_array[0][2] *= invDet;
-    inv.m_array[0][3] *= invDet;
-
-    inv.m_array[1][0] = -(m_array[1][0] * d32 - m_array[2][0] * d31 + m_array[3][0] * d21) * invDet;
-    inv.m_array[1][1] =  (m_array[0][0] * d32 + m_array[2][0] * d03 + m_array[3][0] * d20) * invDet;
-    inv.m_array[1][2] = -(m_array[0][0] * d31 + m_array[1][0] * d03 + m_array[3][0] * d10) * invDet;
-    inv.m_array[1][3] =  (m_array[0][0] * d21 - m_array[1][0] * d20 + m_array[2][0] * d10) * invDet;
-
-    /* Pre-compute 2x2 dets for first two rows when computing */
-    /* cofactors of last two rows. */
-    d10 = m_array[0][0]*m_array[1][1]-m_array[0][1]*m_array[1][0];
-    d20 = m_array[0][0]*m_array[2][1]-m_array[0][1]*m_array[2][0];
-    d21 = m_array[1][0]*m_array[2][1]-m_array[1][1]*m_array[2][0];
-    d31 = m_array[1][0]*m_array[3][1]-m_array[1][1]*m_array[3][0];
-    d32 = m_array[2][0]*m_array[3][1]-m_array[2][1]*m_array[3][0];
-    d03 = m_array[3][0]*m_array[0][1]-m_array[3][1]*m_array[0][0];
-
-    inv.m_array[2][0] =  (m_array[1][3] * d32 - m_array[2][3] * d31 + m_array[3][3] * d21) * invDet;
-    inv.m_array[2][1] = -(m_array[0][3] * d32 + m_array[2][3] * d03 + m_array[3][3] * d20) * invDet;
-    inv.m_array[2][2] =  (m_array[0][3] * d31 + m_array[1][3] * d03 + m_array[3][3] * d10) * invDet;
-    inv.m_array[2][3] = -(m_array[0][3] * d21 - m_array[1][3] * d20 + m_array[2][3] * d10) * invDet;
-    inv.m_array[3][0] = -(m_array[1][2] * d32 - m_array[2][2] * d31 + m_array[3][2] * d21) * invDet;
-    inv.m_array[3][1] =  (m_array[0][2] * d32 + m_array[2][2] * d03 + m_array[3][2] * d20) * invDet;
-    inv.m_array[3][2] = -(m_array[0][2] * d31 + m_array[1][2] * d03 + m_array[3][2] * d10) * invDet;
-    inv.m_array[3][3] =  (m_array[0][2] * d21 - m_array[1][2] * d20 + m_array[2][2] * d10) * invDet;
-
-    return inv;
+    return (i + j) % 2 == 0 ? minor : -minor;
 }
 
 
-Mat4 Mat4::Invert() const
+bool Mat4::Invert (Mat4* mat) const
 {
-    if (m_array[0][3] != 0.0f || m_array[1][3] != 0.0f || m_array[2][3] != 0.0f || m_array[3][3] != 1.0f) {
-       return InvertImpl ();
+    Mat4 comatrix;
+    float det = 0.0f;
+
+    for (unsigned char i = 0; i < 4; ++i) {
+        for (unsigned char j = 0; j < 4; ++j) {
+            comatrix.m_array[i][j] = Cofactor (i, j);
+        }
+        if (i == 0) {
+            det = Vec4 (m_array[0]).Dot (comatrix.m_array[0]);
+            if (fabsf (det) < 1e-6f)
+               return false;
+        }
     }
 
-    Mat4 inv;
-
-    /* Inverse = adjoint / det. */
-    inv.m_array[0][0] = m_array[1][1] * m_array[2][2] - m_array[2][1] * m_array[1][2];
-    inv.m_array[0][1] = m_array[2][1] * m_array[0][2] - m_array[0][1] * m_array[2][2];
-    inv.m_array[0][2] = m_array[0][1] * m_array[1][2] - m_array[1][1] * m_array[0][2];
-
-    /* Compute determinant as early as possible using these cofactors. */
-    float det = m_array[0][0] * inv.m_array[0][0] + m_array[1][0] * inv.m_array[0][1] + m_array[2][0] * inv.m_array[0][2];
-
-    /* Run singularity test. */
-    if (fabsf (det) < 1e-6f)
-       return Identity ();
-
-    float d10, d20, d21, d31, d32, d03;
-    float im00, im10, im20, im30;
-
-    det = 1 / det;
-
-    /* Compute rest of inverse. */
-    inv.m_array[0][0] *= det;
-    inv.m_array[0][1] *= det;
-    inv.m_array[0][2] *= det;
-    inv.m_array[0][3]  = 0.0f;
-
-    im00 = m_array[0][0] * det;
-    im10 = m_array[1][0] * det;
-    im20 = m_array[2][0] * det;
-    im30 = m_array[3][0] * det;
-    inv.m_array[1][0] = im20 * m_array[1][2] - im10 * m_array[2][2];
-    inv.m_array[1][1] = im00 * m_array[2][2] - im20 * m_array[0][2];
-    inv.m_array[1][2] = im10 * m_array[0][2] - im00 * m_array[1][2];
-    inv.m_array[1][3] = 0.0f;
-
-    /* Pre-compute 2x2 dets for first two rows when computing */
-    /* cofactors of last two rows. */
-    d10 = im00 * m_array[1][1] - m_array[0][1] * im10;
-    d20 = im00 * m_array[2][1] - m_array[0][1] * im20;
-    d21 = im10 * m_array[2][1] - m_array[1][1] * im20;
-    d31 = im10 * m_array[3][1] - m_array[1][1] * im30;
-    d32 = im20 * m_array[3][1] - m_array[2][1] * im30;
-    d03 = im30 * m_array[0][1] - m_array[3][1] * im00;
-
-    inv.m_array[2][0] = d21;
-    inv.m_array[2][1] = -d20;
-    inv.m_array[2][2] = d10;
-    inv.m_array[2][3] = 0.0f;
-
-    inv.m_array[3][0] = -(m_array[1][2] * d32 - m_array[2][2] * d31 + m_array[3][2] * d21);
-    inv.m_array[3][1] = (m_array[0][2] * d32 + m_array[2][2] * d03 + m_array[3][2] * d20);
-    inv.m_array[3][2] = -(m_array[0][2] * d31 + m_array[1][2] * d03 + m_array[3][2] * d10);
-    inv.m_array[3][3] = 1.0f;
-
-    return inv;
+    *mat = comatrix.Transpose () * (1 / det);
+    return true;
 }
 
 
@@ -371,10 +299,7 @@ Mat4 Mat4::Translation (const Vec3& position)
 
 Mat4 Mat4::Rotation (const Vec3& right, const Vec3& up, const Vec3& ahead)
 {
-    return Mat4 (   right.x,    right.y,    right.z,    0.0f,
-                    up.x,       up.y,       up.z,       0.0f,
-                    ahead.x,    ahead.y,    ahead.z,    0.0f,
-                    0.0f,       0.0f,       0.0f,       1.0f);
+    return Mat4 (right, up, ahead, Vec3::Zero ());
 }
 
 

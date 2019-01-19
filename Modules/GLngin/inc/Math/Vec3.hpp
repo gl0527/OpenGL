@@ -13,7 +13,7 @@ class GLNGIN_API Vec3 final {
 public:
                         Vec3 (float x0, float y0, float z0);
     explicit            Vec3 (float f = 0.0f);
-                        Vec3 (float (&vec)[3]);
+                        Vec3 (const float (&vec)[3]);
 
     Vec3&               operator+ ();
     Vec3                operator+ (const Vec3& vec) const;

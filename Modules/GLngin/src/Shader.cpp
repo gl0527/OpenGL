@@ -61,7 +61,7 @@ void Shader::LoadFromFile (const char * fileName)
     const char * contentCStr = content.c_str ();
     GL_CALL (glShaderSource (m_id, 1, &contentCStr, nullptr));
     GL_CALL (glCompileShader (m_id));
-    int OK;
+    int OK = 0;
     GL_CALL (glGetShaderiv (m_id, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
         LOG (std::string ("Error occurred during the compilation of \'") + std::string (fileName) + std::string ("\'"));

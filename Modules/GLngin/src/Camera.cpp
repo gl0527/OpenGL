@@ -75,7 +75,7 @@ void Camera::SetView (const Math::Vec3& eye, const Math::Vec3& ahead, const Math
     m_up = m_right.Cross (ahead).Normalize ();
 
     // The view matrix of the camera is its model matrix inverted
-    m_viewMat = Math::Mat4 (m_right, m_up, -m_ahead, m_eye).Invert ();
+    Math::Mat4 (m_right, m_up, -m_ahead, m_eye).Invert (&m_viewMat);
 }
 
 

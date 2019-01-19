@@ -26,7 +26,7 @@ Vec4::Vec4 (float f/*= 0.0f*/) :
 }
 
 
-Vec4::Vec4 (float (&vec)[4]) :
+Vec4::Vec4 (const float (&vec)[4]) :
     x (vec[0]),
     y (vec[1]),
     z (vec[2]),
@@ -127,10 +127,7 @@ Vec4 Vec4::operator* (float scalar) const
 
 Vec4 Vec4::operator* (const Mat4& mat) const
 {
-    return Vec4 (   Dot (Vec4 (mat[0][0], mat[1][0], mat[2][0], mat[3][0])),
-                    Dot (Vec4 (mat[0][1], mat[1][1], mat[2][1], mat[3][1])),
-                    Dot (Vec4 (mat[0][2], mat[1][2], mat[2][2], mat[3][2])),
-                    Dot (Vec4 (mat[0][3], mat[1][3], mat[2][3], mat[3][3])));
+    return Vec4 (Dot (mat.GetCol (0)), Dot (mat.GetCol (1)), Dot (mat.GetCol (2)), Dot (mat.GetCol (3)));
 }
 
 

@@ -16,7 +16,7 @@ class GLNGIN_API Vec4 final {
 public:
                         Vec4 (float x0, float y0, float z0, float w0);
     explicit            Vec4 (float f = 0.0f);
-                        Vec4 (float (&vec)[4]);
+                        Vec4 (const float (&vec)[4]);
                         Vec4 (const Vec3& vec3, float w0);
                         Vec4 (float x0, const Vec3& vec3);
 

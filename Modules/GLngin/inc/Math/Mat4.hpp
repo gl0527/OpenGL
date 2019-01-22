@@ -22,6 +22,7 @@ public:
                         Mat4 (const float (&arr)[16]);
                         Mat4 (const float (&arr)[4][4]);
                         Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation);
+                        Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation, const Vec3& scaling);
                         Mat4 (const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3);
 
     Mat4                operator+ (const Mat4& right) const;

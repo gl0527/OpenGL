@@ -27,7 +27,9 @@ vec3 deltaPos (uint ID, uint neighborID)
     float originalDist = length (position[neighborID].xyz - position[ID].xyz);
     float currentDist = length (positionTmp[neighborID].xyz - positionTmp[ID].xyz);
 
-    return (positionTmp[neighborID].xyz - positionTmp[ID].xyz) / currentDist * ((currentDist - originalDist) * 0.5 * ConstraintWeight);
+    return currentDist > 0.0001 ?
+        ((positionTmp[neighborID].xyz - positionTmp[ID].xyz) / currentDist) * ((currentDist - originalDist) * 0.5 * ConstraintWeight) :
+        positionTmp[ID].xyz - positionTmp[neighborID].xyz;
 }
 
 void main()

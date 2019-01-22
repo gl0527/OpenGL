@@ -51,6 +51,15 @@ Mat4::Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Ve
 }
 
 
+Mat4::Mat4 (const Vec3& basisX, const Vec3& basisY, const Vec3& basisZ, const Vec3& translation, const Vec3& scaling) :
+    m_array {{basisX.x * scaling.x,         basisX.y * scaling.y,       basisX.z * scaling.z,       0.0f},
+             {basisY.x * scaling.x,         basisY.y * scaling.y,       basisY.z * scaling.z,       0.0f},
+             {basisZ.x * scaling.x,         basisZ.y * scaling.y,       basisZ.z * scaling.z,       0.0f},
+             {translation.x,                translation.y,              translation.z,              1.0f}}
+{
+}
+
+
 Mat4::Mat4 (const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3) :
     m_array {{row0.x, row0.y, row0.z, row0.w},
              {row1.x, row1.y, row1.z, row1.w},

@@ -57,7 +57,7 @@ void onInitialization ()
     GL_CALL (glClearColor (0.1f, 0.1f, 0.1f, 1.0f));
 
     // Set point primitive size
-    GL_CALL (glPointSize (8.0f));
+    GL_CALL (glPointSize (4.0f));
 
     GL_CALL (glEnable (GL_BLEND));
     GL_CALL (glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -129,16 +129,16 @@ void onInitialization ()
     skyboxProgram.Link ();
 
     // set up constant uniform variables
-    const float dt = 0.002f;
+    const float dt = 0.001f;
 
     gravityProgram.Use ();
     gravityProgram.SetUniformFloat ("dt", dt);
 
     collisionProgram.Use ();
-    collisionProgram.SetUniformFloat ("ConstraintWeight", 0.1f);
+    collisionProgram.SetUniformFloat ("ConstraintWeight", 0.9f);
 
     distanceProgram.Use ();
-    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.125f);
+    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.07f);
 
     finalUpdateProgram.Use ();
     finalUpdateProgram.SetUniformFloat ("dt", dt);
@@ -159,7 +159,7 @@ void onInitialization ()
     for (unsigned int i = 0; i < N; ++i)
         for (unsigned int j = 0; j < N; ++j)
         {
-            pos[j*N+i] = GLngin::Math::Vec4 (i / (N - 1.0f) - 0.5f, 0.0f, j / (N - 1.0f) - 0.5f, 1.0f);
+            pos[i*N+j] = GLngin::Math::Vec4 (i / (N - 1.0f) - 0.5f, 0.5f, j / (N - 1.0f) - 0.5f, 1.0f);
         }
     GL_CALL (glUnmapBuffer (GL_SHADER_STORAGE_BUFFER));
 
@@ -208,38 +208,34 @@ void onDisplay ()
 
     gravityProgram.Use ();
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
-
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     const int NITER = 50;
     for (int i = 0; i < NITER; ++i) {
         collisionProgram.Use ();
         GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
-
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
         distanceProgram.Use ();
         GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
-
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
     }
 
     finalUpdateProgram.Use ();
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
-
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     // Render skybox
     skyboxProgram.Use ();
     GLngin::Math::Mat4 viewMat = camera.GetViewMatrix ().SetTranslation (GLngin::Math::Vec3::Zero ());
-    skyboxProgram.SetUniformMat4 ("viewProj", camera.GetProjMatrix () * viewMat);
-    GL_CALL (glDepthMask (GL_FALSE));
+    skyboxProgram.SetUniformMat4 ("view", viewMat);
+    skyboxProgram.SetUniformMat4 ("proj", camera.GetProjMatrix ());
     skybox.Render ();
-    GL_CALL (glDepthMask (GL_TRUE));
 
     // Render the particles
     renderProgram.Use ();
-    renderProgram.SetUniformMat4 ("viewproj", camera.GetViewMatrix () * camera.GetProjMatrix ());
+    renderProgram.SetUniformMat4 ("view", camera.GetProjMatrix ());
+    renderProgram.SetUniformMat4 ("proj", camera.GetViewMatrix ());
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, N*N));
     GL_CALL (glBindVertexArray (0));

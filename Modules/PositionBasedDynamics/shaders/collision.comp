@@ -34,9 +34,9 @@ void main()
     vec3 pos = positionTmp[IDX].xyz;
     vec3 D = pos - C;
     float d = length (D);
-    if(d < R) {
+    if(d > 0.000001 && d < R) {
         D /= d;
-        vec3 npos = C + D*R;
-        positionTmp[IDX].xyz = ConstraintWeight * pos + (1.0 - ConstraintWeight) * npos;
+        vec3 ndir = C + D*R - pos;
+        positionTmp[IDX].xyz += ConstraintWeight * ndir;
     }
 }

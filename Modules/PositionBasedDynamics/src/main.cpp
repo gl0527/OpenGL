@@ -175,7 +175,7 @@ void onInitialization ()
 
     GL_CALL (glGenBuffers (1, &velocityBuffer));
     GL_CALL (glBindBuffer (GL_SHADER_STORAGE_BUFFER, velocityBuffer));
-    GL_CALL (glBufferData (GL_SHADER_STORAGE_BUFFER, vNum * sizeof (GLngin::Math::Vec4), NULL, GL_STATIC_DRAW));
+    GL_CALL (glBufferData (GL_SHADER_STORAGE_BUFFER, vNum * sizeof (GLngin::Math::Vec4), nullptr, GL_STATIC_DRAW));
 
     GLngin::Math::Vec4 * vel = nullptr;
     GL_CALL (vel = static_cast<GLngin::Math::Vec4*> (glMapBufferRange (GL_SHADER_STORAGE_BUFFER, 0, vNum * sizeof (GLngin::Math::Vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)));

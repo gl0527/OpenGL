@@ -23,7 +23,7 @@ static unsigned char idx = 0;
 
 static void onInitialization ()
 {
-    GL_CALL (glClearColor (0.2f, 0.2f, 0.2f, 0.2f));
+    GL_CALL (glClearColor (0.0f, 0.0f, 0.0f, 1.0f));
 
     input.Init ();
 
@@ -62,7 +62,7 @@ static void onInitialization ()
 
 static void onDisplay ()
 {
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GL_CALL (glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_LINE_STRIP_ADJACENCY, 0, idx / 2));

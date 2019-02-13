@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include "Shader.hpp"
 #include "Program.hpp"
@@ -50,9 +50,10 @@ static void onInitialization ()
     GL_CALL (glGenVertexArrays (1, &vao));
     GL_CALL (glBindVertexArray (vao));
 
-    GL_CALL (glEnableVertexAttribArray (0));
+    int vDataIndex = program.GetAttributeIndex ("vData");
+    GL_CALL (glEnableVertexAttribArray (vDataIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, vbo));
-    GL_CALL (glVertexAttribPointer (0, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
+    GL_CALL (glVertexAttribPointer (vDataIndex, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
 
     GL_CALL (glBindVertexArray (0));
 

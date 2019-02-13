@@ -207,7 +207,7 @@ bool Program::SetUniformTextureCube (const char * uniformName, unsigned int texI
 }
 
 
-int Program::GetAttribIndex (const char * attribName) const
+int Program::GetAttributeIndex (const char * attribName) const
 {
     int location = -1;
     if (!m_linked)

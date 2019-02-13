@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include "Debug.hpp"
 #include "InputManager.hpp"
@@ -90,9 +90,10 @@ static void onInitialization ()
     GL_CALL (glGenVertexArrays (1, &vaoID));
     GL_CALL (glBindVertexArray (vaoID));
 
-    GL_CALL (glEnableVertexAttribArray (0));
+    int vParticleDataIndex = renderProgram.GetAttributeIndex ("vParticleData");
+    GL_CALL (glEnableVertexAttribArray (vParticleDataIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, ssboID));
-    GL_CALL (glVertexAttribPointer (0, 4, GL_FLOAT, GL_FALSE, 0, nullptr));
+    GL_CALL (glVertexAttribPointer (vParticleDataIndex, 4, GL_FLOAT, GL_FALSE, 0, nullptr));
 
     GL_CALL (glBindVertexArray (0));
 }

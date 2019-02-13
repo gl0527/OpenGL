@@ -45,7 +45,7 @@ public:
     bool            SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID) const;
     bool            SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID) const;
 
-    int             GetAttribIndex (const char * attribName) const;
+    int             GetAttributeIndex (const char * attribName) const;
     int             GetUniformIndex (const char * uniformName) const;
 
 private:

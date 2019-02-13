@@ -3,7 +3,7 @@
 #extension GL_EXT_geometry_shader4: enable
 
 layout (lines_adjacency) in;
-layout (line_strip, max_vertices=200) out;
+layout (line_strip, max_vertices=100) out;
 
 in vec2 gData[];
 out vec4 gColor;

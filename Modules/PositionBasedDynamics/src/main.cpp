@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include "Camera.hpp"
 #include "Shader.hpp"
@@ -190,9 +190,10 @@ void onInitialization ()
     GL_CALL (glGenVertexArrays (1, &vao));
     GL_CALL (glBindVertexArray (vao));
 
-    GL_CALL (glEnableVertexAttribArray (0));
+    int vPositionIndex = renderProgram.GetAttributeIndex ("vPosition");
+    GL_CALL (glEnableVertexAttribArray (vPositionIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, positionBuffer));
-    GL_CALL (glVertexAttribPointer (0, 4, GL_FLOAT, GL_FALSE, sizeof (GLngin::Math::Vec4), nullptr));
+    GL_CALL (glVertexAttribPointer (vPositionIndex, 4, GL_FLOAT, GL_FALSE, sizeof (GLngin::Math::Vec4), nullptr));
 
     GL_CALL (glBindVertexArray (0));
 }

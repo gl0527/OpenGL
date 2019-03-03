@@ -63,6 +63,6 @@ public:
 };
 
 }   // namespace Math
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_MATH_VEC4_HPP

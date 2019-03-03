@@ -56,6 +56,6 @@ private:
     bool                m_linked;
 };
 
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_PROGRAM_HPP

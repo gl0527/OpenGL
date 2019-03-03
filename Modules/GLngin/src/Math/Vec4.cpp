@@ -259,4 +259,4 @@ const Vec4& Vec4::NegativeUnitW ()
 }
 
 }   // namespace Math
-}   // namespace GLngine
+}   // namespace GLngin

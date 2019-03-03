@@ -41,7 +41,7 @@ Program::~Program ()
     if (!m_inited)
         return;
 
-    for (auto& s : m_shaders)
+    for (const auto& s : m_shaders)
         GL_CALL (glDetachShader (m_id, s.GetID ()));
 
     m_shaders.clear ();
@@ -228,4 +228,4 @@ int Program::GetUniformIndex (const char * uniformName) const
     return location;
 }
 
-}   // namespace GLngine
+}   // namespace GLngin

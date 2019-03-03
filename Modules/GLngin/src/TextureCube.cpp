@@ -77,7 +77,7 @@ bool TextureCube::Load (const char* (&arr)[6])
 
         ILinfo imageInfo;
         IL_CALL (iluGetImageInfo (&imageInfo));
-        IL_CALL (iluFlipImage());
+        IL_CALL (iluFlipImage ());
         if (i == 2) // top image
             IL_CALL (iluRotate (-90));
         else if (i == 3)    // bottom image

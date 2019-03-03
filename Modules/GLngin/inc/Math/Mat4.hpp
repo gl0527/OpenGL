@@ -66,6 +66,6 @@ private:
 };
 
 }   // namespace Math
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_MATH_MAT4_HPP

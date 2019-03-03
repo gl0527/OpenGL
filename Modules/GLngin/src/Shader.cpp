@@ -117,4 +117,4 @@ unsigned int Shader::GetType () const
     return m_type;
 }
 
-}   // namespace GLngine
+}   // namespace GLngin

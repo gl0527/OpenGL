@@ -48,6 +48,6 @@ private:
     void UpdateProj ();
 };
 
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_CAMERA_HPP

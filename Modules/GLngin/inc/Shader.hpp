@@ -28,6 +28,6 @@ private:
     bool                m_inited;
 };
 
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_SHADER_HPP

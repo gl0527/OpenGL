@@ -61,7 +61,7 @@ bool Texture2D::Load (const char * fileName)
     ILinfo imageInfo;
     IL_CALL (iluGetImageInfo (&imageInfo));
     if (imageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-        IL_CALL (iluFlipImage());
+        IL_CALL (iluFlipImage ());
 
     IL_CALL (success = ilConvertImage (IL_RGB, IL_UNSIGNED_BYTE));
 

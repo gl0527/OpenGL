@@ -68,6 +68,6 @@ namespace GLngin {
     GLNGIN_API const char * GetILEnumStr (unsigned int enumElem);
     // TODO call stack kiiratasa hiba eseten!!!
     // TODO FPS, haromszogszam, ... kiiratasa a kepernyore
-}   // namespace GLngine
+}   // namespace GLngin
 
 #endif  // #ifndef GLNGIN_DEBUG_HPP

@@ -7,10 +7,12 @@
 #   define DLL_EXPORT __declspec (dllexport)
 #   define DLL_IMPORT __declspec (dllimport)
 #   define DLL_LOCAL
-#else
+#elif defined (__linux__)
 #   define DLL_EXPORT __attribute__ ((visibility("default")))
 #   define DLL_IMPORT
 #   define DLL_LOCAL __attribute__ ((visibility("hidden")))
+#else
+#error Unsupported platform!
 #endif
 
 #if defined (GLNGIN_DYNAMIC_COMPILE)

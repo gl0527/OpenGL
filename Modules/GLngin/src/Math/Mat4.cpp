@@ -355,4 +355,4 @@ const Mat4& Mat4::One ()
 }
 
 }   // namespace Math
-}   // namespace GLngine
+}   // namespace GLngin

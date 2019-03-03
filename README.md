@@ -4,7 +4,7 @@ A rendering engine for trying out new OpenGL features.
 ### Build ###
 
 #### Dependencies ####
-  * OpenGL: The multiplatform graphics API used to develop the rendering engine
+  * OpenGL: The multiplatform graphics API used to develop the rendering engine. For more information please visit https://www.opengl.org/
   * FreeGLUT: FreeGLUT is a free-software/open-source alternative to the OpenGL Utility Toolkit (GLUT) library. For more information please visit http://freeglut.sourceforge.net/
   * GLEW: The OpenGL Extension Wrangler Library (GLEW) is a cross-platform open-source C/C++ extension loading library. For more information please visit http://glew.sourceforge.net/
   * DevIL: Developer's Image Library (DevIL) is a programmer's library to develop applications with very powerful image loading capabilities, yet is easy for a developer to learn and use. For more information please visit http://openil.sourceforge.net/

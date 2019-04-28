@@ -41,6 +41,10 @@ public:
     constexpr float             Dot (const Vec4& vec) const;
     constexpr Vec4              Hadamard (const Vec4& vec) const;
 
+    inline float                Length () const;
+    constexpr float             LengthSqr () const;
+    inline Vec4                 Normalize () const;
+
     inline static const Vec4&   Zero ();
     inline static const Vec4&   One ();
     inline static const Vec4&   UnitX ();
@@ -222,6 +226,24 @@ constexpr float Vec4::Dot (const Vec4& vec) const
 constexpr Vec4 Vec4::Hadamard (const Vec4& vec) const
 {
     return Vec4 (x * vec.x, y * vec.y, z * vec.z, w * vec.w);
+}
+
+
+inline float Vec4::Length () const
+{
+    return sqrtf (x * x + y * y + z * z + w * w);
+}
+
+
+constexpr float Vec4::LengthSqr () const
+{
+    return x * x + y * y + z * z + w * w;
+}
+
+
+inline Vec4 Vec4::Normalize () const
+{
+    return *this * (1 / (Length () + 1e-8f));
 }
 
 

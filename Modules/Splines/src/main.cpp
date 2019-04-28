@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Shader.hpp"
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "InputManager.hpp"
@@ -29,18 +28,10 @@ static void onInitialization ()
 
     std::string currFolder (FOLDER);
 
-    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader geometryShader (GL_GEOMETRY_SHADER);
-    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
-
-    vertexShader.LoadFromFile (currFolder + "../shaders/Splines.vert");
-    geometryShader.LoadFromFile (currFolder + "../shaders/Splines.geom");
-    fragmentShader.LoadFromFile (currFolder + "../shaders/Splines.frag");
-
     program.Init ();
-    program.AddShader (vertexShader);
-    program.AddShader (geometryShader);
-    program.AddShader (fragmentShader);
+    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/Splines.vert");
+    program.AddShaderFromFile (GL_GEOMETRY_SHADER, currFolder + "../shaders/Splines.geom");
+    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/Splines.frag");
     program.Link ();
 
     GL_CALL (glGenBuffers (1, &vbo));

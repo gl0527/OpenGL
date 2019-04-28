@@ -5,6 +5,7 @@
 
 #include "API.hpp"
 #include <vector>
+#include <string>
 
 
 namespace GLngin {
@@ -14,7 +15,6 @@ namespace Math {
     class Vec4;
 }   // namespace Math
 
-class Shader;
 
 class GLNGIN_API Program final {
 public:
@@ -25,7 +25,10 @@ public:
     Program&        operator= (const Program&) = delete;
 
     void            Init ();
-    bool            AddShader (const Shader& shader);
+    bool            AddShaderFromFile (unsigned int type, const char * fileName);
+    bool            AddShaderFromFile (unsigned int type, const std::string& fileName);
+    bool            AddShaderFromString (unsigned int type, const char * content);
+    bool            AddShaderFromString (unsigned int type, const std::string& content);
 
     bool            BindAttribIndex (const char * attribName, unsigned int index) const;
     bool            BindFragDataIndex (const char * attribName, unsigned int index) const;
@@ -49,11 +52,15 @@ public:
     int             GetUniformIndex (const char * uniformName) const;
 
 private:
-    unsigned int        m_id;
-    std::vector<Shader> m_shaders;
+    unsigned int    LoadShaderFromFile (unsigned int type, const char * fileName) const;
+    unsigned int    LoadShaderFromString (unsigned int type, const char * content) const;
 
-    bool                m_inited;
-    bool                m_linked;
+private:
+    unsigned int                m_id;
+    std::vector<unsigned int>   m_shaders;
+
+    bool                        m_inited;
+    bool                        m_linked;
 };
 
 }   // namespace GLngin

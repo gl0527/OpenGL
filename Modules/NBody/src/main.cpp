@@ -7,7 +7,6 @@
 #include "InputManager.hpp"
 #include "Math.hpp"
 #include "Program.hpp"
-#include "Shader.hpp"
 #include "Vec4.hpp"
 
 
@@ -60,23 +59,13 @@ static void onInitialization ()
 
     std::string currFolder (FOLDER);
 
-    // initialize shaders
-    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
-    GLngin::Shader computeShader (GL_COMPUTE_SHADER);
-
-    vertexShader.LoadFromFile (currFolder + "../shaders/particle.vert");
-    fragmentShader.LoadFromFile (currFolder + "../shaders/particle.frag");
-    computeShader.LoadFromFile (currFolder + "../shaders/particle.comp");
-
-    // initialize programs
     computeProgram.Init ();
-    computeProgram.AddShader (computeShader);
+    computeProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/particle.comp");
     computeProgram.Link ();
 
     renderProgram.Init ();
-    renderProgram.AddShader (vertexShader);
-    renderProgram.AddShader (fragmentShader);
+    renderProgram.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/particle.vert");
+    renderProgram.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/particle.frag");
     renderProgram.Link ();
 
     // Initialize the ssbo

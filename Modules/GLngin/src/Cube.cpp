@@ -91,7 +91,7 @@ void Cube::Init ()
 }
 
 
-void Cube::Render ()
+void Cube::Render () const
 {
     if (!m_inited)
         return;

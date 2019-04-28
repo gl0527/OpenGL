@@ -12,7 +12,7 @@
 #   define DLL_IMPORT
 #   define DLL_LOCAL __attribute__ ((visibility("hidden")))
 #else
-#error Unsupported platform!
+#   error Unsupported platform!
 #endif
 
 #if defined (GLNGIN_DYNAMIC_COMPILE)

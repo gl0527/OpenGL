@@ -4,7 +4,6 @@
 #include <cstring>
 
 #include "Camera.hpp"
-#include "Shader.hpp"
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "Vec4.hpp"
@@ -58,9 +57,12 @@ void onInitialization ()
 
     // Set point primitive size
     GL_CALL (glPointSize (4.0f));
+    GL_CALL (glEnable (GL_POINT_SMOOTH));
 
     GL_CALL (glEnable (GL_BLEND));
     GL_CALL (glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    GL_CALL (glEnable (GL_DEPTH_TEST));
 
     std::string currFolder (FOLDER);
 
@@ -75,57 +77,35 @@ void onInitialization ()
                         currFolder + "../assets/emerald_bk.tga",
                         currFolder + "../assets/emerald_ft.tga");
 
-    // initialize shaders
-    GLngin::Shader gravityShader (GL_COMPUTE_SHADER);
-    GLngin::Shader collisionShader (GL_COMPUTE_SHADER);
-    GLngin::Shader distanceShader (GL_COMPUTE_SHADER);
-    GLngin::Shader bendingShader (GL_COMPUTE_SHADER);
-    GLngin::Shader finalUpdateShader (GL_COMPUTE_SHADER);
-    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
-
-    GLngin::Shader skyboxVertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader skyboxFragmentShader (GL_FRAGMENT_SHADER);
-
-    gravityShader.LoadFromFile (currFolder + "../shaders/gravity.comp");
-    collisionShader.LoadFromFile (currFolder + "../shaders/collision.comp");
-    distanceShader.LoadFromFile (currFolder + "../shaders/distance.comp");
-    bendingShader.LoadFromFile (currFolder + "../shaders/bending.comp");
-    finalUpdateShader.LoadFromFile (currFolder + "../shaders/finalUpdate.comp");
-    vertexShader.LoadFromFile (currFolder + "../shaders/render.vert");
-    fragmentShader.LoadFromFile (currFolder + "../shaders/render.frag");
-    skyboxVertexShader.LoadFromFile (currFolder + "../shaders/skybox.vert");
-    skyboxFragmentShader.LoadFromFile (currFolder + "../shaders/skybox.frag");
-
     // initialize programs
     gravityProgram.Init ();
-    gravityProgram.AddShader (gravityShader);
+    gravityProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/gravity.comp");
     gravityProgram.Link ();
 
     collisionProgram.Init ();
-    collisionProgram.AddShader (collisionShader);
+    collisionProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/collision.comp");
     collisionProgram.Link ();
 
     distanceProgram.Init ();
-    distanceProgram.AddShader (distanceShader);
+    distanceProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/distance.comp");
     distanceProgram.Link ();
 
     bendingProgram.Init ();
-    bendingProgram.AddShader (bendingShader);
+    bendingProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/bending.comp");
     bendingProgram.Link ();
 
     finalUpdateProgram.Init ();
-    finalUpdateProgram.AddShader (finalUpdateShader);
+    finalUpdateProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/finalUpdate.comp");
     finalUpdateProgram.Link ();
 
     renderProgram.Init ();
-    renderProgram.AddShader (vertexShader);
-    renderProgram.AddShader (fragmentShader);
+    renderProgram.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/render.vert");
+    renderProgram.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/render.frag");
     renderProgram.Link ();
 
     skyboxProgram.Init ();
-    skyboxProgram.AddShader (skyboxVertexShader);
-    skyboxProgram.AddShader (skyboxFragmentShader);
+    skyboxProgram.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/skybox.vert");
+    skyboxProgram.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/skybox.frag");
     skyboxProgram.Link ();
 
     // set up constant uniform variables
@@ -138,7 +118,7 @@ void onInitialization ()
     collisionProgram.SetUniformFloat ("ConstraintWeight", 0.9f);
 
     distanceProgram.Use ();
-    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.07f);
+    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.051f);
 
     finalUpdateProgram.Use ();
     finalUpdateProgram.SetUniformFloat ("dt", dt);

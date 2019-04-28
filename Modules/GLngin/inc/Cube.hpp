@@ -14,7 +14,7 @@ public:
             ~Cube ();
 
     void    Init ();
-    void    Render ();
+    void    Render () const;
 
 private:
     unsigned int    m_vertexArrayID;

@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Shader.hpp"
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "Quad.hpp"
@@ -29,15 +28,9 @@ static void onInitialization ()
     tex.Init ();
     tex.Load (currFolder + "../assets/lena.jpg");
 
-    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
-
-    vertexShader.LoadFromFile (currFolder + "../shaders/ImageProcessing.vert");
-    fragmentShader.LoadFromFile (currFolder + "../shaders/ImageProcessing.frag");
-
     program.Init ();
-    program.AddShader (vertexShader);
-    program.AddShader (fragmentShader);
+    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/ImageProcessing.vert");
+    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/ImageProcessing.frag");
     program.Link ();
     program.Use ();
     program.SetUniformTexture2D ("tex", tex.GetID (), 0);

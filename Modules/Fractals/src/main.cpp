@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Shader.hpp"
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "Quad.hpp"
@@ -24,15 +23,9 @@ static void onInitialization ()
 
     quad.Init ();
 
-    GLngin::Shader vertexShader (GL_VERTEX_SHADER);
-    GLngin::Shader fragmentShader (GL_FRAGMENT_SHADER);
-
-    vertexShader.LoadFromFile (currFolder + "../shaders/passthrough.vert");
-    fragmentShader.LoadFromFile (currFolder + "../shaders/simple.frag");
-
     program.Init ();
-    program.AddShader (vertexShader);
-    program.AddShader (fragmentShader);
+    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/passthrough.vert");
+    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/simple.frag");
     program.Link ();
     program.Use ();
 }

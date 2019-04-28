@@ -2,16 +2,30 @@
 
 #include "Debug.hpp"
 #include "Mat4.hpp"
-#include "Shader.hpp"
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
 #include <GL/glew.h>
+#include <fstream>
 
 
 namespace GLngin {
 
 namespace {
+
+void GetShaderErrorInfo (unsigned int id)
+{
+    int logLen;
+    GL_CALL (glGetShaderiv (id, GL_INFO_LOG_LENGTH, &logLen));
+    if (logLen > 0) {
+        char * log = new char[logLen];
+        int written;
+        GL_CALL (glGetShaderInfoLog (id, logLen, &written, &log[0]));
+        LOG (log);
+        delete[] log;
+    }
+}
+
 
 void GetProgramErrorInfo (unsigned int id)
 {
@@ -28,6 +42,7 @@ void GetProgramErrorInfo (unsigned int id)
 
 }   // namepace
 
+
 Program::Program () :
     m_id (0),
     m_inited (false),
@@ -42,7 +57,7 @@ Program::~Program ()
         return;
 
     for (const auto& s : m_shaders)
-        GL_CALL (glDetachShader (m_id, s.GetID ()));
+        GL_CALL (glDetachShader (m_id, s));
 
     m_shaders.clear ();
 
@@ -60,14 +75,45 @@ void Program::Init ()
 }
 
 
-bool Program::AddShader (const Shader& shader)
+bool Program::AddShaderFromFile (unsigned int type, const char * fileName)
 {
     if (!m_inited || m_linked)
         return false;
 
-    m_shaders.push_back (shader);
-    GL_CALL (glAttachShader (m_id, m_shaders[m_shaders.size () - 1].GetID ()));
+    unsigned int loadedShaderID = LoadShaderFromFile (type, fileName);
+    if (loadedShaderID == 0)
+        return false;
+
+    m_shaders.push_back (loadedShaderID);
+    GL_CALL (glAttachShader (m_id, loadedShaderID));
     return true;
+}
+
+
+bool Program::AddShaderFromFile (unsigned int type, const std::string& fileName)
+{
+    return AddShaderFromFile (type, fileName.c_str ());
+}
+
+
+bool Program::AddShaderFromString (unsigned int type, const char * content)
+{
+    if (!m_inited || m_linked)
+        return false;
+
+    unsigned int loadedShaderID = LoadShaderFromString (type, content);
+    if (loadedShaderID == 0)
+        return false;
+
+    m_shaders.push_back (loadedShaderID);
+    GL_CALL (glAttachShader (m_id, loadedShaderID));
+    return true;
+}
+
+
+bool Program::AddShaderFromString (unsigned int type, const std::string& content)
+{
+    return AddShaderFromString (type, content.c_str ());
 }
 
 
@@ -226,6 +272,61 @@ int Program::GetUniformIndex (const char * uniformName) const
 
     GL_CALL (location = glGetUniformLocation (m_id, uniformName));
     return location;
+}
+
+
+unsigned int Program::LoadShaderFromFile (unsigned int type, const char * fileName) const
+{
+    unsigned int shaderID;
+    GL_CALL (shaderID = glCreateShader (type));
+    if (shaderID == 0) {
+        LOG (std::string ("Error occurred during the shader creation from \'") + std::string (fileName) + std::string ("\'"));
+        return 0;
+    }
+    std::string content;
+    std::ifstream ifs {fileName};
+    if (ifs && !ifs.bad ()) {
+        content = std::string {std::istreambuf_iterator<char> {ifs}, std::istreambuf_iterator<char> {}};
+        ifs.close ();
+    } else {
+        LOG (std::string ("Error occurred during the opening of \'") + std::string (fileName) + std::string ("\'"));
+        GL_CALL (glDeleteShader (shaderID));
+        return 0;
+    }
+    const char * contentCStr = content.c_str ();
+    GL_CALL (glShaderSource (shaderID, 1, &contentCStr, nullptr));
+    GL_CALL (glCompileShader (shaderID));
+    int OK = 0;
+    GL_CALL (glGetShaderiv (shaderID, GL_COMPILE_STATUS, &OK));
+    if (OK == 0) {
+        LOG (std::string ("Error occurred during the compilation of \'") + std::string (fileName) + std::string ("\'"));
+        GetShaderErrorInfo (shaderID);
+        GL_CALL (glDeleteShader (shaderID));
+        return 0;
+    }
+    return shaderID;
+}
+
+
+unsigned int Program::LoadShaderFromString (unsigned int type, const char * content) const
+{
+    unsigned int shaderID;
+    GL_CALL (shaderID = glCreateShader (type));
+    if (shaderID == 0) {
+        LOG (std::string ("Error occurred during the shader creation from \'") + std::string (content) + std::string ("\'"));
+        return 0;
+    }
+    GL_CALL (glShaderSource (shaderID, 1, &content, nullptr));
+    GL_CALL (glCompileShader (shaderID));
+    int OK;
+    GL_CALL (glGetShaderiv (shaderID, GL_COMPILE_STATUS, &OK));
+    if (OK == 0) {
+        LOG (std::string ("Error occurred during the compilation of \'") + std::string (content) + std::string ("\'"));
+        GetShaderErrorInfo (shaderID);
+        GL_CALL (glDeleteShader (shaderID));
+        return 0;
+    }
+    return shaderID;
 }
 
 }   // namespace GLngin

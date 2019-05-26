@@ -56,9 +56,11 @@ Program::~Program ()
     if (!m_inited)
         return;
 
-    for (const auto& s : m_shaders)
+    for (const auto& s : m_shaders) {
         GL_CALL (glDetachShader (m_id, s));
-
+        GL_CALL (glDeleteShader (s));
+    }
+        
     m_shaders.clear ();
 
     GL_CALL (glDeleteProgram (m_id));

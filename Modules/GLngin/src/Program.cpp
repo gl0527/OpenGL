@@ -56,13 +56,6 @@ Program::~Program ()
     if (!m_inited)
         return;
 
-    for (const auto& s : m_shaders) {
-        GL_CALL (glDetachShader (m_id, s));
-        GL_CALL (glDeleteShader (s));
-    }
-        
-    m_shaders.clear ();
-
     GL_CALL (glDeleteProgram (m_id));
 }
 
@@ -145,6 +138,13 @@ bool Program::Link ()
         return false;
 
     GL_CALL (glLinkProgram (m_id));
+
+    for (unsigned int shaderID : m_shaders) {
+        GL_CALL (glDetachShader (m_id, shaderID));
+        GL_CALL (glDeleteShader (m_id, shaderID));
+    }
+    m_shaders.clear ();
+
     int OK = 0;
     GL_CALL (glGetProgramiv (m_id, GL_LINK_STATUS, &OK));
     if (OK == 0) {
@@ -152,6 +152,7 @@ bool Program::Link ()
         GetProgramErrorInfo (m_id);
         return false;
     }
+
     m_linked = true;
     return true;
 }

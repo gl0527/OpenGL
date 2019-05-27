@@ -1,6 +1,6 @@
 #include "Timer.hpp"
 
-#ifdef WINDOWS
+#ifdef _WIN32
 #include <windows.h>
 #elif __linux__
 #include <sys/time.h>

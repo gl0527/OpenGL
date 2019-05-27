@@ -141,7 +141,7 @@ bool Program::Link ()
 
     for (unsigned int shaderID : m_shaders) {
         GL_CALL (glDetachShader (m_id, shaderID));
-        GL_CALL (glDeleteShader (m_id, shaderID));
+        GL_CALL (glDeleteShader (shaderID));
     }
     m_shaders.clear ();
 

@@ -51,6 +51,7 @@ public:
     inline float                Length () const;
     constexpr float             LengthSqr () const;
     inline Vec4                 Normalize () const;
+    inline bool                 IsNull () const;
 
     inline static const Vec4&   Zero ();
     inline static const Vec4&   One ();
@@ -296,6 +297,12 @@ constexpr float Vec4::LengthSqr () const
 inline Vec4 Vec4::Normalize () const
 {
     return *this * (1 / (Length () + 1e-8f));
+}
+
+
+inline bool Vec4::IsNull () const
+{
+    return IsEqual (Length (), 0.0f);
 }
 
 

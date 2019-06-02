@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.7.3)
 project (OpenGL)
 
+enable_testing ()
+
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pedantic -W -Wall -Wextra -Wcast-align -Wdeprecated")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winit-self -Wmissing-declarations -Wmissing-include-dirs")
@@ -14,12 +16,16 @@ set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -s -O3 -ffast-
 find_package (OpenGL REQUIRED)
 find_package (GLEW REQUIRED)
 
-include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
-link_directories (${OPENGL_LIBRARIES})
+set (ASSIMP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/include" "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/include")
+set (ASSIMP_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/code")
+
+include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS})
+link_directories (${OPENGL_LIBRARIES} ${ASSIMP_LIBRARY_DIR})
 
 add_definitions (${OPENGL_DEFINITIONS})
 
 add_subdirectory (GLngin)
+add_subdirectory (GLnginTest)
 add_subdirectory (Fractals)
 add_subdirectory (NBody)
 add_subdirectory (PositionBasedDynamics)

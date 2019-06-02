@@ -6,6 +6,7 @@
 #include "API.hpp"
 #include <cmath>
 #include "Math.hpp"
+#include "Vec2.hpp"
 
 
 namespace GLngin {
@@ -16,6 +17,11 @@ public:
     constexpr                   Vec3 (float x0, float y0, float z0);
     constexpr explicit          Vec3 (float f = 0.0f);
     constexpr                   Vec3 (const float (&vec)[3]);
+    constexpr                   Vec3 (const Vec2& vec2, float z0);
+    constexpr                   Vec3 (float x0, const Vec2& vec2);
+
+    constexpr Vec2              xy () const;
+    constexpr Vec2              yz () const;
     
     constexpr Vec3&             operator+ ();
     constexpr Vec3              operator+ (const Vec3& vec) const;
@@ -37,6 +43,7 @@ public:
     inline float                Length () const;
     constexpr float             LengthSqr () const;
     inline Vec3                 Normalize () const;
+    inline bool                 IsNull () const;
 
     inline static const Vec3&   Zero ();
     inline static const Vec3&   One ();
@@ -75,6 +82,34 @@ constexpr Vec3::Vec3 (const float (&vec)[3]) :
     y (vec[1]),
     z (vec[2])
 {
+}
+
+
+constexpr Vec3::Vec3 (const Vec2& vec2, float z0) :
+    x (vec2.x),
+    y (vec2.y),
+    z (z0)
+{
+}
+
+
+constexpr Vec3::Vec3 (float x0, const Vec2& vec2) :
+    x (x0),
+    y (vec2.x),
+    z (vec2.y)
+{
+}
+
+
+constexpr Vec2 Vec3::xy () const
+{
+    return Vec2 (x, y);
+}
+
+
+constexpr Vec2 Vec3::yz () const
+{
+    return Vec2 (y, z);
 }
 
 
@@ -197,6 +232,12 @@ constexpr float Vec3::LengthSqr () const
 inline Vec3 Vec3::Normalize () const
 {
     return *this * (1 / (Length () + 1e-8f));
+}
+
+
+inline bool Vec3::IsNull () const
+{
+    return IsEqual (Length (), 0.0f);
 }
 
 

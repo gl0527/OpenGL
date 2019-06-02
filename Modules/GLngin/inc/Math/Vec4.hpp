@@ -6,6 +6,7 @@
 #include "API.hpp"
 #include "Math.hpp"
 #include "Vec3.hpp"
+#include "Vec2.hpp"
 
 
 namespace GLngin {
@@ -20,9 +21,15 @@ public:
     constexpr                   Vec4 (const float (&vec)[4]);
     constexpr                   Vec4 (const Vec3& vec3, float w0);
     constexpr                   Vec4 (float x0, const Vec3& vec3);
+    constexpr                   Vec4 (const Vec2& vec2, float z0, float w0);
+    constexpr                   Vec4 (float x0, const Vec2& vec2, float w0);
+    constexpr                   Vec4 (float x0, float y0, const Vec2& vec2);
 
     constexpr Vec3              xyz () const;
     constexpr Vec3              yzw () const;
+    constexpr Vec2              xy () const;
+    constexpr Vec2              yz () const;
+    constexpr Vec2              zw () const;
 
     constexpr Vec4&             operator+ ();
     constexpr Vec4              operator+ (const Vec4& vec) const;
@@ -109,6 +116,33 @@ constexpr Vec4::Vec4 (float x0, const Vec3& vec3) :
 }
 
 
+constexpr Vec4::Vec4 (const Vec2& vec2, float z0, float w0) :
+    x (vec2.x),
+    y (vec2.y),
+    z (z0),
+    w (w0)
+{
+}
+
+
+constexpr Vec4::Vec4 (float x0, const Vec2& vec2, float w0) :
+    x (x0),
+    y (vec2.x),
+    z (vec2.y),
+    w (w0)
+{
+}
+
+
+constexpr Vec4::Vec4 (float x0, float y0, const Vec2& vec2) :
+    x (x0),
+    y (y0),
+    z (vec2.x),
+    w (vec2.y)
+{
+}
+
+
 constexpr Vec3 Vec4::xyz () const
 {
     return Vec3 (x, y, z);
@@ -118,6 +152,24 @@ constexpr Vec3 Vec4::xyz () const
 constexpr Vec3 Vec4::yzw () const
 {
     return Vec3 (y, z, w);
+}
+
+
+constexpr Vec2 Vec4::xy () const
+{
+    return Vec2 (x, y);
+}
+
+
+constexpr Vec2 Vec4::yz () const
+{
+    return Vec2 (y, z);
+}
+
+
+constexpr Vec2 Vec4::zw () const
+{
+    return Vec2 (z, w);
 }
 
 

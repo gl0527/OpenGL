@@ -6,6 +6,7 @@ project (${TARGET_NAME})
 
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/)
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/Math/)
+include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/Resource/)
 
 add_executable (${TARGET_NAME} src/main.cpp)
 

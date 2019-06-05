@@ -2,6 +2,7 @@
 
 #include "Debug.hpp"
 #include "Mat4.hpp"
+#include "Vec2.hpp"
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
@@ -206,6 +207,16 @@ bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
     if (location < 0)
         return false;
     GL_CALL (glUniformMatrix4fv (location, 1, GL_TRUE, value));
+    return true;
+}
+
+
+bool Program::SetUniformVec2 (const char * uniformName, const Math::Vec2& value) const
+{
+    int location = GetUniformIndex (uniformName);
+    if (location < 0)
+        return false;
+    GL_CALL (glUniform2f (location, value.x, value.y));
     return true;
 }
 

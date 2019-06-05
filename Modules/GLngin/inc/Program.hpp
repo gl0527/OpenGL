@@ -11,6 +11,7 @@
 namespace GLngin {
 namespace Math {
     class Mat4;
+    class Vec2;
     class Vec3;
     class Vec4;
 }   // namespace Math
@@ -43,6 +44,7 @@ public:
     bool            SetUniformFloat (const char * uniformName, float value) const;
     bool            SetUniformInt (const char * uniformName, int value) const;
     bool            SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const;
+    bool            SetUniformVec2 (const char * uniformName, const Math::Vec2& value) const;
     bool            SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const;
     bool            SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const;
     bool            SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID) const;

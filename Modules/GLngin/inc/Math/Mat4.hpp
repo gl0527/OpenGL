@@ -46,14 +46,9 @@ public:
     constexpr Mat4                  Transpose () const;
     constexpr bool                  Invert (Mat4* mat) const;
 
-    constexpr Mat4                  Translate (const Vec3& v) const;
-    inline Mat4                     Scale (const Vec3& v) const;
-
-    constexpr Mat4                  SetTranslation (const Vec3& translation) const;
-
-    inline static Mat4              Translation (const Vec3& position);
-    inline static Mat4              Rotation (const Vec3& right, const Vec3& up, const Vec3& ahead);
-    inline static Mat4              Scaling (const Vec3& scaler);
+    constexpr static Mat4           Translate (const Vec3& v);
+    inline    static Mat4           Rotate (float angle, const Vec3& axis);
+    constexpr static Mat4           Scale (const Vec3& v);
 
     inline static const Mat4&       Identity ();
     inline static const Mat4&       Zero ();
@@ -326,59 +321,35 @@ constexpr bool Mat4::Invert (Mat4* mat) const
 }
 
 
-constexpr Mat4 Mat4::Translate (const Vec3& v) const
+constexpr Mat4 Mat4::Translate (const Vec3& v)
 {
-    Mat4 mat = *this;
-    mat.m_array[3][0] += v.x;
-    mat.m_array[3][1] += v.y;
-    mat.m_array[3][2] += v.z;
-    return mat;
+    return Mat4 (   1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f,
+                    v.x,  v.y,  v.z,  1.0f);
 }
 
 
-inline Mat4 Mat4::Scale (const Vec3& v) const
+inline Mat4 Mat4::Rotate (float phi, const Vec3& axis)
 {
-    Mat4 id = Identity ();
-    id.m_array[0][0] = v.x;
-    id.m_array[1][1] = v.y;
-    id.m_array[2][2] = v.z;
-    return *this * id;
+    Vec3 w = axis.Normalize ();
+    float cosPhi = cosf (phi);
+    float cosPhiInv = 1.0f - cosPhi;
+    float sinPhi = sinf (phi);
+
+    return Mat4 (   w.x * w.x * cosPhiInv + cosPhi, w.x * w.y * cosPhiInv + w.z * sinPhi, w.x * w.z * cosPhiInv - w.y * sinPhi, 0.0f,
+                    w.x * w.y * cosPhiInv - w.z * sinPhi, cosPhi + w.y * w.y * cosPhiInv, w.y * w.z * cosPhiInv + w.x * sinPhi, 0.0f,
+                    w.x * w.z * cosPhiInv + w.y * sinPhi, w.y * w.z * cosPhiInv - w.x * sinPhi, cosPhi + w.z * w.z * cosPhiInv, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 
-constexpr Mat4 Mat4::SetTranslation (const Vec3& translation) const
+constexpr Mat4 Mat4::Scale (const Vec3& v)
 {
-    Mat4 mat = *this;
-    mat.m_array[3][0] = translation.x;
-    mat.m_array[3][1] = translation.y;
-    mat.m_array[3][2] = translation.z;
-    return mat;
-}
-
-
-inline Mat4 Mat4::Translation (const Vec3& position)
-{
-    Mat4 mat = Identity ();
-    mat.m_array[3][0] = position.x;
-    mat.m_array[3][1] = position.y;
-    mat.m_array[3][2] = position.z;
-    return mat;
-}
-
-
-inline Mat4 Mat4::Rotation (const Vec3& right, const Vec3& up, const Vec3& ahead)
-{
-    return Mat4 (right, up, ahead, Vec3::Zero ());
-}
-
-
-inline Mat4 Mat4::Scaling (const Vec3& scaler)
-{
-    Mat4 mat = Identity ();
-    mat.m_array[0][0] = scaler.x;
-    mat.m_array[1][1] = scaler.y;
-    mat.m_array[2][2] = scaler.z;
-    return mat;
+    return Mat4 (   v.x,  0.0f, 0.0f, 0.0f,
+                    0.0f, v.y,  0.0f, 0.0f,
+                    0.0f, 0.0f, v.z,  0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 

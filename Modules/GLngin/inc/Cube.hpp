@@ -13,7 +13,7 @@ public:
             Cube ();
             ~Cube ();
 
-    void    Init ();
+    void    Init (float scalar);
     void    Render () const;
 
 private:

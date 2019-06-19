@@ -10,134 +10,86 @@
 
 namespace GLngin {
 
-Camera::Camera (const Math::Vec3& eye, const Math::Vec3& ahead, const Math::Vec3& up) :
-    m_eye (eye),
-    m_ahead (ahead),
-    m_up (up),
-    m_yaw (0.0f),
-    m_pitch (0.0f),
-    m_fov (Math::AngleToRadian (90)),
-    m_aspect (1.0f),
-    m_front (0.5f),
-    m_back (1000.0f)
+Camera::Camera (const Math::Vec3& eye, const Math::Vec3& lookat, const Math::Vec3& up) :
+    eye (eye),
+    lookat (lookat),
+    up (up),
+    localZ ((eye - lookat).Normalize ()),
+    localX (up.Cross (localZ).Normalize ()),
+    localY (localZ.Cross (localX)),
+    fov (Math::AngleToRadian (60)),
+    asp (1.0f),
+    fp (0.5f),
+    bp (1000.0f),
+    input (InputManager::Instance ())
 {
-    SetAspect (m_aspect);
-    SetView (m_eye, m_ahead, m_up);
 }
 
 
-const Math::Vec3& Camera::GetPosition () const
+Math::Mat4 Camera::View ()
 {
-    return m_eye;
+    CalcLocalAxes ();
+
+    return Math::Mat4::Translate (-eye) * Math::Mat4 (  localX.x, localY.x, localZ.x, 0.0f,
+                                                        localX.y, localY.y, localZ.y, 0.0f,
+                                                        localX.z, localY.z, localZ.z, 0.0f,
+                                                        0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 
-const Math::Vec3& Camera::GetDirection () const
+Math::Mat4 Camera::Proj ()
 {
-    return m_ahead;
-}
+    float yScale = 1 / tanf (fov * 0.5f);
+    float xScale = yScale / asp;
 
-
-const Math::Mat4& Camera::GetViewMatrix () const
-{
-    return m_viewMat;
-}
-
-
-const Math::Mat4& Camera::GetProjMatrix () const
-{
-    return m_projMat;
-}
-
-
-void Camera::UpdateProj ()
-{
-    float yScale = 1 / tanf (m_fov * 0.5f);
-    float xScale = yScale / m_aspect;
-    float f = m_back;
-    float n = m_front;
-
-    m_projMat = Math::Mat4 (xScale, 0.0f,   0.0f,          0.0f,
-                            0.0f,   yScale, 0.0f,          0.0f,
-                            0.0f,   0.0f,   (n+f)/(n-f),  -1.0f,
-                            0.0f,   0.0f,   2*n*f/(n-f),   0.0f);
-}
-
-
-void Camera::SetView (const Math::Vec3& eye, const Math::Vec3& ahead, const Math::Vec3& up)
-{
-    m_eye = eye;
-    m_ahead = ahead.Normalize ();
-    m_yaw = atan2f (m_ahead.x, m_ahead.z);
-    m_pitch = -atan2f (m_ahead.y, sqrtf (m_ahead.x * m_ahead.x + m_ahead.z * m_ahead.z));
-
-    m_right = ahead.Cross (up).Normalize ();
-    m_up = m_right.Cross (ahead).Normalize ();
-
-    // The view matrix of the camera is its model matrix inverted
-    Math::Mat4 (m_right, m_up, -m_ahead, m_eye).Invert (&m_viewMat);
-}
-
-
-void Camera::SetProj (float fov, float aspect, float nearPlane, float farPlane)
-{
-    m_fov = fov;
-    m_aspect = aspect;
-    m_front = nearPlane;
-    m_back = farPlane;
-    UpdateProj ();
-}
-
-
-void Camera::SetAspect (float aspect)
-{
-    m_aspect = aspect;
-    UpdateProj ();
-}
-
-
-void Camera::LookAt (const Math::Vec3& target)
-{
-    Math::Vec3 ahead = (target - m_eye).Normalize ();
-    SetView (m_eye, ahead, Math::Vec3::UnitY ());
+    return Math::Mat4 ( xScale, 0.0f,   0.0f,             0.0f,
+                        0.0f,   yScale, 0.0f,             0.0f,
+                        0.0f,   0.0f,   (fp+bp)/(fp-bp),  -1.0f,
+                        0.0f,   0.0f,   2*fp*bp/(fp-bp),  0.0f);
 }
 
 
 void Camera::Animate (float dt)
 {
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::w)) {
-        m_eye += m_ahead * dt;
+    CalcLocalAxes ();
+    
+    Math::Vec3 acc;
+
+    if (input.IsKeyDown (InputManager::Key::w)) {
+        acc -= localZ;
     }
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::s)) {
-        m_eye -= m_ahead * dt;
+    if (input.IsKeyDown (InputManager::Key::s)) {
+        acc += localZ;
     }
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::d)) {
-        m_eye += m_right * dt;
+    if (input.IsKeyDown (InputManager::Key::d)) {
+        acc += localX;
     }
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::a)) {
-        m_eye -= m_right * dt;
+    if (input.IsKeyDown (InputManager::Key::a)) {
+        acc -= localX;
     }
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::q)) {
-        m_eye += m_up * dt;
+    if (input.IsKeyDown (InputManager::Key::q)) {
+        acc += localY;
     }
-    if (InputManager::Instance ().IsKeyDown (InputManager::Key::e)) {
-        m_eye -= m_up * dt;
+    if (input.IsKeyDown (InputManager::Key::e)) {
+        acc -= localY;
     }
+
+    Math::Vec3 dAcc = acc.Normalize () * dt;
+    eye += dAcc;
+    lookat += dAcc;
 
     int dx, dy;
     InputManager::Instance ().GetMouseDelta (&dx, &dy);
 
-    m_yaw += 0.02f * dx;
-    m_pitch += 0.005f * dy;
+    lookat = (Math::Vec4 (lookat, 1.0f) * Math::Mat4::Translate (-eye) * Math::Mat4::Rotate (dt * dy, localX) * Math::Mat4::Rotate (-dt * dx, localY) * Math::Mat4::Translate (eye)).xyz ();
+}
 
-    if (m_pitch < -Math::Pi * 0.49f)
-        m_pitch = -Math::Pi * 0.49f;
-    else if (m_pitch > Math::Pi * 0.49f)
-        m_pitch = Math::Pi * 0.49f;
 
-    m_ahead = Math::Vec3 (sinf (m_yaw) * cosf (m_pitch), -sinf (m_pitch), cosf (m_yaw) * cosf (m_pitch));
-
-    SetView (m_eye, m_ahead, Math::Vec3::UnitY ());
+void Camera::CalcLocalAxes ()
+{
+    localZ = (eye - lookat).Normalize ();
+    localX = up.Cross (localZ).Normalize ();
+    localY = localZ.Cross (localX);
 }
 
 }   // namespace GLngin

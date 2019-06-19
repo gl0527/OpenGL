@@ -31,7 +31,7 @@ namespace GLngin {
 
 Timer::Timer () :
     m_prevTime (0.0f),
-    m_upTime (0.0f),
+    upTime (0.0f),
     m_deltaTime (0.0f),
     m_isRunning (true)
 {
@@ -49,7 +49,7 @@ void Timer::Tick ()
         m_prevTime = currTime;
 
     m_deltaTime = currTime - m_prevTime;
-    m_upTime += m_deltaTime;
+    upTime += m_deltaTime;
     m_prevTime = currTime;
 }
 
@@ -57,7 +57,7 @@ void Timer::Tick ()
 void Timer::Reset ()
 {
     m_prevTime = 0.0f;
-    m_upTime = 0.0f;
+    upTime = 0.0f;
     m_deltaTime = 0.0f;
 }
 
@@ -77,7 +77,7 @@ void Timer::Resume ()
 
 float Timer::GetUptime () const
 {
-    return m_upTime;
+    return upTime;
 }
 
 

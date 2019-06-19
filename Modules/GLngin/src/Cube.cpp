@@ -24,12 +24,12 @@ Cube::~Cube ()
 }
 
 
-void Cube::Init ()
+void Cube::Init (float scalar)
 {
     GL_CALL (glGenVertexArrays (1, &m_vertexArrayID));
     GL_CALL (glBindVertexArray (m_vertexArrayID));
 
-    constexpr float coords[] = {
+    float coords[] = {
         // back
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -78,6 +78,9 @@ void Cube::Init ()
         -1.0f, -1.0f,  1.0f,
          1.0f, -1.0f,  1.0f
     };
+
+    for (float& f : coords)
+        f *= scalar;
 
     GL_CALL (glGenBuffers (1, &m_vertexBufferID));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, m_vertexBufferID));

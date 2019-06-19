@@ -22,7 +22,7 @@ public:
 
 private:
     float   m_prevTime;
-    float   m_upTime;
+    float   upTime;
     float   m_deltaTime;
     bool    m_isRunning;
 };

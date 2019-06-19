@@ -28,7 +28,7 @@ static GLngin::Timer timer;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
-static GLngin::Camera camera (GLngin::Math::Vec3 (0, 0.5, 3), GLngin::Math::Vec3::NegativeUnitZ (), GLngin::Math::Vec3::UnitY ());
+static GLngin::Camera camera (GLngin::Math::Vec3 (0, 2, -2.5), GLngin::Math::Vec3 (0,0,0), GLngin::Math::Vec3::UnitY ());
 static GLngin::Cube skybox;
 static GLngin::TextureCube skyboxTexture;
 
@@ -68,7 +68,7 @@ void onInitialization ()
 
     inputManager.Init ();
 
-    skybox.Init ();
+    skybox.Init (500);
     skyboxTexture.Init ();
     skyboxTexture.Load (currFolder + "../assets/emerald_rt.tga",
                         currFolder + "../assets/emerald_lf.tga",
@@ -206,17 +206,16 @@ void onDisplay ()
     GL_CALL (glDispatchCompute (N/Nwg, N/Nwg, 1));
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
+    GLngin::Math::Mat4 VP = camera.View () * camera.Proj ();
+
     // Render skybox
     skyboxProgram.Use ();
-    GLngin::Math::Mat4 viewMat = camera.GetViewMatrix ().SetTranslation (GLngin::Math::Vec3::Zero ());
-    skyboxProgram.SetUniformMat4 ("view", viewMat);
-    skyboxProgram.SetUniformMat4 ("proj", camera.GetProjMatrix ());
+    skyboxProgram.SetUniformMat4 ("MVP", VP);
     skybox.Render ();
 
     // Render the particles
     renderProgram.Use ();
-    renderProgram.SetUniformMat4 ("view", camera.GetProjMatrix ());
-    renderProgram.SetUniformMat4 ("proj", camera.GetViewMatrix ());
+    renderProgram.SetUniformMat4 ("MVP", GLngin::Math::Mat4::Translate (GLngin::Math::Vec3 (0,1,0)) * VP);
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, N*N));
     GL_CALL (glBindVertexArray (0));

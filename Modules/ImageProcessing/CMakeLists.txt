@@ -4,9 +4,8 @@ string (REPLACE " " "_" TARGET_NAME ${TARGET_NAME})
 cmake_minimum_required (VERSION 3.5.1)
 project (${TARGET_NAME})
 
-include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/)
-include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/Math/)
-include_directories (${CMAKE_SOURCE_DIR}/GLngin/inc/Resource/)
+include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/)
+include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/Math/)
 
 add_executable (${TARGET_NAME} src/main.cpp)
 

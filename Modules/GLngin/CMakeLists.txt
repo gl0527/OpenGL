@@ -4,13 +4,13 @@ string (REPLACE " " "_" TARGET_NAME ${TARGET_NAME})
 cmake_minimum_required (VERSION 3.5.1)
 project (${TARGET_NAME})
 
-file (GLOB_RECURSE INCLUDES LIST_DIRECTORIES false "inc/*.hpp")
-file (GLOB_RECURSE SOURCES LIST_DIRECTORIES false "src/*.cpp")
+file (GLOB_RECURSE INCLUDES LIST_DIRECTORIES false "Headers/*.hpp")
+file (GLOB_RECURSE SOURCES LIST_DIRECTORIES false "Sources/*.cpp")
 add_library (${TARGET_NAME} SHARED ${SOURCES} ${INCLUDES})
 
 set (ASSIMP_LIBRARY "libassimp.so")
 
-include_directories (inc/ inc/Math/)
+include_directories (Headers/ Headers/Math/)
 target_link_libraries (${TARGET_NAME} ${OPENGL_LIBRARY} ${GLEW_LIBRARY} -lILU ${ASSIMP_LIBRARY})
 
 set (BINDIR ${CMAKE_SOURCE_DIR}/../Bin/${TARGET_NAME})

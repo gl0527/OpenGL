@@ -27,9 +27,10 @@ vec3 deltaPos (uint ID, uint neighborID)
     float originalDist = length (position[neighborID].xyz - position[ID].xyz);
     float currentDist = length (positionTmp[neighborID].xyz - positionTmp[ID].xyz);
 
-    return currentDist > 0.0001 ?
-        ((positionTmp[neighborID].xyz - positionTmp[ID].xyz) / currentDist) * ((currentDist - originalDist) * 0.5 * ConstraintWeight) :
-        positionTmp[ID].xyz - positionTmp[neighborID].xyz;
+    if (currentDist > 1e-4)
+        return ((positionTmp[neighborID].xyz - positionTmp[ID].xyz) / currentDist) * ((currentDist - originalDist) * 0.5 * ConstraintWeight);
+    else
+        return vec3 (0,0,0);
 }
 
 void main()
@@ -40,28 +41,32 @@ void main()
     uint resY = gl_NumWorkGroups.y * gl_WorkGroupSize.y;
     uint IDX = Y * resX + X;
 
+    vec3 dPos = vec3 (0,0,0);
+
     if(X > 0) {
-        positionTmp[IDX].xyz += deltaPos (IDX, IDX-1);
+        dPos += deltaPos (IDX, IDX-1);
         if (Y > 0) {
-            positionTmp[IDX].xyz += deltaPos (IDX, IDX-1-resX);
+            dPos += deltaPos (IDX, IDX-1-resX);
         }
         if (Y < resY) {
-            positionTmp[IDX].xyz += deltaPos (IDX, IDX-1+resX);
+            dPos += deltaPos (IDX, IDX-1+resX);
         }
     }
     if(X < resX) {
-        positionTmp[IDX].xyz += deltaPos (IDX, IDX+1);
+        dPos += deltaPos (IDX, IDX+1);
         if (Y > 0) {
-            positionTmp[IDX].xyz += deltaPos (IDX, IDX+1-resX);
+            dPos += deltaPos (IDX, IDX+1-resX);
         }
         if (Y < resY) {
-            positionTmp[IDX].xyz += deltaPos (IDX, IDX+1+resX);
+            dPos += deltaPos (IDX, IDX+1+resX);
         }
     }
     if(Y > 0) {
-        positionTmp[IDX].xyz += deltaPos (IDX, IDX-resX);
+        dPos += deltaPos (IDX, IDX-resX);
     }
     if (Y < resY) {
-        positionTmp[IDX].xyz += deltaPos (IDX, IDX+resX);
+        dPos += deltaPos (IDX, IDX+resX);
     }
+
+    positionTmp[IDX] += vec4 (dPos, 1.0);
 }

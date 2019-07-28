@@ -4,10 +4,11 @@ string (REPLACE " " "_" TARGET_NAME ${TARGET_NAME})
 cmake_minimum_required (VERSION 3.5.1)
 project (${TARGET_NAME})
 
+include_directories (inc)
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/)
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/Math/)
 
-add_executable (${TARGET_NAME} src/main.cpp)
+add_executable (${TARGET_NAME} src/main.cpp src/Ball.cpp)
 
 find_package (GLUT REQUIRED)
 

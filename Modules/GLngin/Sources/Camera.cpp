@@ -14,21 +14,21 @@ Camera::Camera (const Math::Vec3& eye, const Math::Vec3& lookat, const Math::Vec
     eye (eye),
     lookat (lookat),
     up (up),
-    localZ ((eye - lookat).Normalize ()),
-    localX (up.Cross (localZ).Normalize ()),
-    localY (localZ.Cross (localX)),
     fov (Math::AngleToRadian (60)),
     asp (1.0f),
     fp (0.5f),
     bp (1000.0f),
+    moveSpeed (3.0f),
+    turnSpeed (2.0f),
     input (InputManager::Instance ())
 {
 }
 
 
-Math::Mat4 Camera::View ()
+Math::Mat4 Camera::View () const
 {
-    CalcLocalAxes ();
+    Math::Vec3 localX, localY, localZ;
+    CalcLocalAxes (&localX, &localY, &localZ);
 
     return Math::Mat4::Translate (-eye) * Math::Mat4 (  localX.x, localY.x, localZ.x, 0.0f,
                                                         localX.y, localY.y, localZ.y, 0.0f,
@@ -37,7 +37,7 @@ Math::Mat4 Camera::View ()
 }
 
 
-Math::Mat4 Camera::Proj ()
+Math::Mat4 Camera::Proj () const
 {
     float yScale = 1 / tanf (fov * 0.5f);
     float xScale = yScale / asp;
@@ -49,9 +49,22 @@ Math::Mat4 Camera::Proj ()
 }
 
 
+void Camera::SetMoveSpeed (float newMoveSpeed)
+{
+    moveSpeed = newMoveSpeed;
+}
+
+
+void Camera::SetTurnSpeed (float newTurnSpeed)
+{
+    turnSpeed = newTurnSpeed;
+}
+
+
 void Camera::Animate (float dt)
 {
-    CalcLocalAxes ();
+    Math::Vec3 localX, localY, localZ;
+    CalcLocalAxes (&localX, &localY, &localZ);
     
     Math::Vec3 acc;
 
@@ -74,22 +87,28 @@ void Camera::Animate (float dt)
         acc -= localY;
     }
 
-    Math::Vec3 dAcc = acc.Normalize () * dt;
+    Math::Vec3 dAcc = acc.Normalize () * dt * moveSpeed;
     eye += dAcc;
     lookat += dAcc;
 
     int dx, dy;
-    InputManager::Instance ().GetMouseDelta (&dx, &dy);
+    input.GetMouseDelta (&dx, &dy);
 
-    lookat = (Math::Vec4 (lookat, 1.0f) * Math::Mat4::Translate (-eye) * Math::Mat4::Rotate (dt * dy, localX) * Math::Mat4::Rotate (-dt * dx, localY) * Math::Mat4::Translate (eye)).xyz ();
+    Math::Vec3 dir = (lookat - eye).Normalize ();
+    Math::Mat4 rotAroundX = Math::Mat4::Identity ();
+    if (dir.Dot (Math::Vec3::UnitY ()) > -0.8f && dir.Dot (Math::Vec3::UnitY ()) < 0.8f)
+        rotAroundX = Math::Mat4::Rotate (dt * dy * turnSpeed, localX);
+    Math::Mat4 rotAroundY = Math::Mat4::Rotate (-dt * dx * turnSpeed, localY);
+
+    lookat = (Math::Vec4 (lookat, 1.0f) * Math::Mat4::Translate (-eye) * rotAroundX * rotAroundY * Math::Mat4::Translate (eye)).xyz ();
 }
 
 
-void Camera::CalcLocalAxes ()
+void Camera::CalcLocalAxes (Math::Vec3* outLocalX, Math::Vec3* outLocalY, Math::Vec3* outLocalZ) const
 {
-    localZ = (eye - lookat).Normalize ();
-    localX = up.Cross (localZ).Normalize ();
-    localY = localZ.Cross (localX);
+    *outLocalZ = (eye - lookat).Normalize ();
+    *outLocalX = up.Cross (*outLocalZ).Normalize ();
+    *outLocalY = outLocalZ->Cross (*outLocalX);
 }
 
 }   // namespace GLngin

@@ -12,6 +12,7 @@
 #include "Cube.hpp"
 #include "TextureCube.hpp"
 #include "Timer.hpp"
+#include "Ball.hpp"
 
 
 const unsigned int windowWidth = 600;
@@ -28,7 +29,7 @@ static GLngin::Timer timer;
 
 static GLngin::InputManager& inputManager = GLngin::InputManager::Instance ();
 
-static GLngin::Camera camera (GLngin::Math::Vec3 (0, 2, -2.5), GLngin::Math::Vec3 (0,0,0), GLngin::Math::Vec3::UnitY ());
+static GLngin::Camera camera (GLngin::Math::Vec3 (0, 1, -3.0), GLngin::Math::Vec3 (0,0,0), GLngin::Math::Vec3::UnitY ());
 static GLngin::Cube skybox;
 static GLngin::TextureCube skyboxTexture;
 
@@ -49,6 +50,8 @@ static GLuint velocityBuffer; //v
 
 // Vertex array object
 static GLuint vao;
+
+Ball ball ("Ball", GLngin::Math::Vec3 (0.0f, -0.25f, 0.0f));
 
 
 void onInitialization ()
@@ -109,7 +112,7 @@ void onInitialization ()
     skyboxProgram.Link ();
 
     // set up constant uniform variables
-    const float dt = 0.001f;
+    const float dt = 0.0015f;
 
     gravityProgram.Use ();
     gravityProgram.SetUniformFloat ("dt", dt);
@@ -118,7 +121,7 @@ void onInitialization ()
     collisionProgram.SetUniformFloat ("ConstraintWeight", 0.9f);
 
     distanceProgram.Use ();
-    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.051f);
+    distanceProgram.SetUniformFloat ("ConstraintWeight", 0.25f);
 
     finalUpdateProgram.Use ();
     finalUpdateProgram.SetUniformFloat ("dt", dt);
@@ -176,6 +179,8 @@ void onInitialization ()
     GL_CALL (glVertexAttribPointer (vPositionIndex, 4, GL_FLOAT, GL_FALSE, sizeof (GLngin::Math::Vec4), nullptr));
 
     GL_CALL (glBindVertexArray (0));
+
+    ball.Init ();
 }
 
 
@@ -219,6 +224,8 @@ void onDisplay ()
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, N*N));
     GL_CALL (glBindVertexArray (0));
+
+    ball.Draw (&camera);
 
     glutSwapBuffers ();
 }

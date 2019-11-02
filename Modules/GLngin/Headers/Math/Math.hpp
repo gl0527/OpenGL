@@ -3,25 +3,25 @@
 #ifndef GLNGIN_MATH_MATH_HPP
 #define GLNGIN_MATH_MATH_HPP
 
-#include "API.hpp"
 #include <cmath>
 
 
 namespace GLngin {
 namespace Math {
 
-inline constexpr float Pi = 3.14159265f;
+inline constexpr float M_PI_180 = 0.01745329251994329576922f;
+inline constexpr float M_180_PI = 57.29577951308232087685f;
+inline constexpr float M_1_LOG2 = 3.32192809488736234787f;
 
-
-constexpr float AngleToRadian (float angle)
+constexpr float DegToRad (float deg)
 {
-    return angle * Pi / 180;
+    return deg * M_PI_180;
 }
 
 
-constexpr float RadianToAngle (float radian)
+constexpr float RadToDeg (float rad)
 {
-    return radian * 180 / Pi;
+    return rad * M_180_PI;
 }
 
 
@@ -73,6 +73,12 @@ inline float Random (float a, float b)
 inline int Random (int a, int b)
 {
     return rand () % (b - a + 1) + a;
+}
+
+
+inline double Log2 (double d)
+{
+    return log (d) * M_1_LOG2;
 }
 
 }   // namespace Math

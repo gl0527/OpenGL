@@ -5,11 +5,11 @@
 
 #include "API.hpp"
 #include <iostream>
+#include <string>
 
 #ifdef __linux__
 #include <signal.h>
 #endif
-
 
 #ifdef __GNUC__
 #define FUNCTION __PRETTY_FUNCTION__
@@ -18,6 +18,8 @@
 #define FUNCTION __func__
 #define DBBREAK __debugbreak ()
 #endif
+
+#define FOLDER GLngin::GetFolderName (__FILE__)
 
 #define LOG(msg) std::cerr << __FILE__ << "(" << __LINE__ << "): " << msg << std::endl
 
@@ -53,19 +55,11 @@
 #define IL_CALL(ilExpr) ilExpr
 #endif
 
-#define FOLDER [] () -> std::string                     \
-    {                                                   \
-        char folderPath[] = __FILE__;                   \
-        char* pLastSlash = strrchr (folderPath, '/');   \
-        *(++pLastSlash) = '\0';                         \
-        return folderPath;                              \
-    } ().c_str ()
-
-
 namespace GLngin {
     GLNGIN_API std::string GetGLInfoString ();
     GLNGIN_API const char * GetGLEnumStr (unsigned int enumElem);
     GLNGIN_API const char * GetILEnumStr (unsigned int enumElem);
+    GLNGIN_API std::string GetFolderName (const std::string& filePath);
     // TODO call stack kiiratasa hiba eseten!!!
     // TODO FPS, haromszogszam, ... kiiratasa a kepernyore
 }   // namespace GLngin

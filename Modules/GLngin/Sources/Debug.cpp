@@ -4,6 +4,8 @@
 #include <IL/il.h>
 #include <IL/ilut.h>
 
+#include <cstring>
+
 
 namespace GLngin {
 
@@ -75,6 +77,12 @@ const char * GetILEnumStr (unsigned int enumElem)
 #undef ILENUM
 
     return "UNKNOWN_ENUM";
+}
+
+
+std::string GetFolderName (const std::string& filePath)
+{
+    return filePath.substr (0, filePath.find_last_of ("/\\")) + "/";
 }
 
 }   // namespace GLngin

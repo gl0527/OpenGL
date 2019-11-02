@@ -304,6 +304,12 @@ inline const Vec3& Vec3::NegativeUnitZ ()
     return NegativeUnitZ;
 }
 
+
+constexpr Vec3 operator* (float scalar, const Vec3& vec)
+{
+    return vec * scalar;
+}
+
 }   // namespace Math
 }   // namespace GLngin
 

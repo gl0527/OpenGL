@@ -34,7 +34,7 @@ public:
     constexpr Vec4&             operator+ ();
     constexpr Vec4              operator+ (const Vec4& vec) const;
     constexpr Vec4&             operator+= (const Vec4& vec);
-    constexpr Vec4              operator- ();
+    constexpr Vec4              operator- () const;
     constexpr Vec4              operator- (const Vec4& vec) const;
     constexpr Vec4&             operator-= (const Vec4& vec);
     constexpr Vec4&             operator*= (float scalar);
@@ -196,7 +196,7 @@ constexpr Vec4& Vec4::operator+= (const Vec4& vec)
 }
 
 
-constexpr Vec4 Vec4::operator- ()
+constexpr Vec4 Vec4::operator- () const 
 {
     return Vec4 (-x, -y, -z, -w);
 }
@@ -383,6 +383,12 @@ inline const Vec4& Vec4::NegativeUnitW ()
     static Vec4 NegativeUnitW (0.0f, 0.0f, 0.0f, -1.0f);
 
     return NegativeUnitW;
+}
+
+
+constexpr Vec4 operator* (float scalar, const Vec4& vec)
+{
+    return vec * scalar;
 }
 
 }   // namespace Math

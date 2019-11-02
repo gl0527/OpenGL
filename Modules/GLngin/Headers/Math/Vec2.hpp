@@ -236,6 +236,12 @@ inline const Vec2& Vec2::NegativeUnitY ()
     return NegativeUnitY;
 }
 
+
+constexpr Vec2 operator* (float scalar, const Vec2& vec)
+{
+    return vec * scalar;
+}
+
 }   // namespace Math
 }   // namespace GLngin
 

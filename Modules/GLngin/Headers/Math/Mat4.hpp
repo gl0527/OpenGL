@@ -5,6 +5,7 @@
 
 #include "API.hpp"
 #include <cmath>
+#include <optional>
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
@@ -44,7 +45,7 @@ public:
     constexpr Vec4                  GetCol (unsigned char index) const;
 
     constexpr Mat4                  Transpose () const;
-    constexpr bool                  Invert (Mat4* mat) const;
+    constexpr std::optional<Mat4>   Invert () const;
 
     constexpr static Mat4           Translate (const Vec3& v);
     inline    static Mat4           Rotate (float angle, const Vec3& axis);
@@ -62,7 +63,10 @@ private:
 
 
 constexpr Mat4::Mat4 () :
-    m_array {{},{},{},{}}
+    m_array {   {0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 0.0f, 0.0f}}
 {
 }
 
@@ -299,8 +303,7 @@ constexpr float Mat4::Cofactor (unsigned char i,  unsigned char j) const
     return (i + j) % 2 == 0 ? minor : -minor;
 }
 
-
-constexpr bool Mat4::Invert (Mat4* mat) const
+constexpr std::optional<Mat4> Mat4::Invert () const
 {
     Mat4 comatrix;
     float det = 0.0f;
@@ -311,13 +314,13 @@ constexpr bool Mat4::Invert (Mat4* mat) const
         }
         if (i == 0) {
             det = Vec4 (m_array[0]).Dot (comatrix.m_array[0]);
-            if (fabsf (det) < 1e-6f)
-               return false;
+            if (fabsf (det) < 1e-6f) {
+               return std::nullopt;
+            }
         }
     }
 
-    *mat = comatrix.Transpose () * (1 / det);
-    return true;
+    return comatrix.Transpose () * (1 / det);
 }
 
 
@@ -332,10 +335,10 @@ constexpr Mat4 Mat4::Translate (const Vec3& v)
 
 inline Mat4 Mat4::Rotate (float phi, const Vec3& axis)
 {
-    Vec3 w = axis.Normalize ();
-    float cosPhi = cosf (phi);
-    float cosPhiInv = 1.0f - cosPhi;
-    float sinPhi = sinf (phi);
+    const Vec3 w = axis.Normalize ();
+    const float cosPhi = cosf (phi);
+    const float cosPhiInv = 1.0f - cosPhi;
+    const float sinPhi = sinf (phi);
 
     return Mat4 (   w.x * w.x * cosPhiInv + cosPhi, w.x * w.y * cosPhiInv + w.z * sinPhi, w.x * w.z * cosPhiInv - w.y * sinPhi, 0.0f,
                     w.x * w.y * cosPhiInv - w.z * sinPhi, cosPhi + w.y * w.y * cosPhiInv, w.y * w.z * cosPhiInv + w.x * sinPhi, 0.0f,

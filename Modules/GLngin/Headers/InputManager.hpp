@@ -4,17 +4,19 @@
 #define GLNGIN_INPUT_MANAGER_HPP
 
 #include "API.hpp"
-
 #include <GL/freeglut_std.h>
 
 
 namespace GLngin {
+namespace Math {
+    class Vec2;
+}   // namespace Math
 
 class GLNGIN_API InputManager final {
 public:
     static constexpr unsigned char specKeyOffset = 128;
 
-    enum class Key : unsigned char {
+    enum Key {
         ANY          = 0,
 
         BACKSPACE    = 8,
@@ -116,6 +118,14 @@ public:
         INSERT       = GLUT_KEY_INSERT + specKeyOffset,
     };
 
+    enum Mouse {
+        LEFT_BUTTON     = GLUT_LEFT_BUTTON,
+        MIDDLE_BUTTON   = GLUT_MIDDLE_BUTTON,
+        RIGHT_BUTTON    = GLUT_RIGHT_BUTTON,
+        SCROLL_UP,
+        SCROLL_DOWN,
+    };
+
     static InputManager&    Instance ();
 
                             InputManager (const InputManager&) = delete;
@@ -124,31 +134,52 @@ public:
     void                    Init () const;
 
     void                    Enable () const;
-    void                    Disable () const;
+    void                    Disable ();
 
     bool                    IsKeyPressed (Key key) const;
     bool                    IsKeyDown (Key key) const;
     bool                    IsKeyReleased (Key key) const;
 
-    void                    GetMouseCoordsInNDC (float * x, float * y) const;
-    void                    GetMouseCoordsInOpenGLWindowSpace (int * x, int * y) const;
-    void                    GetMouseCoordsInGLUTWindowSpace (int * x, int * y) const;
+    Math::Vec2              GetMouseCoordsInNDC () const;
+    Math::Vec2              GetMouseCoordsInOpenGLWindowSpace () const;
+    Math::Vec2              GetMouseCoordsInGLUTWindowSpace () const;
 
-    void                    GetMouseDelta (int * dx, int * dy) const;
+    Math::Vec2              GetMouseDelta () const;
 
     bool                    IsLeftMouseButtonDown () const;
     bool                    IsRightMouseButtonDown () const;
     bool                    IsMiddleMouseButtonDown () const;
+    bool                    IsScrollUp () const;
+    bool                    IsScrollDown () const;
 
-    void                    Update () const;
+    void                    Update ();
 
 private:
-    static InputManager instance;
-
-                            InputManager () = default;
+                            InputManager ();
 
     void                    BindCallbacks () const;
     void                    UnBindCallbacks () const;
+
+    friend void             OnKeyHelper (unsigned char key, bool state);
+    friend void             OnMouseHelper (int x, int y);
+    friend void             OnMouse (int button, int state, int x, int y);
+
+private:
+    struct KeyData {
+        bool prevState;
+        bool state;
+    };
+
+    KeyData keyState[256];
+    int mouseState[5];
+    int lastKey;
+
+    int mouseX;
+    int mouseY;
+    int dMouseX;
+    int dMouseY;
+
+    unsigned char SCROLL;
 };
 
 }   // namespace GLngin

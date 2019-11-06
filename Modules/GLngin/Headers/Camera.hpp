@@ -16,18 +16,21 @@ class InputManager;
 
 class GLNGIN_API Camera {
 public:
-                Camera (const Math::Vec3& eye, const Math::Vec3& lookat, const Math::Vec3& up);
+                Camera (const Math::Vec3& eye, const Math::Vec3& lookat, const Math::Vec3& up, int windowWidth, int windowHeight);
 
     Math::Mat4  View () const;
     Math::Mat4  Proj () const;
 
+    void        SetAspectRatio (int newWidth, int newHeight);
+
     void        SetMoveSpeed (float newMoveSpeed);
     void        SetTurnSpeed (float newTurnSpeed);
+    void        SetZoomSpeed (float newZoomSpeed);
 
-    void        Animate (float dt);
+    void        Control (float t, float dt, const InputManager& input);
 
 private:
-    void CalcLocalAxes (Math::Vec3* outLocalX, Math::Vec3* outLocalY, Math::Vec3* outLocalZ) const;
+    void        CalcLocalAxes (Math::Vec3* outLocalX, Math::Vec3* outLocalY, Math::Vec3* outLocalZ) const;
 
 private:
     Math::Vec3 eye;
@@ -41,8 +44,7 @@ private:
 
     float moveSpeed;
     float turnSpeed;
-
-    InputManager& input;
+    float zoomSpeed;
 };
 
 }   // namespace GLngin

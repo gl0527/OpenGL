@@ -23,6 +23,12 @@ GameObject::~GameObject ()
 }
 
 
+const std::string& GameObject::GetId () const
+{
+    return id;
+}
+
+
 bool GameObject::AddChild (const std::shared_ptr<GameObject>& child)
 {
     if (children.find (child->id) == children.end ()) {
@@ -33,10 +39,10 @@ bool GameObject::AddChild (const std::shared_ptr<GameObject>& child)
 }
 
 
-bool GameObject::RemoveChild (const std::string& id)
+bool GameObject::RemoveChild (const std::string& _id)
 {
-    if (children.find (id) != children.end ()) {
-        children.erase (id);
+    if (children.find (_id) != children.end ()) {
+        children.erase (_id);
         return true;
     } else {
         return false;
@@ -47,40 +53,54 @@ bool GameObject::RemoveChild (const std::string& id)
 void GameObject::Init ()
 {
     InitImpl ();
-    for (auto& [id, child] : children)
+    for (auto& [id, child] : children) {
         child->Init ();
+    }
 }
 
 
 void GameObject::Interact (GameObject* other)
 {
     InteractImpl (other);
-    for (auto& [id, child] : children)
+    for (auto& [id, child] : children) {
         child->Interact (other);
+    }
 }
 
 
-void GameObject::Control (float t, float dt)
+void GameObject::Control (float t, float dt, const InputManager& input)
 {
-    ControlImpl (t, dt);
-    for (auto& [id, child] : children)
-        child->Control (t, dt);
+    ControlImpl (t, dt, input);
+    for (auto& [id, child] : children) {
+        child->Control (t, dt, input);
+    }
 }
 
 
 void GameObject::Animate (float t, float dt)
 {
     AnimateImpl (t, dt);
-    for (auto& [id, child] : children)
+    for (auto& [id, child] : children) {
         child->Animate (t, dt);
+    }
 }
 
 
-void GameObject::Draw (const Camera* const camera) const
+void GameObject::Draw (const RenderState& renderState) const
 {
-    DrawImpl (camera);
-    for (const auto& [id, child] : children)
-        child->Draw (camera);
+    DrawImpl (renderState);
+    for (const auto& [id, child] : children) {
+        child->Draw (renderState);
+    }
+}
+
+
+void GameObject::Terminate ()
+{
+    TerminateImpl ();
+    for (auto& [id, child] : children) {
+        child->Terminate ();
+    }
 }
 
 }   // namespace GLngin

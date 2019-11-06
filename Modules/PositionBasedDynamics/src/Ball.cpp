@@ -4,6 +4,7 @@
 #include "Mat4.hpp"
 #include "Camera.hpp"
 #include "Sphere.hpp"
+#include "RenderState.hpp"
 #include <GL/glew.h>
 #include <cstdio>
 #include <cstring>
@@ -24,12 +25,12 @@ void Ball::InitImpl ()
 }
 
 
-void Ball::DrawImpl (const GLngin::Camera* const camera) const
+void Ball::DrawImpl (const GLngin::RenderState& renderState) const
 {
     GLngin::Math::Mat4 MVP =    GLngin::Math::Mat4::Scale (scale) *
                                 GLngin::Math::Mat4::Rotate (rotAngle, rotAxis) *
                                 GLngin::Math::Mat4::Translate (position) *
-                                camera->View () * camera->Proj ();
+                                renderState.viewProj.value ();
 
     program.Use ();
     program.SetUniformMat4 ("MVP", MVP);

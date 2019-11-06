@@ -11,7 +11,7 @@ add_library (${TARGET_NAME} SHARED ${SOURCES} ${INCLUDES})
 set (ASSIMP_LIBRARY "libassimp.so")
 
 include_directories (Headers/ Headers/Math/)
-target_link_libraries (${TARGET_NAME} ${OPENGL_LIBRARY} ${GLEW_LIBRARY} -lILU ${ASSIMP_LIBRARY})
+target_link_libraries (${TARGET_NAME} ${OPENGL_LIBRARY} ${GLEW_LIBRARY} -lILU -lIL ${ASSIMP_LIBRARY})
 
 set (BINDIR ${CMAKE_SOURCE_DIR}/../Bin/${TARGET_NAME})
 

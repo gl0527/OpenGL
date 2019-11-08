@@ -86,7 +86,7 @@ void GameObject::Animate (float t, float dt)
 }
 
 
-void GameObject::Draw (const RenderState& renderState) const
+void GameObject::Draw (const RenderState& renderState)
 {
     DrawImpl (renderState);
     for (const auto& [id, child] : children) {

@@ -8,288 +8,36 @@
 
 #include <GL/glew.h>
 #include <fstream>
+#include <cstring>
 
 
 namespace GLngin {
 
 namespace {
 
-void GetShaderErrorInfo (unsigned int id)
+void GetErrorInfo (unsigned int id, bool forProgram)
 {
     int logLen;
-    GL_CALL (glGetShaderiv (id, GL_INFO_LOG_LENGTH, &logLen));
+    if (forProgram) {
+        GL_CALL (glGetProgramiv (id, GL_INFO_LOG_LENGTH, &logLen));
+    } else {
+        GL_CALL (glGetShaderiv (id, GL_INFO_LOG_LENGTH, &logLen));
+    }
     if (logLen > 0) {
         char * log = new char[logLen];
         int written;
-        GL_CALL (glGetShaderInfoLog (id, logLen, &written, &log[0]));
+        if (forProgram) {
+            GL_CALL (glGetProgramInfoLog (id, logLen, &written, &log[0]));
+        } else {
+            GL_CALL (glGetShaderInfoLog (id, logLen, &written, &log[0]));
+        }
         LOG (log);
         delete[] log;
     }
 }
 
 
-void GetProgramErrorInfo (unsigned int id)
-{
-    int logLen;
-    GL_CALL (glGetProgramiv (id, GL_INFO_LOG_LENGTH, &logLen));
-    if (logLen > 0) {
-        char * log = new char[logLen];
-        int written;
-        GL_CALL (glGetProgramInfoLog (id, logLen, &written, &log[0]));
-        LOG (log);
-        delete[] log;
-    }
-}
-
-}   // namepace
-
-
-Program::Program () :
-    m_id (0),
-    m_inited (false),
-    m_linked (false)
-{
-}
-
-
-Program::~Program ()
-{
-    if (!m_inited)
-        return;
-
-    GL_CALL (glDeleteProgram (m_id));
-}
-
-
-void Program::Init ()
-{
-    GL_CALL (m_id = glCreateProgram ());
-    if (m_id == 0)
-        LOG ("Error in shader program creation.");
-
-    m_inited = true;
-}
-
-
-bool Program::AddShaderFromFile (unsigned int type, const char * fileName)
-{
-    if (!m_inited || m_linked)
-        return false;
-
-    unsigned int loadedShaderID = LoadShaderFromFile (type, fileName);
-    if (loadedShaderID == 0)
-        return false;
-
-    m_shaders.push_back (loadedShaderID);
-    GL_CALL (glAttachShader (m_id, loadedShaderID));
-    return true;
-}
-
-
-bool Program::AddShaderFromFile (unsigned int type, const std::string& fileName)
-{
-    return AddShaderFromFile (type, fileName.c_str ());
-}
-
-
-bool Program::AddShaderFromString (unsigned int type, const char * content)
-{
-    if (!m_inited || m_linked)
-        return false;
-
-    unsigned int loadedShaderID = LoadShaderFromString (type, content);
-    if (loadedShaderID == 0)
-        return false;
-
-    m_shaders.push_back (loadedShaderID);
-    GL_CALL (glAttachShader (m_id, loadedShaderID));
-    return true;
-}
-
-
-bool Program::AddShaderFromString (unsigned int type, const std::string& content)
-{
-    return AddShaderFromString (type, content.c_str ());
-}
-
-
-bool Program::BindAttribIndex (const char * attribName, unsigned int index) const
-{
-    if (!m_inited || m_linked)
-        return false;
-
-    GL_CALL (glBindAttribLocation (m_id, index, attribName));
-    return true;
-}
-
-
-bool Program::BindFragDataIndex (const char * attribName, unsigned int index) const
-{
-    if (!m_inited || m_linked)
-        return false;
-
-    GL_CALL (glBindFragDataLocation (m_id, index, attribName));
-    return true;
-}
-
-
-bool Program::Link ()
-{
-    if (!m_inited)
-        return false;
-
-    GL_CALL (glLinkProgram (m_id));
-
-    for (unsigned int shaderID : m_shaders) {
-        GL_CALL (glDetachShader (m_id, shaderID));
-        GL_CALL (glDeleteShader (shaderID));
-    }
-    m_shaders.clear ();
-
-    int OK = 0;
-    GL_CALL (glGetProgramiv (m_id, GL_LINK_STATUS, &OK));
-    if (OK == 0) {
-        LOG ("Failed to link shader program!");
-        GetProgramErrorInfo (m_id);
-        return false;
-    }
-
-    m_linked = true;
-    return true;
-}
-
-
-bool Program::Use () const
-{
-    if (!m_linked)
-        return false;
-
-    GL_CALL (glUseProgram (m_id));
-    return true;
-}
-
-
-void Program::UnUse () const
-{
-    GL_CALL (glUseProgram (0));
-}
-
-
-unsigned int Program::GetID () const
-{
-    return m_id;
-}
-
-
-bool Program::SetUniformFloat (const char * uniformName, float value) const
-{    
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniform1f (location, value));
-    return true;
-}
-
-
-bool Program::SetUniformInt (const char * uniformName, int value) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniform1i (location, value));
-    return true;
-}
-
-
-bool Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniformMatrix4fv (location, 1, GL_TRUE, value));
-    return true;
-}
-
-
-bool Program::SetUniformVec2 (const char * uniformName, const Math::Vec2& value) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniform2f (location, value.x, value.y));
-    return true;
-}
-
-
-bool Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniform3f (location, value.x, value.y, value.z));
-    return true;
-}
-
-
-bool Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-    GL_CALL (glUniform4f (location, value.x, value.y, value.z, value.w));
-    return true;
-}
-
-
-bool Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-
-    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
-    GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
-    GL_CALL (glUniform1i (location, unitID));
-    return true;
-}
-
-
-bool Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID) const
-{
-    int location = GetUniformIndex (uniformName);
-    if (location < 0)
-        return false;
-
-    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
-    GL_CALL (glBindTexture (GL_TEXTURE_CUBE_MAP, texID));
-    GL_CALL (glUniform1i (location, unitID));
-    return true;
-}
-
-
-int Program::GetAttributeIndex (const char * attribName) const
-{
-    int location = -1;
-    if (!m_linked)
-        return location;
-
-    GL_CALL (location = glGetAttribLocation (m_id, attribName));
-    return location;
-}
-
-
-int Program::GetUniformIndex (const char * uniformName) const
-{
-    int location = -1;
-    if (!m_linked)
-        return location;
-
-    GL_CALL (location = glGetUniformLocation (m_id, uniformName));
-    return location;
-}
-
-
-unsigned int Program::LoadShaderFromFile (unsigned int type, const char * fileName) const
+unsigned int LoadShaderFromFile (unsigned int type, const char * fileName)
 {
     unsigned int shaderID;
     GL_CALL (shaderID = glCreateShader (type));
@@ -314,33 +62,168 @@ unsigned int Program::LoadShaderFromFile (unsigned int type, const char * fileNa
     GL_CALL (glGetShaderiv (shaderID, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
         LOG (std::string ("Error occurred during the compilation of \'") + std::string (fileName) + std::string ("\'"));
-        GetShaderErrorInfo (shaderID);
+        GetErrorInfo (shaderID, false);
         GL_CALL (glDeleteShader (shaderID));
         return 0;
     }
     return shaderID;
 }
 
+}   // namepace
 
-unsigned int Program::LoadShaderFromString (unsigned int type, const char * content) const
+
+Program::Program () :
+    m_id (0)
 {
-    unsigned int shaderID;
-    GL_CALL (shaderID = glCreateShader (type));
-    if (shaderID == 0) {
-        LOG (std::string ("Error occurred during the shader creation from \'") + std::string (content) + std::string ("\'"));
-        return 0;
+}
+
+
+Program::~Program ()
+{
+    GL_CALL (glDeleteProgram (m_id));
+}
+
+
+void Program::Init (const std::optional<std::string>& vertexShaderFile,
+                    const std::optional<std::string>& geometryShaderFile,
+                    const std::optional<std::string>& tessControlShaderFile,
+                    const std::optional<std::string>& tessEvalShaderFile,
+                    const std::optional<std::string>& fragmentShaderFile,
+                    const std::optional<std::string>& computeShaderFile)
+{
+    GL_CALL (m_id = glCreateProgram ());
+    if (m_id == 0) {
+        LOG ("Error in shader program creation.");
+        return;
     }
-    GL_CALL (glShaderSource (shaderID, 1, &content, nullptr));
-    GL_CALL (glCompileShader (shaderID));
-    int OK;
-    GL_CALL (glGetShaderiv (shaderID, GL_COMPILE_STATUS, &OK));
+
+    unsigned int shaders[6];
+    memset (shaders, 0, 6 * sizeof (unsigned int));
+
+    for (size_t i = 0; i < 6; ++i) {
+        unsigned int type;
+        std::optional<std::string> shaderFile;
+        switch (i) {
+            case 0: type = GL_VERTEX_SHADER; shaderFile = vertexShaderFile; break;
+            case 1: type = GL_GEOMETRY_SHADER; shaderFile = geometryShaderFile; break;
+            case 2: type = GL_TESS_CONTROL_SHADER; shaderFile = tessControlShaderFile; break;
+            case 3: type = GL_TESS_EVALUATION_SHADER; shaderFile = tessEvalShaderFile; break;
+            case 4: type = GL_FRAGMENT_SHADER; shaderFile = fragmentShaderFile; break;
+            case 5: type = GL_COMPUTE_SHADER; shaderFile = computeShaderFile; break;
+        }
+        if (shaderFile) {
+            shaders[i] = LoadShaderFromFile (type, shaderFile.value ().c_str ());
+            if (shaders[i] != 0) {
+                GL_CALL (glAttachShader (m_id, shaders[i]));
+            }
+        }
+    }
+
+    GL_CALL (glLinkProgram (m_id));
+    for (unsigned int shaderID : shaders) {
+        if (shaderID != 0) {
+            GL_CALL (glDetachShader (m_id, shaderID));
+            GL_CALL (glDeleteShader (shaderID));
+        }
+    }
+    int OK = 0;
+    GL_CALL (glGetProgramiv (m_id, GL_LINK_STATUS, &OK));
     if (OK == 0) {
-        LOG (std::string ("Error occurred during the compilation of \'") + std::string (content) + std::string ("\'"));
-        GetShaderErrorInfo (shaderID);
-        GL_CALL (glDeleteShader (shaderID));
-        return 0;
+        LOG ("Failed to link shader program!");
+        GetErrorInfo (m_id, true);
     }
-    return shaderID;
+}
+
+
+void Program::Bind () const
+{
+    GL_CALL (glUseProgram (m_id));
+}
+
+
+void Program::UnBind () const
+{
+    GL_CALL (glUseProgram (0));
+}
+
+
+unsigned int Program::GetID () const
+{
+    return m_id;
+}
+
+
+void Program::SetUniformFloat (const char * uniformName, float value)
+{    
+    GL_CALL (glUniform1f (GetUniformIndex (uniformName), value));
+}
+
+
+void Program::SetUniformInt (const char * uniformName, int value)
+{
+    GL_CALL (glUniform1i (GetUniformIndex (uniformName), value));
+}
+
+
+void Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
+{
+    GL_CALL (glUniformMatrix4fv (GetUniformIndex (uniformName), 1, GL_TRUE, value));
+}
+
+
+void Program::SetUniformVec2 (const char * uniformName, const Math::Vec2& value)
+{
+    GL_CALL (glUniform2f (GetUniformIndex (uniformName), value.x, value.y));
+}
+
+
+void Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value)
+{
+    GL_CALL (glUniform3f (GetUniformIndex (uniformName), value.x, value.y, value.z));
+}
+
+
+void Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
+{
+    GL_CALL (glUniform4f (GetUniformIndex (uniformName), value.x, value.y, value.z, value.w));
+}
+
+
+void Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID)
+{
+    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
+    GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
+    GL_CALL (glUniform1i (GetUniformIndex (uniformName), unitID));
+}
+
+
+void Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID)
+{
+    GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
+    GL_CALL (glBindTexture (GL_TEXTURE_CUBE_MAP, texID));
+    GL_CALL (glUniform1i (GetUniformIndex (uniformName), unitID));
+}
+
+
+int Program::GetAttributeIndex (const char * attribName)
+{
+    if (auto it = attributeLocationCache.find (attribName); it != attributeLocationCache.end ()) {
+        return it->second;
+    }
+    
+    GL_CALL (attributeLocationCache[attribName] = glGetAttribLocation (m_id, attribName));
+    return attributeLocationCache[attribName];
+}
+
+
+int Program::GetUniformIndex (const char * uniformName)
+{
+    if (auto it = uniformLocationCache.find (uniformName); it != uniformLocationCache.end ()) {
+        return it->second;
+    }
+
+    GL_CALL (uniformLocationCache[uniformName] = glGetUniformLocation (m_id, uniformName));
+    return uniformLocationCache[uniformName];
 }
 
 }   // namespace GLngin

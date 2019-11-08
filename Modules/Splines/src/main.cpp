@@ -6,6 +6,7 @@
 #include "Program.hpp"
 #include "Debug.hpp"
 #include "InputManager.hpp"
+#include "Vec2.hpp"
 
 
 constexpr unsigned int windowWidth = 600;
@@ -28,11 +29,7 @@ static void onInitialization ()
 
     std::string currFolder (FOLDER);
 
-    program.Init ();
-    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/Splines.vert");
-    program.AddShaderFromFile (GL_GEOMETRY_SHADER, currFolder + "../shaders/Splines.geom");
-    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/Splines.frag");
-    program.Link ();
+    program.Init (currFolder + "../shaders/Splines.vert", currFolder + "../shaders/Splines.geom", std::nullopt, std::nullopt, currFolder + "../shaders/Splines.frag", std::nullopt);
 
     GL_CALL (glGenBuffers (1, &vbo));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, vbo));
@@ -48,7 +45,7 @@ static void onInitialization ()
 
     GL_CALL (glBindVertexArray (0));
 
-    program.Use ();
+    program.Bind ();
 }
 
 
@@ -67,20 +64,16 @@ static void onDisplay ()
 static void onIdle ()
 {
     if (input.IsKeyReleased (GLngin::InputManager::Key::SPACE) && idx < 19) {
-        float ndcX, ndcY;
-        input.GetMouseCoordsInNDC (&ndcX, &ndcY);
-
-        float arr[] = { ndcX, ndcY };
-
+        GLngin::Math::Vec2 ndc = input.GetMouseCoordsInNDC ();
         GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, vbo));
-        GL_CALL (glBufferSubData (GL_ARRAY_BUFFER, idx * sizeof (float), sizeof (arr), arr));
+        GL_CALL (glBufferSubData (GL_ARRAY_BUFFER, idx * sizeof (float), sizeof (ndc), &ndc));
         GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, 0));
 
         idx += 2;
     }
 
     if (input.IsKeyPressed (GLngin::InputManager::Key::ESCAPE)) {
-        program.UnUse ();
+        program.UnBind ();
 
         GL_CALL (glDeleteBuffers (1, &vbo));
         GL_CALL (glDeleteVertexArrays (1, &vao));

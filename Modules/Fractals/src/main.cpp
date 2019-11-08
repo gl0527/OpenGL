@@ -23,11 +23,8 @@ static void onInitialization ()
 
     quad.Init ();
 
-    program.Init ();
-    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/passthrough.vert");
-    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/simple.frag");
-    program.Link ();
-    program.Use ();
+    program.Init (currFolder + "../shaders/passthrough.vert", std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/simple.frag", std::nullopt);
+    program.Bind ();
 }
 
 
@@ -45,7 +42,7 @@ static void onKeyboard (unsigned char key, int /*pX*/, int /*pY*/)
 {
     switch (key) {
         case 27:
-            program.UnUse ();
+            program.UnBind ();
             exit (0);
 
         default: break;

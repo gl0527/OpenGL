@@ -14,10 +14,7 @@ void Ball::InitImpl ()
 {
     std::string currFolder (FOLDER);
 
-    program.Init ();
-    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/ball.vert");
-    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/ball.frag");
-    program.Link ();
+    program.Init (currFolder + "../shaders/ball.vert", std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/ball.frag", std::nullopt);
 
     geometry.reset (new GLngin::Sphere (position, 0.5f));
     geometry->Init ();
@@ -25,15 +22,15 @@ void Ball::InitImpl ()
 }
 
 
-void Ball::DrawImpl (const GLngin::RenderState& renderState) const
+void Ball::DrawImpl (const GLngin::RenderState& renderState)
 {
     GLngin::Math::Mat4 MVP =    GLngin::Math::Mat4::Scale (scale) *
                                 GLngin::Math::Mat4::Rotate (rotAngle, rotAxis) *
                                 GLngin::Math::Mat4::Translate (position) *
                                 renderState.viewProj.value ();
 
-    program.Use ();
+    program.Bind ();
     program.SetUniformMat4 ("MVP", MVP);
     geometry->Draw ();
-    program.UnUse ();
+    program.UnBind ();
 }

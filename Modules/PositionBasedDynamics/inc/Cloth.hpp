@@ -13,7 +13,7 @@ public:
 
 private:
     virtual void InitImpl () override;
-    virtual void DrawImpl (const GLngin::RenderState& renderState) const override;
+    virtual void DrawImpl (const GLngin::RenderState& renderState) override;
     virtual void TerminateImpl () override;
 
 private:

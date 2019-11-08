@@ -34,44 +34,26 @@ void Cloth::InitImpl ()
     std::string currFolder (FOLDER);
 
     // initialize programs
-    gravityProgram.Init ();
-    gravityProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/gravity.comp");
-    gravityProgram.Link ();
-
-    collisionProgram.Init ();
-    collisionProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/collision.comp");
-    collisionProgram.Link ();
-
-    distanceProgram.Init ();
-    distanceProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/distance.comp");
-    distanceProgram.Link ();
-
-    bendingProgram.Init ();
-    bendingProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/bending.comp");
-    bendingProgram.Link ();
-
-    finalUpdateProgram.Init ();
-    finalUpdateProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/finalUpdate.comp");
-    finalUpdateProgram.Link ();
-
-    renderProgram.Init ();
-    renderProgram.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/render.vert");
-    renderProgram.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/render.frag");
-    renderProgram.Link ();
+    gravityProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/gravity.comp");
+    collisionProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/collision.comp");
+    distanceProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/distance.comp");
+    bendingProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/bending.comp");
+    finalUpdateProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/finalUpdate.comp");
+    renderProgram.Init (currFolder + "../shaders/render.vert", std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/render.frag", std::nullopt);
 
     // set up constant uniform variables
     const float dt = 0.0015f;
 
-    gravityProgram.Use ();
+    gravityProgram.Bind ();
     gravityProgram.SetUniformFloat ("dt", dt);
 
-    collisionProgram.Use ();
+    collisionProgram.Bind ();
     collisionProgram.SetUniformFloat ("ConstraintWeight", 0.9f);
 
-    distanceProgram.Use ();
+    distanceProgram.Bind ();
     distanceProgram.SetUniformFloat ("ConstraintWeight", 0.25f);
 
-    finalUpdateProgram.Use ();
+    finalUpdateProgram.Bind ();
     finalUpdateProgram.SetUniformFloat ("dt", dt);
 
     // Initialize the particle position buffer
@@ -128,49 +110,49 @@ void Cloth::InitImpl ()
 }
 
 
-void Cloth::DrawImpl (const GLngin::RenderState& renderState) const
+void Cloth::DrawImpl (const GLngin::RenderState& renderState)
 {
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, positionBuffer));
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 1, positionBufferTmp));
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 2, velocityBuffer));
 
-    gravityProgram.Use ();
+    gravityProgram.Bind ();
     const unsigned int workgroupsize = particleCountOnOneSide / workGroupCount;
     GL_CALL (glDispatchCompute (workgroupsize, workgroupsize, 1));
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     for (int i = 0; i < 50; ++i) {
-        collisionProgram.Use ();
+        collisionProgram.Bind ();
         GL_CALL (glDispatchCompute (workgroupsize, workgroupsize, 1));
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
-        distanceProgram.Use ();
+        distanceProgram.Bind ();
         GL_CALL (glDispatchCompute (workgroupsize, workgroupsize, 1));
         GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
     }
 
-    finalUpdateProgram.Use ();
+    finalUpdateProgram.Bind ();
     GL_CALL (glDispatchCompute (workgroupsize, workgroupsize, 1));
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     // Render the particles
-    renderProgram.Use ();
+    renderProgram.Bind ();
     renderProgram.SetUniformMat4 ("MVP", GLngin::Math::Mat4::Translate (GLngin::Math::Vec3 (0,1,0)) * renderState.viewProj.value ());
     GL_CALL (glBindVertexArray (vao));
     GL_CALL (glDrawArrays (GL_POINTS, 0, vertexCount));
     GL_CALL (glBindVertexArray (0));
-    renderProgram.UnUse ();
+    renderProgram.UnBind ();
 }
 
 
 void Cloth::TerminateImpl ()
 {
-    renderProgram.UnUse ();
-    finalUpdateProgram.UnUse ();
-    bendingProgram.UnUse ();
-    distanceProgram.UnUse ();
-    collisionProgram.UnUse ();
-    gravityProgram.UnUse ();
+    renderProgram.UnBind ();
+    finalUpdateProgram.UnBind ();
+    bendingProgram.UnBind ();
+    distanceProgram.UnBind ();
+    collisionProgram.UnBind ();
+    gravityProgram.UnBind ();
 
     GL_CALL (glDeleteBuffers (1, &velocityBuffer));
     GL_CALL (glDeleteBuffers (1, &positionBufferTmp));

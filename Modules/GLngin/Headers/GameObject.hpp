@@ -27,10 +27,10 @@ public:
     bool                RemoveChild (const std::string& id);
 
     void                Init ();
-    void                Interact (GameObject* other);  // TODO ezt egyelore nem is hasznalom
+    void                Interact (GameObject* other);
     void                Control (float t, float dt, const InputManager& input);
     void                Animate (float t, float dt);
-    void                Draw (const RenderState& renderState) const;
+    void                Draw (const RenderState& renderState);
     void                Terminate ();
 
 protected:
@@ -38,7 +38,7 @@ protected:
     virtual void        InteractImpl (GameObject* /* other */) {}
     virtual void        ControlImpl (float /* t */, float /* dt */, const InputManager& /*input*/) {}
     virtual void        AnimateImpl (float /* t */, float /* dt */) {}
-    virtual void        DrawImpl (const RenderState& /*renderState*/) const {}
+    virtual void        DrawImpl (const RenderState& /*renderState*/) {}
     virtual void        TerminateImpl () {}
 
 protected:

@@ -59,14 +59,8 @@ static void onInitialization ()
 
     std::string currFolder (FOLDER);
 
-    computeProgram.Init ();
-    computeProgram.AddShaderFromFile (GL_COMPUTE_SHADER, currFolder + "../shaders/particle.comp");
-    computeProgram.Link ();
-
-    renderProgram.Init ();
-    renderProgram.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/particle.vert");
-    renderProgram.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/particle.frag");
-    renderProgram.Link ();
+    computeProgram.Init (std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/particle.comp");
+    renderProgram.Init (currFolder + "../shaders/particle.vert", std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/particle.frag", std::nullopt);
 
     // Initialize the ssbo
     GL_CALL (glGenBuffers (1, &ssboID));
@@ -95,14 +89,14 @@ static void onDisplay ()
     // Update position and velocity
     GL_CALL (glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, ssboID));
 
-    computeProgram.Use ();
+    computeProgram.Bind ();
     GL_CALL (glDispatchCompute (particlesNum / workgroupSize, 1, 1));
 
     // Synchronize between the compute and render shaders
     GL_CALL (glMemoryBarrier (GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT));
 
     // Render the particles
-    renderProgram.Use ();
+    renderProgram.Bind ();
     GL_CALL (glBindVertexArray (vaoID));
     GL_CALL (glDrawArrays (GL_POINTS, 0, particlesNum));
     GL_CALL (glBindVertexArray (0));
@@ -114,8 +108,8 @@ static void onDisplay ()
 static void onIdle ()
 {
     if (inputManager.IsKeyPressed (GLngin::InputManager::Key::ESCAPE)) {
-        computeProgram.UnUse ();
-        renderProgram.UnUse ();
+        computeProgram.UnBind ();
+        renderProgram.UnBind ();
 
         GL_CALL (glDeleteBuffers (1, &ssboID));
         GL_CALL (glDeleteVertexArrays (1, &vaoID));

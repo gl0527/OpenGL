@@ -50,6 +50,10 @@ void Update() {
         }
     }
 
+    if (input.IsKeyReleased (InputManager::Key::ESCAPE)) {
+        exit (0);
+    }
+
     input.Update();
 
     glutPostRedisplay();
@@ -81,7 +85,6 @@ void Scene::Init(int argc, char *argv[], const char *windowTitle,
     IL_CALL(ilInit());
 
     glutInitWindowSize(windowWidth, windowHeight);
-    // glutInitWindowPosition (100, 100);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow(windowTitle);
 

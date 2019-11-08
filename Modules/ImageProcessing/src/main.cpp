@@ -28,11 +28,8 @@ static void onInitialization ()
     tex.Init ();
     tex.Load (currFolder + "../assets/lena.jpg");
 
-    program.Init ();
-    program.AddShaderFromFile (GL_VERTEX_SHADER, currFolder + "../shaders/ImageProcessing.vert");
-    program.AddShaderFromFile (GL_FRAGMENT_SHADER, currFolder + "../shaders/ImageProcessing.frag");
-    program.Link ();
-    program.Use ();
+    program.Init (currFolder + "../shaders/ImageProcessing.vert", std::nullopt, std::nullopt, std::nullopt, currFolder + "../shaders/ImageProcessing.frag", std::nullopt);
+    program.Bind ();
     program.SetUniformTexture2D ("tex", tex.GetID (), 0);
 }
 
@@ -49,7 +46,7 @@ static void onKeyboard (unsigned char key, int /*pX*/, int /*pY*/)
 {
     switch (key) {
         case 27:
-            program.UnUse ();
+            program.UnBind ();
             exit (0);
 
         default: break;

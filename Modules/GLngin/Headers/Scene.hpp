@@ -15,7 +15,7 @@ namespace GLngin {
 
 class GameObject;
 
-class GLNGIN_API Scene {
+class GLNGIN_API Scene final {
 public:
     static Scene &Instance();
 

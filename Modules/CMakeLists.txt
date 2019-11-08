@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 3.7.3)
 project (OpenGL)
 
-enable_testing ()
-
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pedantic -W -Wall -Wextra -Wcast-align -Wdeprecated")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winit-self -Wmissing-declarations -Wmissing-include-dirs")
@@ -11,7 +9,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wredundant-decls -Wshadow -Wsign-conve
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wstrict-overflow=5")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wswitch-default -Wundef -Wno-unused")
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
-set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -s -O3 -ffast-math -msse -msse2 -mfpmath=sse")
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -ffast-math -msse -msse2 -mfpmath=sse")
 
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -27,7 +25,6 @@ link_directories (${OPENGL_LIBRARIES} ${ASSIMP_LIBRARY_DIR})
 add_definitions (${OPENGL_DEFINITIONS})
 
 add_subdirectory (GLngin)
-add_subdirectory (GLnginTest)
 add_subdirectory (Fractals)
 add_subdirectory (NBody)
 add_subdirectory (PositionBasedDynamics)

@@ -1,3 +1,6 @@
-.vscode/*
 .ninja_deps
 .ninja_log
+.clang-format
+.vscode/
+Bin/
+Build/

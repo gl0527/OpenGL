@@ -19,4 +19,5 @@ int main (int argc, char* argv[])
     scene.AddGameObject (std::make_shared<Cloth> ("cloth", GLngin::Math::Vec3 (0,2,0)));
     scene.Init (argc, argv, "Cloth simulation", 800, 600);
     scene.Start ();
+    return 0;
 }

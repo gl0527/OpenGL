@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #include <IL/il.h>
 
@@ -51,7 +52,8 @@ void Update() {
     }
 
     if (input.IsKeyReleased (InputManager::Key::ESCAPE)) {
-        exit (0);
+        glutLeaveMainLoop ();
+        return;
     }
 
     input.Update();
@@ -98,6 +100,7 @@ void Scene::Init(int argc, char *argv[], const char *windowTitle,
 
     GL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     GL_CALL(glEnable(GL_DEPTH_TEST));
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
     InputManager::Instance().Init();
     for (const auto &[id, obj] : gameObjectMap) {
@@ -107,7 +110,7 @@ void Scene::Init(int argc, char *argv[], const char *windowTitle,
     glutDisplayFunc(Draw);
     glutIdleFunc(Update);
     glutReshapeFunc(Reshape);
-    atexit(Terminate);
+    glutCloseFunc(Terminate);
 }
 
 void Scene::Start() const {

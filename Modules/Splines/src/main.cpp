@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Program.hpp"
+#include "Shader.hpp"
 #include "Debug.hpp"
 #include "InputManager.hpp"
 #include "Vec2.hpp"
@@ -12,7 +12,7 @@
 constexpr unsigned int windowWidth = 600;
 constexpr unsigned int windowHeight = 600;
 
-static GLngin::Program program;
+static GLngin::Shader program;
 static GLngin::InputManager& input = GLngin::InputManager::Instance ();
 
 static unsigned int vao;
@@ -38,7 +38,7 @@ static void onInitialization ()
     GL_CALL (glGenVertexArrays (1, &vao));
     GL_CALL (glBindVertexArray (vao));
 
-    int vDataIndex = program.GetAttributeIndex ("vData");
+    int vDataIndex = program.GetAttributeLocation ("vData");
     GL_CALL (glEnableVertexAttribArray (vDataIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, vbo));
     GL_CALL (glVertexAttribPointer (vDataIndex, 2, GL_FLOAT, GL_FALSE, 0, nullptr));

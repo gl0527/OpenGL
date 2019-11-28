@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "Program.hpp"
+#include "Shader.hpp"
 #include "Debug.hpp"
 #include "Quad.hpp"
 #include "Texture2D.hpp"
@@ -13,7 +13,7 @@ constexpr unsigned int windowWidth = 600;
 constexpr unsigned int windowHeight = 600;
 
 static GLngin::Quad quad;
-static GLngin::Program program;
+static GLngin::Shader program;
 static GLngin::Texture2D tex;
 
 

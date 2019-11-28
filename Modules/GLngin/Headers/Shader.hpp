@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GLNGIN_PROGRAM_HPP
-#define GLNGIN_PROGRAM_HPP
+#ifndef GLNGIN_SHADER_HPP
+#define GLNGIN_SHADER_HPP
 
 #include "API.hpp"
 #include <string>
@@ -18,13 +18,13 @@ namespace Math {
 }   // namespace Math
 
 
-class GLNGIN_API Program final {
+class GLNGIN_API Shader final {
 public:
-                    Program ();
-                    ~Program ();
+                    Shader ();
+                    ~Shader ();
 
-                    Program (const Program&) = delete;
-    Program&        operator= (const Program&) = delete;
+                    Shader (const Shader&) = delete;
+    Shader&         operator= (const Shader&) = delete;
 
     void            Init (  const std::optional<std::string>& vertexShaderFile,
                             const std::optional<std::string>& geometryShaderFile,
@@ -47,8 +47,8 @@ public:
     void            SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID);
     void            SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID);
 
-    int             GetAttributeIndex (const char * attribName);
-    int             GetUniformIndex (const char * uniformName);
+    int             GetAttributeLocation (const char * attribName);
+    int             GetUniformLocation (const char * uniformName);
 
 private:
     unsigned int                         m_id;
@@ -58,4 +58,4 @@ private:
 
 }   // namespace GLngin
 
-#endif  // #ifndef GLNGIN_PROGRAM_HPP
+#endif  // #ifndef GLNGIN_SHADER_HPP

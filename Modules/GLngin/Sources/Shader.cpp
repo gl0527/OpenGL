@@ -1,4 +1,4 @@
-#include "Program.hpp"
+#include "Shader.hpp"
 
 #include "Debug.hpp"
 #include "Mat4.hpp"
@@ -72,19 +72,19 @@ unsigned int LoadShaderFromFile (unsigned int type, const char * fileName)
 }   // namepace
 
 
-Program::Program () :
+Shader::Shader () :
     m_id (0)
 {
 }
 
 
-Program::~Program ()
+Shader::~Shader ()
 {
     GL_CALL (glDeleteProgram (m_id));
 }
 
 
-void Program::Init (const std::optional<std::string>& vertexShaderFile,
+void Shader::Init (const std::optional<std::string>& vertexShaderFile,
                     const std::optional<std::string>& geometryShaderFile,
                     const std::optional<std::string>& tessControlShaderFile,
                     const std::optional<std::string>& tessEvalShaderFile,
@@ -135,77 +135,77 @@ void Program::Init (const std::optional<std::string>& vertexShaderFile,
 }
 
 
-void Program::Bind () const
+void Shader::Bind () const
 {
     GL_CALL (glUseProgram (m_id));
 }
 
 
-void Program::UnBind () const
+void Shader::UnBind () const
 {
     GL_CALL (glUseProgram (0));
 }
 
 
-unsigned int Program::GetID () const
+unsigned int Shader::GetID () const
 {
     return m_id;
 }
 
 
-void Program::SetUniformFloat (const char * uniformName, float value)
+void Shader::SetUniformFloat (const char * uniformName, float value)
 {    
-    GL_CALL (glUniform1f (GetUniformIndex (uniformName), value));
+    GL_CALL (glUniform1f (GetUniformLocation (uniformName), value));
 }
 
 
-void Program::SetUniformInt (const char * uniformName, int value)
+void Shader::SetUniformInt (const char * uniformName, int value)
 {
-    GL_CALL (glUniform1i (GetUniformIndex (uniformName), value));
+    GL_CALL (glUniform1i (GetUniformLocation (uniformName), value));
 }
 
 
-void Program::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
+void Shader::SetUniformMat4 (const char * uniformName, const Math::Mat4& value)
 {
-    GL_CALL (glUniformMatrix4fv (GetUniformIndex (uniformName), 1, GL_TRUE, value));
+    GL_CALL (glUniformMatrix4fv (GetUniformLocation (uniformName), 1, GL_TRUE, value));
 }
 
 
-void Program::SetUniformVec2 (const char * uniformName, const Math::Vec2& value)
+void Shader::SetUniformVec2 (const char * uniformName, const Math::Vec2& value)
 {
-    GL_CALL (glUniform2f (GetUniformIndex (uniformName), value.x, value.y));
+    GL_CALL (glUniform2f (GetUniformLocation (uniformName), value.x, value.y));
 }
 
 
-void Program::SetUniformVec3 (const char * uniformName, const Math::Vec3& value)
+void Shader::SetUniformVec3 (const char * uniformName, const Math::Vec3& value)
 {
-    GL_CALL (glUniform3f (GetUniformIndex (uniformName), value.x, value.y, value.z));
+    GL_CALL (glUniform3f (GetUniformLocation (uniformName), value.x, value.y, value.z));
 }
 
 
-void Program::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
+void Shader::SetUniformVec4 (const char * uniformName, const Math::Vec4& value)
 {
-    GL_CALL (glUniform4f (GetUniformIndex (uniformName), value.x, value.y, value.z, value.w));
+    GL_CALL (glUniform4f (GetUniformLocation (uniformName), value.x, value.y, value.z, value.w));
 }
 
 
-void Program::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID)
+void Shader::SetUniformTexture2D (const char * uniformName, unsigned int texID, unsigned int unitID)
 {
     GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
     GL_CALL (glBindTexture (GL_TEXTURE_2D, texID));
-    GL_CALL (glUniform1i (GetUniformIndex (uniformName), unitID));
+    GL_CALL (glUniform1i (GetUniformLocation (uniformName), unitID));
 }
 
 
-void Program::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID)
+void Shader::SetUniformTextureCube (const char * uniformName, unsigned int texID, unsigned int unitID)
 {
     GL_CALL (glActiveTexture (GL_TEXTURE0 + unitID));
     GL_CALL (glBindTexture (GL_TEXTURE_CUBE_MAP, texID));
-    GL_CALL (glUniform1i (GetUniformIndex (uniformName), unitID));
+    GL_CALL (glUniform1i (GetUniformLocation (uniformName), unitID));
 }
 
 
-int Program::GetAttributeIndex (const char * attribName)
+int Shader::GetAttributeLocation (const char * attribName)
 {
     if (auto it = attributeLocationCache.find (attribName); it != attributeLocationCache.end ()) {
         return it->second;
@@ -216,7 +216,7 @@ int Program::GetAttributeIndex (const char * attribName)
 }
 
 
-int Program::GetUniformIndex (const char * uniformName)
+int Shader::GetUniformLocation (const char * uniformName)
 {
     if (auto it = uniformLocationCache.find (uniformName); it != uniformLocationCache.end ()) {
         return it->second;

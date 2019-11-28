@@ -6,7 +6,7 @@
 #include "Debug.hpp"
 #include "InputManager.hpp"
 #include "Math.hpp"
-#include "Program.hpp"
+#include "Shader.hpp"
 #include "Vec4.hpp"
 
 
@@ -16,8 +16,8 @@ constexpr unsigned int windowHeight = 600;
 constexpr unsigned int workgroupSize = 256;
 constexpr unsigned int particlesNum = 1024;
 
-static GLngin::Program renderProgram;
-static GLngin::Program computeProgram;
+static GLngin::Shader renderProgram;
+static GLngin::Shader computeProgram;
 
 static unsigned int ssboID;
 static unsigned int vaoID;
@@ -73,7 +73,7 @@ static void onInitialization ()
     GL_CALL (glGenVertexArrays (1, &vaoID));
     GL_CALL (glBindVertexArray (vaoID));
 
-    int vParticleDataIndex = renderProgram.GetAttributeIndex ("vParticleData");
+    int vParticleDataIndex = renderProgram.GetAttributeLocation ("vParticleData");
     GL_CALL (glEnableVertexAttribArray (vParticleDataIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, ssboID));
     GL_CALL (glVertexAttribPointer (vParticleDataIndex, 4, GL_FLOAT, GL_FALSE, 0, nullptr));

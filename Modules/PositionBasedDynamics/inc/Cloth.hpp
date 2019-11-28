@@ -4,7 +4,7 @@
 #define CLOTH_HPP
 
 #include "GameObject.hpp"
-#include "Program.hpp"
+#include "Shader.hpp"
 
 
 class Cloth : public GLngin::GameObject {
@@ -17,12 +17,12 @@ private:
     virtual void TerminateImpl () override;
 
 private:
-    GLngin::Program gravityProgram;
-    GLngin::Program collisionProgram;
-    GLngin::Program distanceProgram;
-    GLngin::Program bendingProgram;
-    GLngin::Program finalUpdateProgram;
-    GLngin::Program renderProgram;
+    GLngin::Shader gravityProgram;
+    GLngin::Shader collisionProgram;
+    GLngin::Shader distanceProgram;
+    GLngin::Shader bendingProgram;
+    GLngin::Shader finalUpdateProgram;
+    GLngin::Shader renderProgram;
 
     unsigned int positionBuffer;
     unsigned int positionBufferTmp;

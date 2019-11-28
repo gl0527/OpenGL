@@ -101,7 +101,7 @@ void Cloth::InitImpl ()
     GL_CALL (glGenVertexArrays (1, &vao));
     GL_CALL (glBindVertexArray (vao));
 
-    int vPositionIndex = renderProgram.GetAttributeIndex ("vPosition");
+    int vPositionIndex = renderProgram.GetAttributeLocation ("vPosition");
     GL_CALL (glEnableVertexAttribArray (vPositionIndex));
     GL_CALL (glBindBuffer (GL_ARRAY_BUFFER, positionBuffer));
     GL_CALL (glVertexAttribPointer (vPositionIndex, 4, GL_FLOAT, GL_FALSE, sizeof (GLngin::Math::Vec4), nullptr));

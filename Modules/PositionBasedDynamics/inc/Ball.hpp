@@ -4,7 +4,7 @@
 #define BALL_HPP
 
 #include "GameObject.hpp"
-#include "Program.hpp"
+#include "Shader.hpp"
 
 
 class Ball : public GLngin::GameObject {
@@ -16,7 +16,7 @@ private:
     virtual void DrawImpl (const GLngin::RenderState& renderState) override;
 
 private:
-    GLngin::Program program;
+    GLngin::Shader program;
 };
 
 #endif  // #ifndef BALL_HPP

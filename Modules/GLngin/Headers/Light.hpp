@@ -7,7 +7,6 @@
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
-
 namespace GLngin {
 
 struct GLNGIN_API Light {
@@ -15,6 +14,6 @@ struct GLNGIN_API Light {
     Math::Vec4 position;
 };
 
-}   // namespace GLngin
+}  // namespace GLngin
 
 #endif  // #ifndef GLNGIN_LIGHT_HPP

@@ -1,56 +1,48 @@
 #include "InputManager.hpp"
 #include "Vec2.hpp"
 
-
 namespace GLngin {
 
-void OnKeyHelper (unsigned char key, bool state);
-void OnMouseHelper (int x, int y);
+void OnKeyHelper(unsigned char key, bool state);
+void OnMouseHelper(int x, int y);
 
 namespace {
 
-void OnKeyDown (unsigned char key, int /*x*/, int /*y*/)
+void OnKeyDown(unsigned char key, int /*x*/, int /*y*/)
 {
-    OnKeyHelper (key, true);
+    OnKeyHelper(key, true);
 }
 
-
-void OnKeyUp (unsigned char key, int /*x*/, int /*y*/)
+void OnKeyUp(unsigned char key, int /*x*/, int /*y*/)
 {
-    OnKeyHelper (key, false);
+    OnKeyHelper(key, false);
 }
 
-
-void OnSpecKeyDown (int key, int /*x*/, int /*y*/)
+void OnSpecKeyDown(int key, int /*x*/, int /*y*/)
 {
-    OnKeyHelper (key + InputManager::specKeyOffset, true);
+    OnKeyHelper(key + InputManager::specKeyOffset, true);
 }
 
-
-void OnSpecKeyUp (int key, int /*x*/, int /*y*/)
+void OnSpecKeyUp(int key, int /*x*/, int /*y*/)
 {
-    OnKeyHelper (key + InputManager::specKeyOffset, false);
+    OnKeyHelper(key + InputManager::specKeyOffset, false);
 }
 
-
-void OnMouseMotion (int x, int y)
+void OnMouseMotion(int x, int y)
 {
-    OnMouseHelper (x, y);
+    OnMouseHelper(x, y);
 }
 
-
-void OnMousePassiveMotion (int x, int y)
+void OnMousePassiveMotion(int x, int y)
 {
-    OnMouseHelper (x, y);
+    OnMouseHelper(x, y);
 }
 
-}   // namespace
+}  // namespace
 
+static auto &input = InputManager::Instance();
 
-static auto& input = InputManager::Instance ();
-
-
-void OnKeyHelper (unsigned char key, bool state)
+void OnKeyHelper(unsigned char key, bool state)
 {
     input.lastKey = key;
     input.keyState[input.lastKey].prevState = input.keyState[input.lastKey].state;
@@ -59,8 +51,7 @@ void OnKeyHelper (unsigned char key, bool state)
     input.keyState[InputManager::Key::ANY].state = input.keyState[input.lastKey].state;
 }
 
-
-void OnMouseHelper (int x, int y)
+void OnMouseHelper(int x, int y)
 {
     input.dMouseX = x - input.mouseX;
     input.dMouseY = y - input.mouseY;
@@ -68,59 +59,51 @@ void OnMouseHelper (int x, int y)
     input.mouseY = y;
 }
 
-
-void OnMouse (int button, int state, int x, int y)
+void OnMouse(int button, int state, int x, int y)
 {
-    if (button == InputManager::Mouse::SCROLL_UP ||
-        button == InputManager::Mouse::SCROLL_DOWN)
-    {
+    if (button == InputManager::Mouse::SCROLL_UP || button == InputManager::Mouse::SCROLL_DOWN) {
         input.mouseState[button] = input.SCROLL;
     } else {
         input.mouseState[button] = state;
     }
-    OnMouseHelper (x, y);
+    OnMouseHelper(x, y);
 }
 
-
-InputManager::InputManager ():
-    lastKey (-1),
-    mouseX (-1),
-    mouseY (-1),
-    dMouseX (0),
-    dMouseY (0),
-    SCROLL (2)
+InputManager::InputManager()
+    : lastKey(-1)
+    , mouseX(-1)
+    , mouseY(-1)
+    , dMouseX(0)
+    , dMouseY(0)
+    , SCROLL(2)
 {
-    for (auto& s : keyState) {
+    for (auto &s : keyState) {
         s = {false, false};
     }
-    for (auto& s : mouseState) {
+    for (auto &s : mouseState) {
         s = -1;
     }
 }
 
-
-InputManager& InputManager::Instance ()
+InputManager &InputManager::Instance()
 {
     static InputManager instance;
     return instance;
 }
 
-
-void InputManager::Init () const
+void InputManager::Init() const
 {
-    BindCallbacks ();
+    BindCallbacks();
 }
 
-
-void InputManager::Enable () const
+void InputManager::Enable() const
 {
-    BindCallbacks ();
+    BindCallbacks();
 }
 
-
-void InputManager::Disable ()
+void InputManager::Disable()
 {
-    UnBindCallbacks ();
+    UnBindCallbacks();
 
     keyState[lastKey].state = false;
     mouseState[Mouse::LEFT_BUTTON] = GLUT_UP;
@@ -130,86 +113,72 @@ void InputManager::Disable ()
     mouseState[Mouse::SCROLL_DOWN] = GLUT_UP;
 }
 
-
-bool InputManager::IsKeyPressed (Key key) const
+bool InputManager::IsKeyPressed(Key key) const
 {
     return keyState[key].state && !keyState[key].prevState;
 }
 
-
-bool InputManager::IsKeyDown (Key key) const
+bool InputManager::IsKeyDown(Key key) const
 {
     return keyState[key].state;
 }
 
-
-bool InputManager::IsKeyReleased (Key key) const
+bool InputManager::IsKeyReleased(Key key) const
 {
     return !keyState[key].state && keyState[key].prevState;
 }
 
-
-Math::Vec2 InputManager::GetMouseCoordsInNDC () const
+Math::Vec2 InputManager::GetMouseCoordsInNDC() const
 {
-    const int wndWidth = glutGet (GLUT_WINDOW_WIDTH);
-    const int wndHeight = glutGet (GLUT_WINDOW_HEIGHT);
+    const int wndWidth = glutGet(GLUT_WINDOW_WIDTH);
+    const int wndHeight = glutGet(GLUT_WINDOW_HEIGHT);
     // Mouse coordinates in the normalized device coordinate system
-    return {2.0f * mouseX / wndWidth - 1,
-            2.0f * (wndHeight - mouseY) / wndHeight - 1};
+    return {2.0f * mouseX / wndWidth - 1, 2.0f * (wndHeight - mouseY) / wndHeight - 1};
 }
 
-
-Math::Vec2 InputManager::GetMouseCoordsInOpenGLWindowSpace () const
+Math::Vec2 InputManager::GetMouseCoordsInOpenGLWindowSpace() const
 {
     // Mouse coordinates in a coordinate system where the origin is at the bottom left corner of the window
-    return {mouseX, glutGet (GLUT_WINDOW_HEIGHT) - mouseY};
+    return {mouseX, glutGet(GLUT_WINDOW_HEIGHT) - mouseY};
 }
 
-
-Math::Vec2 InputManager::GetMouseCoordsInGLUTWindowSpace () const
+Math::Vec2 InputManager::GetMouseCoordsInGLUTWindowSpace() const
 {
     // Mouse coordinates in a coordinate system where the origin is at the top left corner of the window
     return {mouseX, mouseY};
 }
 
-
-Math::Vec2 InputManager::GetMouseDelta () const
+Math::Vec2 InputManager::GetMouseDelta() const
 {
-    return {dMouseX, -dMouseY}; // coordinate transform from GLUT to OpenGL
+    return {dMouseX, -dMouseY};  // coordinate transform from GLUT to OpenGL
 }
 
-
-bool InputManager::IsLeftMouseButtonDown () const
+bool InputManager::IsLeftMouseButtonDown() const
 {
     return mouseState[Mouse::LEFT_BUTTON] == GLUT_DOWN;
 }
 
-
-bool InputManager::IsRightMouseButtonDown () const
+bool InputManager::IsRightMouseButtonDown() const
 {
     return mouseState[Mouse::RIGHT_BUTTON] == GLUT_DOWN;
 }
 
-
-bool InputManager::IsMiddleMouseButtonDown () const
+bool InputManager::IsMiddleMouseButtonDown() const
 {
     return mouseState[Mouse::MIDDLE_BUTTON] == GLUT_DOWN;
 }
 
-
-bool InputManager::IsScrollUp () const
+bool InputManager::IsScrollUp() const
 {
     return mouseState[Mouse::SCROLL_UP] == SCROLL;
 }
 
-
-bool InputManager::IsScrollDown () const
+bool InputManager::IsScrollDown() const
 {
     return mouseState[Mouse::SCROLL_DOWN] == SCROLL;
 }
 
-
-void InputManager::Update ()
+void InputManager::Update()
 {
     keyState[lastKey].prevState = keyState[lastKey].state;
 
@@ -220,34 +189,32 @@ void InputManager::Update ()
     dMouseY = 0;
 }
 
-
-void InputManager::BindCallbacks () const
+void InputManager::BindCallbacks() const
 {
     // keyboard-related callbacks
-    glutKeyboardFunc (OnKeyDown);
-    glutKeyboardUpFunc (OnKeyUp);
-    glutSpecialFunc (OnSpecKeyDown);
-    glutSpecialUpFunc (OnSpecKeyUp);
+    glutKeyboardFunc(OnKeyDown);
+    glutKeyboardUpFunc(OnKeyUp);
+    glutSpecialFunc(OnSpecKeyDown);
+    glutSpecialUpFunc(OnSpecKeyUp);
 
     // mouse-related callbacks
-    glutMouseFunc (OnMouse);
-    glutMotionFunc (OnMouseMotion);
-    glutPassiveMotionFunc (OnMousePassiveMotion);
+    glutMouseFunc(OnMouse);
+    glutMotionFunc(OnMouseMotion);
+    glutPassiveMotionFunc(OnMousePassiveMotion);
 }
 
-
-void InputManager::UnBindCallbacks () const
+void InputManager::UnBindCallbacks() const
 {
     // keyboard-related callbacks
-    glutKeyboardFunc (nullptr);
-    glutKeyboardUpFunc (nullptr);
-    glutSpecialFunc (nullptr);
-    glutSpecialUpFunc (nullptr);
+    glutKeyboardFunc(nullptr);
+    glutKeyboardUpFunc(nullptr);
+    glutSpecialFunc(nullptr);
+    glutSpecialUpFunc(nullptr);
 
     // mouse-related callbacks
-    glutMouseFunc (nullptr);
-    glutMotionFunc (nullptr);
-    glutPassiveMotionFunc (nullptr);
+    glutMouseFunc(nullptr);
+    glutMotionFunc(nullptr);
+    glutPassiveMotionFunc(nullptr);
 }
 
-}   // namespace GLngin
+}  // namespace GLngin

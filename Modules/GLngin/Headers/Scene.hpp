@@ -10,7 +10,6 @@
 #include "Camera.hpp"
 #include "Light.hpp"
 
-
 namespace GLngin {
 
 class GameObject;
@@ -22,8 +21,7 @@ public:
     Scene(const Scene &) = delete;
     Scene &operator=(const Scene &) = delete;
 
-    void Init(int argc, char *argv[], const char *windowTitle, int windowWidth,
-          int windowHeight);
+    void Init(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight);
     void Start() const;
 
     void AddGameObject(std::shared_ptr<GameObject> &&gameObject);

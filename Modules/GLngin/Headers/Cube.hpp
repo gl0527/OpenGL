@@ -5,23 +5,22 @@
 
 #include "API.hpp"
 
-
 namespace GLngin {
 
 class GLNGIN_API Cube final {
 public:
-            Cube ();
-            ~Cube ();
+    Cube();
+    ~Cube();
 
-    void    Init (float scalar);
-    void    Render () const;
+    void Init(float scalar);
+    void Render() const;
 
 private:
-    unsigned int    m_vertexArrayID;
-    unsigned int    m_vertexBufferID;
-    bool            m_inited;
+    unsigned int m_vertexArrayID;
+    unsigned int m_vertexBufferID;
+    bool m_inited;
 };
 
-}   // namespace GLngin
+}  // namespace GLngin
 
 #endif  // #ifndef GLNGIN_CUBE_HPP

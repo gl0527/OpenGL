@@ -8,7 +8,6 @@
 #include "Vec2.hpp"
 #include "Vec3.hpp"
 
-
 namespace GLngin {
 
 struct VertexData {
@@ -16,15 +15,14 @@ struct VertexData {
     Math::Vec2 uv;
 };
 
-
 class GLNGIN_API ParamSurface : public Geometry {
 public:
-    virtual ~ParamSurface ();
+    virtual ~ParamSurface();
 
-    virtual VertexData GenVertexData (float u, float v) = 0;
-    void Create (int sizeX, int sizeY);
+    virtual VertexData GenVertexData(float u, float v) = 0;
+    void Create(int sizeX, int sizeY);
 };
 
-}   // namespace GLngin
+}  // namespace GLngin
 
 #endif  // #ifndef GLNGIN_PARAMSURFACE_HPP

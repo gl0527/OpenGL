@@ -5,27 +5,26 @@
 
 #include "API.hpp"
 
-
 namespace GLngin {
 
 class GLNGIN_API Quad final {
 public:
-            Quad ();
-            ~Quad ();
+    Quad();
+    ~Quad();
 
-    void    Init ();
-    void    Render () const;
-    void    Render (int lowerLeftX, int lowerLeftY, int width, int height) const;
+    void Init();
+    void Render() const;
+    void Render(int lowerLeftX, int lowerLeftY, int width, int height) const;
 
 private:
-    unsigned int    m_vertexArrayID;
-    unsigned int    m_vertexBufferID;
-    unsigned int    m_texCoordBufferID;
-    bool            m_inited;
+    unsigned int m_vertexArrayID;
+    unsigned int m_vertexBufferID;
+    unsigned int m_texCoordBufferID;
+    bool m_inited;
 
-    void    RenderImpl () const;
+    void RenderImpl() const;
 };
 
-}   // namespace GLngin
+}  // namespace GLngin
 
 #endif  // #ifndef GLNGIN_QUAD_HPP

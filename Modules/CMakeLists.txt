@@ -16,6 +16,14 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package (OpenGL REQUIRED)
 find_package (GLEW REQUIRED)
 
+file(GLOB_RECURSE ALL_CXX_FILES *.cpp *.hpp)
+add_custom_target(
+        clang-format
+        ALL /usr/bin/clang-format
+        -i
+        ${ALL_CXX_FILES}
+)
+
 set (ASSIMP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/include" "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/include")
 set (ASSIMP_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/code")
 

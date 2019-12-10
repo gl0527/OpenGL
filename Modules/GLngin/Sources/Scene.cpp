@@ -13,7 +13,8 @@
 
 namespace GLngin {
 
-void Draw() {
+void Draw()
+{
     auto &scene = Scene::Instance();
     RenderState renderState;
 
@@ -31,7 +32,8 @@ void Draw() {
     glutSwapBuffers();
 }
 
-void Update() {
+void Update()
+{
     auto &scene = Scene::Instance();
 
     static float tEnd = 0.0f;
@@ -51,8 +53,8 @@ void Update() {
         }
     }
 
-    if (input.IsKeyReleased (InputManager::Key::ESCAPE)) {
-        glutLeaveMainLoop ();
+    if (input.IsKeyReleased(InputManager::Key::ESCAPE)) {
+        glutLeaveMainLoop();
         return;
     }
 
@@ -61,14 +63,16 @@ void Update() {
     glutPostRedisplay();
 }
 
-void Reshape(int newWidth, int newHeight) {
+void Reshape(int newWidth, int newHeight)
+{
     auto &scene = Scene::Instance();
 
     GL_CALL(glViewport(0, 0, newWidth, newHeight));
     scene.camera->SetAspectRatio(newWidth, newHeight);
 }
 
-void Terminate() {
+void Terminate()
+{
     auto &scene = Scene::Instance();
 
     for (const auto &[id, obj] : scene.gameObjectMap) {
@@ -76,13 +80,14 @@ void Terminate() {
     }
 }
 
-Scene &Scene::Instance() {
+Scene &Scene::Instance()
+{
     static Scene instance;
     return instance;
 }
 
-void Scene::Init(int argc, char *argv[], const char *windowTitle,
-                 int windowWidth, int windowHeight) {
+void Scene::Init(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight)
+{
     glutInit(&argc, argv);
     IL_CALL(ilInit());
 
@@ -113,23 +118,28 @@ void Scene::Init(int argc, char *argv[], const char *windowTitle,
     glutCloseFunc(Terminate);
 }
 
-void Scene::Start() const {
+void Scene::Start() const
+{
     glutMainLoop();
 }
 
-void Scene::AddGameObject(std::shared_ptr<GameObject> &&gameObject) {
+void Scene::AddGameObject(std::shared_ptr<GameObject> &&gameObject)
+{
     gameObjectMap.insert({gameObject->GetId(), gameObject});
 }
 
-void Scene::SetCamera(Camera &&_camera) {
+void Scene::SetCamera(Camera &&_camera)
+{
     camera = _camera;
 }
 
-void Scene::SetLigth(Light &&_light) {
+void Scene::SetLigth(Light &&_light)
+{
     light = _light;
 }
 
-std::shared_ptr<GameObject> Scene::GetGameObject(const std::string &_id) const {
+std::shared_ptr<GameObject> Scene::GetGameObject(const std::string &_id) const
+{
     for (const auto &[id, child] : gameObjectMap) {
         if (child->GetId() == _id) {
             return child->shared_from_this();

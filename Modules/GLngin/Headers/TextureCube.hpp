@@ -5,26 +5,24 @@
 
 #include "API.hpp"
 #include <string>
+#include <unordered_map>
 
 namespace GLngin {
 
 class GLNGIN_API TextureCube final {
 public:
-    TextureCube();
-    ~TextureCube();
+    static unsigned int GetID(const std::string (&arr)[6]);
+    static void DeleteAll();
 
-    void Init();
-    bool Load(const char *right, const char *left, const char *top, const char *bottom, const char *front,
-              const char *back);
-    bool Load(const std::string &right, const std::string &left, const std::string &top, const std::string &bottom,
-              const std::string &front, const std::string &back);
-    bool Load(const char *(&arr)[6]);
-
-    unsigned int GetID() const;
+    TextureCube(const TextureCube&) = delete;
+    TextureCube& operator=(const TextureCube&) = delete;
 
 private:
-    unsigned int m_id;
-    bool m_inited;
+    TextureCube() = default;
+    ~TextureCube() = default;
+
+private:
+    static std::unordered_map<std::string, unsigned int> pool;
 };
 
 }  // namespace GLngin

@@ -10,6 +10,8 @@
 #include "InputManager.hpp"
 #include "Math.hpp"
 #include "RenderState.hpp"
+#include "Texture2D.hpp"
+#include "TextureCube.hpp"
 
 namespace GLngin {
 
@@ -80,6 +82,8 @@ void Terminate()
     for (const auto &[id, obj] : scene.gameObjectMap) {
         obj->Terminate();
     }
+    Texture2D::DeleteAll();
+    TextureCube::DeleteAll();
 }
 
 Scene &Scene::Instance()

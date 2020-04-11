@@ -5,6 +5,7 @@
 #include <IL/ilut.h>
 
 #include <cstring>
+#include <fstream>
 
 namespace GLngin {
 
@@ -82,6 +83,22 @@ const char *GetILEnumStr(unsigned int enumElem)
 std::string GetFolderName(const std::string &filePath)
 {
     return filePath.substr(0, filePath.find_last_of("/\\")) + "/";
+}
+
+std::optional<std::string> GetFileContent(const std::string &fileName)
+{
+    std::string content;
+    std::ifstream ifs{fileName};
+
+    if (ifs && !ifs.bad()) {
+        content = std::string{std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{}};
+        ifs.close();
+    } else {
+        LOG(std::string("Error occurred during the opening of \'") + std::string(fileName) + std::string("\'"));
+        return std::nullopt;
+    }
+
+    return content;
 }
 
 }  // namespace GLngin

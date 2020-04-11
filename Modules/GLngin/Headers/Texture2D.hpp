@@ -5,23 +5,24 @@
 
 #include "API.hpp"
 #include <string>
+#include <unordered_map>
 
 namespace GLngin {
 
 class GLNGIN_API Texture2D final {
 public:
-    Texture2D();
-    ~Texture2D();
+    static unsigned int GetID(const std::string &name);
+    static void DeleteAll();
 
-    void Init();
-    bool Load(const char *fileName);
-    bool Load(const std::string &fileName);
-
-    unsigned int GetID() const;
+    Texture2D(const Texture2D&) = delete;
+    Texture2D& operator=(const Texture2D&) = delete;
 
 private:
-    unsigned int m_id;
-    bool m_inited;
+    Texture2D() = default;
+    ~Texture2D() = default;
+
+private:
+    static std::unordered_map<std::string, unsigned int> pool;
 };
 
 }  // namespace GLngin

@@ -118,6 +118,11 @@ void Camera::Control(float /*t*/, float dt, const InputManager &input)
             .xyz();
 }
 
+const Math::Vec3& Camera::GetPosition() const
+{
+    return eye;
+}
+
 void Camera::CalcLocalAxes(Math::Vec3 *outLocalX, Math::Vec3 *outLocalY, Math::Vec3 *outLocalZ) const
 {
     *outLocalZ = (eye - lookat).Normalize();

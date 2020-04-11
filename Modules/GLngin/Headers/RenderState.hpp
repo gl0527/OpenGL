@@ -15,6 +15,7 @@ class GLNGIN_API RenderState {
 public:
     std::optional<Math::Mat4> model;
     std::optional<Math::Mat4> modelInv;
+    std::optional<Math::Mat4> view;
     std::optional<Math::Mat4> viewProj;
     std::optional<Math::Mat4> modelViewProj;
     std::optional<Math::Vec3> cameraPos;

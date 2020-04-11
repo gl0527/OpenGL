@@ -20,6 +20,8 @@ void Draw()
 
     renderState.light = scene.light;
     if (scene.camera) {
+        renderState.cameraPos = scene.camera->GetPosition();
+        renderState.view = scene.camera->View();
         renderState.viewProj = scene.camera->View() * scene.camera->Proj();
     }
 

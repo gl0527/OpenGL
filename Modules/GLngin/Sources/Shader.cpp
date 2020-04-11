@@ -7,7 +7,6 @@
 #include "Vec4.hpp"
 
 #include <GL/glew.h>
-#include <fstream>
 #include <cstring>
 
 namespace GLngin {
@@ -35,32 +34,20 @@ void GetErrorInfo(unsigned int id, bool forProgram)
     }
 }
 
-unsigned int LoadShaderFromFile(unsigned int type, const char *fileName)
+unsigned int CreateShader(unsigned int type, const char *src)
 {
     unsigned int shaderID;
     GL_CALL(shaderID = glCreateShader(type));
     if (shaderID == 0) {
-        LOG(std::string("Error occurred during the shader creation from \'") + std::string(fileName) +
-            std::string("\'"));
+        LOG("Error occurred during the shader creation");
         return 0;
     }
-    std::string content;
-    std::ifstream ifs{fileName};
-    if (ifs && !ifs.bad()) {
-        content = std::string{std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{}};
-        ifs.close();
-    } else {
-        LOG(std::string("Error occurred during the opening of \'") + std::string(fileName) + std::string("\'"));
-        GL_CALL(glDeleteShader(shaderID));
-        return 0;
-    }
-    const char *contentCStr = content.c_str();
-    GL_CALL(glShaderSource(shaderID, 1, &contentCStr, nullptr));
+    GL_CALL(glShaderSource(shaderID, 1, &src, nullptr));
     GL_CALL(glCompileShader(shaderID));
     int OK = 0;
     GL_CALL(glGetShaderiv(shaderID, GL_COMPILE_STATUS, &OK));
     if (OK == 0) {
-        LOG(std::string("Error occurred during the compilation of \'") + std::string(fileName) + std::string("\'"));
+        LOG(std::string("Error occurred during the compilation of \'") + std::string(src) + std::string("\'"));
         GetErrorInfo(shaderID, false);
         GL_CALL(glDeleteShader(shaderID));
         return 0;
@@ -80,12 +67,12 @@ Shader::~Shader()
     GL_CALL(glDeleteProgram(m_id));
 }
 
-void Shader::Init(const std::optional<std::string> &vertexShaderFile,
-                  const std::optional<std::string> &geometryShaderFile,
-                  const std::optional<std::string> &tessControlShaderFile,
-                  const std::optional<std::string> &tessEvalShaderFile,
-                  const std::optional<std::string> &fragmentShaderFile,
-                  const std::optional<std::string> &computeShaderFile)
+void Shader::Init(const std::optional<std::string> &vertexShaderSource,
+                  const std::optional<std::string> &geometryShaderSource,
+                  const std::optional<std::string> &tessControlShaderSource,
+                  const std::optional<std::string> &tessEvalShaderSource,
+                  const std::optional<std::string> &fragmentShaderSource,
+                  const std::optional<std::string> &computeShaderSource)
 {
     GL_CALL(m_id = glCreateProgram());
     if (m_id == 0) {
@@ -94,39 +81,39 @@ void Shader::Init(const std::optional<std::string> &vertexShaderFile,
     }
 
     unsigned int shaders[6];
-    memset(shaders, 0, 6 * sizeof(unsigned int));
+    memset(shaders, 0, sizeof(shaders));
 
     for (size_t i = 0; i < 6; ++i) {
         unsigned int type;
-        std::optional<std::string> shaderFile;
+        std::optional<std::string> source;
         switch (i) {
             case 0:
                 type = GL_VERTEX_SHADER;
-                shaderFile = vertexShaderFile;
+                source = vertexShaderSource;
                 break;
             case 1:
                 type = GL_GEOMETRY_SHADER;
-                shaderFile = geometryShaderFile;
+                source = geometryShaderSource;
                 break;
             case 2:
                 type = GL_TESS_CONTROL_SHADER;
-                shaderFile = tessControlShaderFile;
+                source = tessControlShaderSource;
                 break;
             case 3:
                 type = GL_TESS_EVALUATION_SHADER;
-                shaderFile = tessEvalShaderFile;
+                source = tessEvalShaderSource;
                 break;
             case 4:
                 type = GL_FRAGMENT_SHADER;
-                shaderFile = fragmentShaderFile;
+                source = fragmentShaderSource;
                 break;
             case 5:
                 type = GL_COMPUTE_SHADER;
-                shaderFile = computeShaderFile;
+                source = computeShaderSource;
                 break;
         }
-        if (shaderFile) {
-            shaders[i] = LoadShaderFromFile(type, shaderFile.value().c_str());
+        if (source) {
+            shaders[i] = CreateShader(type, source.value().c_str());
             if (shaders[i] != 0) {
                 GL_CALL(glAttachShader(m_id, shaders[i]));
             }

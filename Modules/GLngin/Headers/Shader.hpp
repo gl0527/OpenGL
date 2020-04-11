@@ -24,11 +24,12 @@ public:
     Shader(const Shader &) = delete;
     Shader &operator=(const Shader &) = delete;
 
-    void Init(const std::optional<std::string> &vertexShaderFile, const std::optional<std::string> &geometryShaderFile,
-              const std::optional<std::string> &tessControlShaderFile,
-              const std::optional<std::string> &tessEvalShaderFile,
-              const std::optional<std::string> &fragmentShaderFile,
-              const std::optional<std::string> &computeShaderFile);
+    void Init(const std::optional<std::string> &vertexShaderSource,
+              const std::optional<std::string> &geometryShaderSource,
+              const std::optional<std::string> &tessControlShaderSource,
+              const std::optional<std::string> &tessEvalShaderSource,
+              const std::optional<std::string> &fragmentShaderSource,
+              const std::optional<std::string> &computeShaderSource);
 
     void Bind() const;
     void UnBind() const;

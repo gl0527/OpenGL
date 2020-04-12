@@ -8,7 +8,7 @@ include_directories (inc)
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/)
 include_directories (${CMAKE_SOURCE_DIR}/GLngin/Headers/Math/)
 
-add_executable (${TARGET_NAME} src/main.cpp src/Ball.cpp src/Cloth.cpp)
+add_executable (${TARGET_NAME} src/main.cpp src/Ball.cpp src/Cloth.cpp src/Background.cpp)
 
 find_package (GLUT REQUIRED)
 

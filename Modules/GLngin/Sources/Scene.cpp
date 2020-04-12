@@ -62,6 +62,16 @@ void Update()
         return;
     }
 
+    static bool isFullScreen = false;
+    if (input.IsKeyReleased(InputManager::Key::F11)) {
+        isFullScreen = !isFullScreen;
+    }
+    if (isFullScreen) {
+        glutFullScreen();
+    } else {
+        glutLeaveFullScreen();
+    }
+
     input.Update();
 
     glutPostRedisplay();

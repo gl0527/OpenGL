@@ -31,19 +31,62 @@ void Cloth::InitImpl()
 
     std::string currFolder(FOLDER);
 
+    std::string gravityCS;
+    if (auto gravityCSOpt = GLngin::GetFileContent(currFolder + "../shaders/gravity.comp")) {
+        gravityCS = gravityCSOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string collisionCS;
+    if (auto collisionCSOpt = GLngin::GetFileContent(currFolder + "../shaders/collision.comp")) {
+        collisionCS = collisionCSOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string distanceCS;
+    if (auto distanceCSOpt = GLngin::GetFileContent(currFolder + "../shaders/distance.comp")) {
+        distanceCS = distanceCSOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string bendingCS;
+    if (auto bendingCSOpt = GLngin::GetFileContent(currFolder + "../shaders/bending.comp")) {
+        bendingCS = bendingCSOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string finalUpdateCS;
+    if (auto finalUpdateCSOpt = GLngin::GetFileContent(currFolder + "../shaders/finalUpdate.comp")) {
+        finalUpdateCS = finalUpdateCSOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string vs;
+    if (auto vsOpt = GLngin::GetFileContent(currFolder + "../shaders/render.vert")) {
+        vs = vsOpt.value();
+    } else {
+        // TODO error handling
+    }
+
+    std::string fs;
+    if (auto fsOpt = GLngin::GetFileContent(currFolder + "../shaders/render.frag")) {
+        fs = fsOpt.value();
+    } else {
+        // TODO error handling
+    }
+
     // initialize programs
-    gravityProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                        currFolder + "../shaders/gravity.comp");
-    collisionProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                          currFolder + "../shaders/collision.comp");
-    distanceProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                         currFolder + "../shaders/distance.comp");
-    bendingProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                        currFolder + "../shaders/bending.comp");
-    finalUpdateProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                            currFolder + "../shaders/finalUpdate.comp");
-    renderProgram.Init(currFolder + "../shaders/render.vert", std::nullopt, std::nullopt, std::nullopt,
-                       currFolder + "../shaders/render.frag", std::nullopt);
+    gravityProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, gravityCS);
+    collisionProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, collisionCS);
+    distanceProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, distanceCS);
+    bendingProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, bendingCS);
+    finalUpdateProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, finalUpdateCS);
+    renderProgram.Init(vs, std::nullopt, std::nullopt, std::nullopt, fs, std::nullopt);
 
     // set up constant uniform variables
     const float dt = 0.0015f;

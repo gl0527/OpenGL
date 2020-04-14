@@ -11,17 +11,11 @@
 #include <cstdio>
 #include <cstring>
 
-Background::Background( const std::string &id,
-                        const std::string &right,
-                        const std::string &left,
-                        const std::string &top,
-                        const std::string &bottom,
-                        const std::string &front,
-                        const std::string &back)
-    : GameObject(id, GLngin::Math::Vec3(0,0,0))
+Background::Background(const std::string &id, const std::string &right, const std::string &left, const std::string &top,
+                       const std::string &bottom, const std::string &front, const std::string &back)
+    : GameObject(id, GLngin::Math::Vec3(0, 0, 0))
     , names{right, left, top, bottom, front, back}
 {
-
 }
 
 void Background::InitImpl()
@@ -37,7 +31,8 @@ void Background::InitImpl()
 void Background::DrawImpl(const GLngin::RenderState &renderState)
 {
     program.Bind();
-    program.SetUniformMat4("MVP", GLngin::Math::Mat4::Translate(renderState.cameraPos.value()) * renderState.viewProj.value());
+    program.SetUniformMat4("MVP",
+                           GLngin::Math::Mat4::Translate(renderState.cameraPos.value()) * renderState.viewProj.value());
     cube.Render();
     program.UnBind();
 }

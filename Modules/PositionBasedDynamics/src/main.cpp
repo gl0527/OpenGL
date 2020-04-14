@@ -11,7 +11,6 @@
 #include <cstdio>
 #include <cstring>
 
-
 int main(int argc, char *argv[])
 {
     const std::string currFolder(FOLDER);
@@ -20,13 +19,10 @@ int main(int argc, char *argv[])
 
     scene.SetCamera({GLngin::Math::Vec3(0, 1, -3.0), GLngin::Math::Vec3(0, 0, 0), GLngin::Math::Vec3::UnitY(), 1, 1});
 
-    scene.AddGameObject(std::make_shared<Background>(   "bg",
-                                                        currFolder + "../assets/morning_rt.tga",
-                                                        currFolder + "../assets/morning_lf.tga",
-                                                        currFolder + "../assets/morning_up.tga",
-                                                        currFolder + "../assets/morning_dn.tga",
-                                                        currFolder + "../assets/morning_bk.tga",
-                                                        currFolder + "../assets/morning_ft.tga"));
+    scene.AddGameObject(std::make_shared<Background>(
+        "bg", currFolder + "../assets/morning_rt.tga", currFolder + "../assets/morning_lf.tga",
+        currFolder + "../assets/morning_up.tga", currFolder + "../assets/morning_dn.tga",
+        currFolder + "../assets/morning_bk.tga", currFolder + "../assets/morning_ft.tga"));
 
     for (int i = 0; i < 100; ++i) {
         scene.AddGameObject(

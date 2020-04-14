@@ -14,8 +14,8 @@ public:
     static unsigned int GetID(const std::string (&arr)[6]);
     static void DeleteAll();
 
-    TextureCube(const TextureCube&) = delete;
-    TextureCube& operator=(const TextureCube&) = delete;
+    TextureCube(const TextureCube &) = delete;
+    TextureCube &operator=(const TextureCube &) = delete;
 
 private:
     TextureCube() = default;

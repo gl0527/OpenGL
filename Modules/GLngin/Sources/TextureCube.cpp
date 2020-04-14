@@ -12,7 +12,7 @@ std::unordered_map<std::string, unsigned int> TextureCube::pool;
 unsigned int TextureCube::GetID(const std::string (&arr)[6])
 {
     std::string name;
-    for (const std::string& s : arr) {
+    for (const std::string &s : arr) {
         name += s;
     }
 
@@ -61,8 +61,8 @@ unsigned int TextureCube::GetID(const std::string (&arr)[6])
             }
 
             GL_CALL(IL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, ilGetInteger(IL_IMAGE_FORMAT),
-                                        ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0,
-                                        ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE), ilGetData())));
+                                         ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0,
+                                         ilGetInteger(IL_IMAGE_FORMAT), ilGetInteger(IL_IMAGE_TYPE), ilGetData())));
 
             IL_CALL(ilDeleteImages(1, &imageID));
             IL_CALL(ilBindImage(0));
@@ -78,7 +78,7 @@ unsigned int TextureCube::GetID(const std::string (&arr)[6])
 
 void TextureCube::DeleteAll()
 {
-    for (auto& [k, v] : pool) {
+    for (auto &[k, v] : pool) {
         GL_CALL(glDeleteTextures(1, &v));
     }
     pool.clear();

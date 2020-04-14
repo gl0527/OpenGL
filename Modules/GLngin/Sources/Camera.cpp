@@ -118,7 +118,7 @@ void Camera::Control(float /*t*/, float dt, const InputManager &input)
             .xyz();
 }
 
-const Math::Vec3& Camera::GetPosition() const
+const Math::Vec3 &Camera::GetPosition() const
 {
     return eye;
 }

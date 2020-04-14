@@ -28,7 +28,7 @@ public:
 
     void Control(float t, float dt, const InputManager &input);
 
-    const Math::Vec3& GetPosition() const;
+    const Math::Vec3 &GetPosition() const;
 
 private:
     void CalcLocalAxes(Math::Vec3 *outLocalX, Math::Vec3 *outLocalY, Math::Vec3 *outLocalZ) const;

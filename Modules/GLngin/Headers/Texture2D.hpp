@@ -14,8 +14,8 @@ public:
     static unsigned int GetID(const std::string &name);
     static void DeleteAll();
 
-    Texture2D(const Texture2D&) = delete;
-    Texture2D& operator=(const Texture2D&) = delete;
+    Texture2D(const Texture2D &) = delete;
+    Texture2D &operator=(const Texture2D &) = delete;
 
 private:
     Texture2D() = default;

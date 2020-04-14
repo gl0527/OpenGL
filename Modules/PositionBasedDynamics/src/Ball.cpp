@@ -20,14 +20,9 @@ void Ball::InitImpl()
     geometry->Init();
     ((GLngin::ParamSurface *)geometry.get())->Create(32, 32);
 
-    std::string names[] = {
-        currFolder + "../assets/morning_rt.tga",
-        currFolder + "../assets/morning_lf.tga",
-        currFolder + "../assets/morning_up.tga",
-        currFolder + "../assets/morning_dn.tga",
-        currFolder + "../assets/morning_bk.tga",
-        currFolder + "../assets/morning_ft.tga"
-    };
+    std::string names[] = {currFolder + "../assets/morning_rt.tga", currFolder + "../assets/morning_lf.tga",
+                           currFolder + "../assets/morning_up.tga", currFolder + "../assets/morning_dn.tga",
+                           currFolder + "../assets/morning_bk.tga", currFolder + "../assets/morning_ft.tga"};
 
     program.Bind();
     program.SetUniformTextureCube("skybox", GLngin::TextureCube::GetID(names), 1);
@@ -38,13 +33,12 @@ void Ball::InitImpl()
 
 void Ball::DrawImpl(const GLngin::RenderState &renderState)
 {
-    const GLngin::Math::Mat4 M =    GLngin::Math::Mat4::Scale(scale) *
-                                    GLngin::Math::Mat4::Rotate(rotAngle, rotAxis) *
-                                    GLngin::Math::Mat4::Translate(position);
+    const GLngin::Math::Mat4 M = GLngin::Math::Mat4::Scale(scale) * GLngin::Math::Mat4::Rotate(rotAngle, rotAxis) *
+                                 GLngin::Math::Mat4::Translate(position);
 
-    const GLngin::Math::Mat4 Minv = GLngin::Math::Mat4::Translate(-position) *
-                                    GLngin::Math::Mat4::Rotate(-rotAngle, rotAxis) *
-                                    GLngin::Math::Mat4::Scale(GLngin::Math::Vec3(1 / scale.x, 1/ scale.y, 1 / scale.z));
+    const GLngin::Math::Mat4 Minv =
+        GLngin::Math::Mat4::Translate(-position) * GLngin::Math::Mat4::Rotate(-rotAngle, rotAxis) *
+        GLngin::Math::Mat4::Scale(GLngin::Math::Vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
 
     const GLngin::Math::Mat4 MVP = M * renderState.viewProj.value();
 

@@ -9,13 +9,8 @@
 
 class Background : public GLngin::GameObject {
 public:
-    Background( const std::string &id,
-                const std::string &right,
-                const std::string &left,
-                const std::string &top,
-                const std::string &bottom,
-                const std::string &front,
-                const std::string &back);
+    Background(const std::string &id, const std::string &right, const std::string &left, const std::string &top,
+               const std::string &bottom, const std::string &front, const std::string &back);
 
 private:
     virtual void InitImpl() override;

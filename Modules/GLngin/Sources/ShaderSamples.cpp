@@ -1,9 +1,8 @@
 #include "ShaderSamples.hpp"
 
-
 namespace GLngin {
 
-const char * const TransformVS = R"(
+const char *const TransformVS = R"(
     #version 430
 
     // data from the input assembler
@@ -30,7 +29,7 @@ const char * const TransformVS = R"(
     }
 )";
 
-const char * const BackgroundVS = R"(
+const char *const BackgroundVS = R"(
     #version 430
 
     in vec3 mPos;
@@ -46,7 +45,7 @@ const char * const BackgroundVS = R"(
     }
 )";
 
-const char * const PhongBlinnFS = R"(
+const char *const PhongBlinnFS = R"(
     #version 430
 
     // interpolated vertex data
@@ -94,7 +93,7 @@ const char * const PhongBlinnFS = R"(
     }
 )";
 
-const char * const SmoothFS = R"(
+const char *const SmoothFS = R"(
     #version 430
 
     in vec3 wPos;
@@ -133,7 +132,7 @@ const char * const SmoothFS = R"(
     }
 )";
 
-const char * const MatCapFS = R"(
+const char *const MatCapFS = R"(
     #version 430
 
     //in vec3 wPos;
@@ -152,7 +151,7 @@ const char * const MatCapFS = R"(
     }
 )";
 
-const char * const EnvMapFS = R"(
+const char *const EnvMapFS = R"(
     #version 430
 
     in vec3 wPos;
@@ -174,7 +173,7 @@ const char * const EnvMapFS = R"(
     }
 )";
 
-const char * const BackgroundFS = R"(
+const char *const BackgroundFS = R"(
     #version 430
 
     in vec3 tPos;
@@ -189,4 +188,4 @@ const char * const BackgroundFS = R"(
     }
 )";
 
-}   // namespace GLngin
+}  // namespace GLngin

@@ -21,8 +21,23 @@ static void onInitialization()
 
     quad.Init();
 
-    program.Init(currFolder + "../shaders/passthrough.vert", std::nullopt, std::nullopt, std::nullopt,
-                 currFolder + "../shaders/simple.frag", std::nullopt);
+    std::string vs;
+    if (auto vsOpt = GLngin::GetFileContent(currFolder + "../shaders/passthrough.vert")) {
+        vs = vsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    std::string fs;
+    if (auto fsOpt = GLngin::GetFileContent(currFolder + "../shaders/simple.frag")) {
+        fs = fsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    program.Init(vs, std::nullopt, std::nullopt, std::nullopt, fs, std::nullopt);
     program.Bind();
 }
 

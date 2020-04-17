@@ -54,10 +54,32 @@ static void onInitialization()
 
     std::string currFolder(FOLDER);
 
-    computeProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-                        currFolder + "../shaders/particle.comp");
-    renderProgram.Init(currFolder + "../shaders/particle.vert", std::nullopt, std::nullopt, std::nullopt,
-                       currFolder + "../shaders/particle.frag", std::nullopt);
+    std::string cs;
+    if (auto csOpt = GLngin::GetFileContent(currFolder + "../shaders/particle.comp")) {
+        cs = csOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    std::string vs;
+    if (auto vsOpt = GLngin::GetFileContent(currFolder + "../shaders/particle.vert")) {
+        vs = vsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    std::string fs;
+    if (auto fsOpt = GLngin::GetFileContent(currFolder + "../shaders/particle.frag")) {
+        fs = fsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    computeProgram.Init(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, cs);
+    renderProgram.Init(vs, std::nullopt, std::nullopt, std::nullopt, fs, std::nullopt);
 
     // Initialize the ssbo
     GL_CALL(glGenBuffers(1, &ssboID));

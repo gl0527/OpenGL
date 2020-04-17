@@ -27,8 +27,31 @@ static void onInitialization()
 
     std::string currFolder(FOLDER);
 
-    program.Init(currFolder + "../shaders/Splines.vert", currFolder + "../shaders/Splines.geom", std::nullopt,
-                 std::nullopt, currFolder + "../shaders/Splines.frag", std::nullopt);
+    std::string vs;
+    if (auto vsOpt = GLngin::GetFileContent(currFolder + "../shaders/Splines.vert")) {
+        vs = vsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    std::string gs;
+    if (auto gsOpt = GLngin::GetFileContent(currFolder + "../shaders/Splines.geom")) {
+        gs = gsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    std::string fs;
+    if (auto fsOpt = GLngin::GetFileContent(currFolder + "../shaders/Splines.frag")) {
+        fs = fsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    program.Init(vs, gs, std::nullopt, std::nullopt, fs, std::nullopt);
 
     GL_CALL(glGenBuffers(1, &vbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));

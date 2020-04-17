@@ -13,7 +13,6 @@ constexpr unsigned int windowHeight = 600;
 
 static GLngin::Quad quad;
 static GLngin::Shader program;
-static GLngin::Texture2D tex;
 
 static void onInitialization()
 {
@@ -23,13 +22,25 @@ static void onInitialization()
 
     quad.Init();
 
-    tex.Init();
-    tex.Load(currFolder + "../assets/lena.jpg");
+    std::string vs;
+    if (auto vsOpt = GLngin::GetFileContent(currFolder + "../shaders/ImageProcessing.vert")) {
+        vs = vsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
 
-    program.Init(currFolder + "../shaders/ImageProcessing.vert", std::nullopt, std::nullopt, std::nullopt,
-                 currFolder + "../shaders/ImageProcessing.frag", std::nullopt);
+    std::string fs;
+    if (auto fsOpt = GLngin::GetFileContent(currFolder + "../shaders/ImageProcessing.frag")) {
+        fs = fsOpt.value();
+    } else {
+        LOG("Error occurred during file reading!");
+        return;
+    }
+
+    program.Init(vs, std::nullopt, std::nullopt, std::nullopt, fs, std::nullopt);
     program.Bind();
-    program.SetUniformTexture2D("tex", tex.GetID(), 0);
+    program.SetUniformTexture2D("tex", GLngin::Texture2D::GetID(currFolder + "../assets/lena.png"), 0);
 }
 
 static void onDisplay()

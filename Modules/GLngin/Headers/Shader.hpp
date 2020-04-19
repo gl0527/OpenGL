@@ -4,6 +4,8 @@
 #define GLNGIN_SHADER_HPP
 
 #include "API.hpp"
+#include "Debug.hpp"
+#include <GL/glew.h>
 #include <string>
 #include <unordered_map>
 #include <optional>
@@ -45,6 +47,17 @@ public:
     void SetUniformTexture2D(const char *uniformName, unsigned int texID, unsigned int unitID);
     void SetUniformTextureCube(const char *uniformName, unsigned int texID, unsigned int unitID);
 
+    template <const size_t N>
+    void SetUniformFloatArray(const char *uniformName, const float (&v)[N]);
+    template <const size_t N>
+    void SetUniformIntArray(const char *uniformName, const int (&v)[N]);
+    template <const size_t N>
+    void SetUniformVec2Array(const char *uniformName, const Math::Vec2 (&v)[N]);
+    template <const size_t N>
+    void SetUniformVec3Array(const char *uniformName, const Math::Vec3 (&v)[N]);
+    template <const size_t N>
+    void SetUniformVec4Array(const char *uniformName, const Math::Vec4 (&v)[N]);
+
     int GetAttributeLocation(const char *attribName);
     int GetUniformLocation(const char *uniformName);
 
@@ -53,6 +66,36 @@ private:
     std::unordered_map<std::string, int> uniformLocationCache;
     std::unordered_map<std::string, int> attributeLocationCache;
 };
+
+template <const size_t N>
+void Shader::SetUniformFloatArray(const char *uniformName, const float (&v)[N])
+{
+    GL_CALL(glUniform1fv(GetUniformLocation(uniformName), N, v));
+}
+
+template <const size_t N>
+void Shader::SetUniformIntArray(const char *uniformName, const int (&v)[N])
+{
+    GL_CALL(glUniform1iv(GetUniformLocation(uniformName), N, v));
+}
+
+template <const size_t N>
+void Shader::SetUniformVec2Array(const char *uniformName, const Math::Vec2 (&v)[N])
+{
+    GL_CALL(glUniform2fv(GetUniformLocation(uniformName), N, &(v[0].x)));
+}
+
+template <const size_t N>
+void Shader::SetUniformVec3Array(const char *uniformName, const Math::Vec3 (&v)[N])
+{
+    GL_CALL(glUniform3fv(GetUniformLocation(uniformName), N, &(v[0].x)));
+}
+
+template <const size_t N>
+void Shader::SetUniformVec4Array(const char *uniformName, const Math::Vec4 (&v)[N])
+{
+    GL_CALL(glUniform4fv(GetUniformLocation(uniformName), N, &(v[0].x)));
+}
 
 }  // namespace GLngin
 

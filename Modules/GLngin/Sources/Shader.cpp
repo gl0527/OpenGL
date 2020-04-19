@@ -1,12 +1,10 @@
 #include "Shader.hpp"
 
-#include "Debug.hpp"
 #include "Mat4.hpp"
 #include "Vec2.hpp"
 #include "Vec3.hpp"
 #include "Vec4.hpp"
 
-#include <GL/glew.h>
 #include <cstring>
 
 namespace GLngin {

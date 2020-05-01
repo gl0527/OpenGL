@@ -65,11 +65,13 @@ void Update()
     static bool isFullScreen = false;
     if (input.IsKeyReleased(InputManager::Key::F11)) {
         isFullScreen = !isFullScreen;
+        isFullScreen ? glutFullScreen() : glutLeaveFullScreen();
     }
-    if (isFullScreen) {
-        glutFullScreen();
-    } else {
-        glutLeaveFullScreen();
+
+    static bool showWireFrame = false;
+    if (input.IsKeyReleased(InputManager::Key::SPACE)) {
+        showWireFrame = !showWireFrame;
+        showWireFrame ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     input.Update();

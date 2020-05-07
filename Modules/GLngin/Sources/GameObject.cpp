@@ -1,6 +1,7 @@
 #include "GameObject.hpp"
 
 #include "Geometry.hpp"
+#include "Mat4.hpp"
 
 namespace GLngin {
 
@@ -43,6 +44,13 @@ bool GameObject::RemoveChild(const std::string &_id)
     } else {
         return false;
     }
+}
+
+void GameObject::GetTransform(Math::Mat4 &M, Math::Mat4 &Minv) const
+{
+    M = Math::Mat4::Scale(scale) * Math::Mat4::Rotate(rotAngle, rotAxis) * Math::Mat4::Translate(position);
+    Minv = Math::Mat4::Translate(-position) * Math::Mat4::Rotate(-rotAngle, rotAxis) *
+           Math::Mat4::Scale(Math::Vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
 }
 
 void GameObject::Init()

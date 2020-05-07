@@ -14,6 +14,9 @@ class Geometry;
 class Camera;
 class InputManager;
 class RenderState;
+namespace Math {
+class Mat4;
+}
 
 class GLNGIN_API GameObject : public std::enable_shared_from_this<GameObject> {
 public:
@@ -25,6 +28,8 @@ public:
 
     bool AddChild(const std::shared_ptr<GameObject> &child);
     bool RemoveChild(const std::string &id);
+
+    void GetTransform(Math::Mat4 &M, Math::Mat4 &Minv) const;
 
     void Init();
     void Interact(GameObject *other);

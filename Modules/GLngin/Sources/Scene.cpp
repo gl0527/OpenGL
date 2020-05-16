@@ -106,7 +106,7 @@ Scene &Scene::Instance()
     return instance;
 }
 
-void Scene::Init(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight)
+void Scene::PreInit(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight)
 {
     glutInit(&argc, argv);
     IL_CALL(ilInit());
@@ -127,15 +127,18 @@ void Scene::Init(int argc, char *argv[], const char *windowTitle, int windowWidt
     GL_CALL(glEnable(GL_DEPTH_TEST));
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
-    InputManager::Instance().Init();
-    for (const auto &[id, obj] : gameObjectMap) {
-        obj->Init();
-    }
-
     glutDisplayFunc(Draw);
     glutIdleFunc(Update);
     glutReshapeFunc(Reshape);
     glutCloseFunc(Terminate);
+}
+
+void Scene::Init()
+{
+    InputManager::Instance().Init();
+    for (const auto &[id, obj] : gameObjectMap) {
+        obj->Init();
+    }
 }
 
 void Scene::Start() const

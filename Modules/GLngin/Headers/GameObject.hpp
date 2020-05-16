@@ -17,10 +17,14 @@ struct PerFrameData;
 namespace Math {
 class Mat4;
 }
+namespace Material {
+class Material;
+}
 
 class GLNGIN_API GameObject : public std::enable_shared_from_this<GameObject> {
 public:
-    GameObject(const std::string &_id, const Math::Vec3 &_position = Math::Vec3::Zero(), float _rotAngle = 0.0f,
+    GameObject(const std::string &_id, const std::shared_ptr<Material::Material> &_material,
+               const Math::Vec3 &_position = Math::Vec3::Zero(), float _rotAngle = 0.0f,
                const Math::Vec3 &_rotAxis = Math::Vec3::UnitY());
     virtual ~GameObject();
 
@@ -71,6 +75,7 @@ protected:
     Math::Vec3 scale;
 
     std::unique_ptr<Geometry> geometry;
+    std::shared_ptr<Material::Material> material;
     ChildrenMap children;
 };
 

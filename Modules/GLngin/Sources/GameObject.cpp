@@ -5,8 +5,9 @@
 
 namespace GLngin {
 
-GameObject::GameObject(const std::string &_id, const Math::Vec3 &_position /*= Math::Vec3::Zero ()*/,
-                       float _rotAngle /*= 0.0f*/, const Math::Vec3 &_rotAxis /*= Math::Vec3::UnitY ()*/)
+GameObject::GameObject(const std::string &_id, const std::shared_ptr<Material::Material> &_material,
+                       const Math::Vec3 &_position /*= Math::Vec3::Zero ()*/, float _rotAngle /*= 0.0f*/,
+                       const Math::Vec3 &_rotAxis /*= Math::Vec3::UnitY ()*/)
     : id(_id)
     , position(_position)
     , velocity(Math::Vec3::Zero())
@@ -15,6 +16,7 @@ GameObject::GameObject(const std::string &_id, const Math::Vec3 &_position /*= M
     , rotAngle(_rotAngle)
     , scale(Math::Vec3::One())
     , geometry(nullptr)
+    , material(_material)
 {
 }
 

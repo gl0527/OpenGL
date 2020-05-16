@@ -7,19 +7,18 @@
 #include "Light.hpp"
 #include "Vec3.hpp"
 #include "Mat4.hpp"
-#include <optional>
+#include <vector>
 
 namespace GLngin {
 
-class GLNGIN_API RenderState {
-public:
-    std::optional<Math::Mat4> model;
-    std::optional<Math::Mat4> modelInv;
-    std::optional<Math::Mat4> view;
-    std::optional<Math::Mat4> viewProj;
-    std::optional<Math::Mat4> modelViewProj;
-    std::optional<Math::Vec3> cameraPos;
-    std::optional<Light> light;
+struct GLNGIN_API PerObjectData {
+    Math::Mat4 M, Minv, MVP;
+};
+
+struct GLNGIN_API PerFrameData {
+    Math::Mat4 V, P, VP;
+    Math::Vec3 wEye;
+    std::vector<Light> lights;
 };
 
 }  // namespace GLngin

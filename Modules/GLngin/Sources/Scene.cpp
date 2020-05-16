@@ -9,7 +9,6 @@
 #include "GameObject.hpp"
 #include "InputManager.hpp"
 #include "Math.hpp"
-#include "RenderState.hpp"
 #include "Texture2D.hpp"
 #include "TextureCube.hpp"
 
@@ -18,19 +17,18 @@ namespace GLngin {
 void Draw()
 {
     auto &scene = Scene::Instance();
-    RenderState renderState;
 
-    renderState.light = scene.light;
-    if (scene.camera) {
-        renderState.cameraPos = scene.camera->GetPosition();
-        renderState.view = scene.camera->View();
-        renderState.viewProj = scene.camera->View() * scene.camera->Proj();
+    if (scene.camera != nullptr) {
+        scene.pfd.V = scene.camera->View();
+        scene.pfd.P = scene.camera->Proj();
+        scene.pfd.VP = scene.pfd.V * scene.pfd.P;
+        scene.pfd.wEye = scene.camera->GetPosition();
     }
 
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     for (const auto &[id, obj] : scene.gameObjectMap) {
-        obj->Draw(renderState);
+        obj->Draw(scene.pfd);
     }
 
     glutSwapBuffers();
@@ -48,7 +46,9 @@ void Update()
 
     for (float t = tStart; t < tEnd; t += dt) {
         float Dt = Math::Min(dt, tEnd - tStart);
-        scene.camera->Control(t, Dt, input);
+        if (scene.camera != nullptr) {
+            scene.camera->Control(t, Dt, input);
+        }
         for (const auto &[id, obj] : scene.gameObjectMap) {
             obj->Control(t, Dt, input);
         }
@@ -84,7 +84,9 @@ void Reshape(int newWidth, int newHeight)
     auto &scene = Scene::Instance();
 
     GL_CALL(glViewport(0, 0, newWidth, newHeight));
-    scene.camera->SetAspectRatio(newWidth, newHeight);
+    if (scene.camera != nullptr) {
+        scene.camera->SetAspectRatio(newWidth, newHeight);
+    }
 }
 
 void Terminate()
@@ -146,14 +148,14 @@ void Scene::AddGameObject(std::shared_ptr<GameObject> &&gameObject)
     gameObjectMap.insert({gameObject->GetId(), gameObject});
 }
 
-void Scene::SetCamera(Camera &&_camera)
+void Scene::SetCamera(std::shared_ptr<Camera> _camera)
 {
     camera = _camera;
 }
 
-void Scene::SetLigth(Light &&_light)
+void Scene::AddLight(Light &&_light)
 {
-    light = _light;
+    pfd.lights.push_back(_light);
 }
 
 std::shared_ptr<GameObject> Scene::GetGameObject(const std::string &_id) const

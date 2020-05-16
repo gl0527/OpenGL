@@ -13,7 +13,7 @@ namespace GLngin {
 class Geometry;
 class Camera;
 class InputManager;
-class RenderState;
+struct PerFrameData;
 namespace Math {
 class Mat4;
 }
@@ -35,7 +35,7 @@ public:
     void Interact(GameObject *other);
     void Control(float t, float dt, const InputManager &input);
     void Animate(float t, float dt);
-    void Draw(const RenderState &renderState);
+    void Draw(const PerFrameData &pfd);
     void Terminate();
 
 protected:
@@ -51,7 +51,7 @@ protected:
     virtual void AnimateImpl(float /* t */, float /* dt */)
     {
     }
-    virtual void DrawImpl(const RenderState & /*renderState*/)
+    virtual void DrawImpl(const PerFrameData & /*pfd*/)
     {
     }
     virtual void TerminateImpl()

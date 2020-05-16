@@ -5,10 +5,10 @@
 
 #include <unordered_map>
 #include <memory>
-#include <optional>
 #include "API.hpp"
 #include "Camera.hpp"
 #include "Light.hpp"
+#include "RenderState.hpp"
 
 namespace GLngin {
 
@@ -25,8 +25,8 @@ public:
     void Start() const;
 
     void AddGameObject(std::shared_ptr<GameObject> &&gameObject);
-    void SetCamera(Camera &&_camera);
-    void SetLigth(Light &&_light);
+    void SetCamera(std::shared_ptr<Camera> _camera);
+    void AddLight(Light &&_light);
     std::shared_ptr<GameObject> GetGameObject(const std::string &_id) const;
 
 private:
@@ -39,8 +39,8 @@ private:
 
 private:
     std::unordered_map<std::string, std::shared_ptr<GameObject>> gameObjectMap;
-    std::optional<Camera> camera;
-    std::optional<Light> light;
+    std::shared_ptr<Camera> camera;
+    PerFrameData pfd;
 };
 
 }  // namespace GLngin

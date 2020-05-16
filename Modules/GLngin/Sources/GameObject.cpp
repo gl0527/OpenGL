@@ -85,11 +85,11 @@ void GameObject::Animate(float t, float dt)
     }
 }
 
-void GameObject::Draw(const RenderState &renderState)
+void GameObject::Draw(const PerFrameData &pfd)
 {
-    DrawImpl(renderState);
+    DrawImpl(pfd);
     for (const auto &[id, child] : children) {
-        child->Draw(renderState);
+        child->Draw(pfd);
     }
 }
 

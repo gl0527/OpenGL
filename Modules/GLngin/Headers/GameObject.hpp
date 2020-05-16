@@ -11,7 +11,6 @@
 namespace GLngin {
 
 class Geometry;
-class Camera;
 class InputManager;
 struct PerFrameData;
 namespace Math {

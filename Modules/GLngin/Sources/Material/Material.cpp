@@ -1,7 +1,5 @@
 #include "Material/Material.hpp"
 
-#include "Shader.hpp"
-
 namespace GLngin {
 namespace Material {
 

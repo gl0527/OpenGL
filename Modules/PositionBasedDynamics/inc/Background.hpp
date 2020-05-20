@@ -4,20 +4,18 @@
 #define BACKGROUND_HPP
 
 #include "GameObject.hpp"
-#include "Shader.hpp"
 #include "Cube.hpp"
 
 class Background : public GLngin::GameObject {
 public:
-    Background(const std::string &id, const std::string &right, const std::string &left, const std::string &top,
-               const std::string &bottom, const std::string &front, const std::string &back);
+    Background(const std::string &id, const std::shared_ptr<GLngin::Material::Material> &_material,
+               const std::string (&_names)[6]);
 
 private:
     virtual void InitImpl() override;
-    virtual void DrawImpl(const GLngin::RenderState &renderState) override;
+    virtual void DrawImpl(const GLngin::PerFrameData &pfd) override;
 
 private:
-    GLngin::Shader program;
     GLngin::Cube cube;
     std::string names[6];
 };

@@ -19,6 +19,7 @@ struct GLNGIN_API PerFrameData {
     Math::Mat4 V, P, VP;
     Math::Vec3 wEye;
     std::vector<Light> lights;
+    Math::Vec3 ambientLight;
 };
 
 }  // namespace GLngin

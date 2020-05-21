@@ -161,6 +161,11 @@ void Scene::AddLight(Light &&_light)
     pfd.lights.push_back(_light);
 }
 
+void Scene::SetAmbientLight(const Math::Vec3 &ambientLight)
+{
+    pfd.ambientLight = ambientLight;
+}
+
 std::shared_ptr<GameObject> Scene::GetGameObject(const std::string &_id) const
 {
     for (const auto &[id, child] : gameObjectMap) {

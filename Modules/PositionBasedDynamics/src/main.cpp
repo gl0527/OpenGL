@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
     const std::shared_ptr<GLngin::Material::Material> gold(new GLngin::Material::Gold(names));
     const std::shared_ptr<GLngin::Material::Material> skybox(new GLngin::Material::Skybox(names));
 
+    scene.SetAmbientLight(GLngin::Math::Vec3(0.1f, 0.1f, 0.1f));
+
     std::shared_ptr<GLngin::Camera> cam(new GLngin::Camera(GLngin::Math::Vec3(0, 1, -3.0), GLngin::Math::Vec3(0, 0, 0),
                                                            GLngin::Math::Vec3::UnitY(), 1, 1));
     scene.SetCamera(cam);

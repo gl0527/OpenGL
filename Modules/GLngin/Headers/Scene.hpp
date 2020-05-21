@@ -28,6 +28,7 @@ public:
     void AddGameObject(std::shared_ptr<GameObject> &&gameObject);
     void SetCamera(std::shared_ptr<Camera> _camera);
     void AddLight(Light &&_light);
+    void SetAmbientLight(const Math::Vec3 &ambientLight);
     std::shared_ptr<GameObject> GetGameObject(const std::string &_id) const;
 
 private:

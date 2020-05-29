@@ -1,4 +1,4 @@
-#include "Material/Gold.hpp"
+#include "Gold.hpp"
 
 #include "ShaderSamples.hpp"
 #include "TextureCube.hpp"

@@ -1,4 +1,4 @@
-#include "Material/Skybox.hpp"
+#include "Skybox.hpp"
 
 #include "ShaderSamples.hpp"
 #include "TextureCube.hpp"

@@ -1,7 +1,7 @@
 #include "Background.hpp"
 
 #include "Mat4.hpp"
-#include "Material/Material.hpp"
+#include "Material.hpp"
 #include "RenderState.hpp"
 
 Background::Background(const std::string &id, const std::shared_ptr<GLngin::Material::Material> &_material,

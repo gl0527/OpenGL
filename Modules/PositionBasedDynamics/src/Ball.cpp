@@ -1,6 +1,6 @@
 #include "Ball.hpp"
 
-#include "Material/Material.hpp"
+#include "Material.hpp"
 #include "Sphere.hpp"
 #include "RenderState.hpp"
 

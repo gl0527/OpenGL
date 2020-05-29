@@ -1,4 +1,4 @@
-#include "Material/Material.hpp"
+#include "Material.hpp"
 
 namespace GLngin {
 namespace Material {

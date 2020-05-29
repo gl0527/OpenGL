@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GLNGIN_MATERIAL_GOLD_HPP
-#define GLNGIN_MATERIAL_GOLD_HPP
+#ifndef GLNGIN_MATERIAL_GLASS_HPP
+#define GLNGIN_MATERIAL_GLASS_HPP
 
 #include "API.hpp"
 #include "Smooth.hpp"
@@ -9,7 +9,7 @@
 namespace GLngin {
 namespace Material {
 
-class GLNGIN_API Gold : public Smooth {
+class GLNGIN_API Glass : public Smooth {
 public:
     using Smooth::Smooth;
 
@@ -19,4 +19,4 @@ public:
 }  // namespace Material
 }  // namespace GLngin
 
-#endif  // #ifndef GLNGIN_MATERIAL_GOLD_HPP
+#endif  // #ifndef GLNGIN_MATERIAL_GLASS_HPP

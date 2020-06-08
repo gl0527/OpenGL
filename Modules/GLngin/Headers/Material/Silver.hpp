@@ -11,9 +11,7 @@ namespace Material {
 
 class Silver : public Smooth {
 public:
-    using Smooth::Smooth;
-
-    virtual void Bind() override;
+    Silver(const std::string (&_names)[6]);
 };
 
 }  // namespace Material

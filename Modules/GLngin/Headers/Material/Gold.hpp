@@ -11,9 +11,7 @@ namespace Material {
 
 class GLNGIN_API Gold : public Smooth {
 public:
-    using Smooth::Smooth;
-
-    virtual void Bind() override;
+    Gold(const std::string (&_names)[6]);
 };
 
 }  // namespace Material

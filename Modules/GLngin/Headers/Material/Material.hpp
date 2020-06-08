@@ -4,12 +4,10 @@
 #define GLNGIN_MATERIAL_MATERIAL_HPP
 
 #include "API.hpp"
-#include <memory>
 #include "Shader.hpp"
 
 namespace GLngin {
 
-class Shader;
 struct PerObjectData;
 struct PerFrameData;
 

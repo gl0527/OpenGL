@@ -18,7 +18,7 @@ Skybox::Skybox(const std::string (&_names)[6])
 void Skybox::Bind()
 {
     shader.Bind();
-    shader.SetUniformTextureCube("skybox", GLngin::TextureCube::GetID(names), 0);
+    shader.SetUniformTextureCube("skybox", TextureCube::GetID(names), 0);
 }
 
 void Skybox::Bind(const PerObjectData &pod, const PerFrameData &pfd)

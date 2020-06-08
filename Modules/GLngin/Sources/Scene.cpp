@@ -121,7 +121,7 @@ void Scene::PreInit(int argc, char *argv[], const char *windowTitle, int windowW
         exit(-1);
     }
 
-    std::cout << GLngin::GetGLInfoString() << std::endl;
+    std::cout << GetGLInfoString() << std::endl;
 
     GL_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     GL_CALL(glEnable(GL_DEPTH_TEST));

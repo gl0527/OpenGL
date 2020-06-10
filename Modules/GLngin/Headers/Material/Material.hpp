@@ -13,7 +13,7 @@ struct PerFrameData;
 
 namespace Material {
 
-class Material {
+class GLNGIN_API Material {
 public:
     virtual ~Material();
 

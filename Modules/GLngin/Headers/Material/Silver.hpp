@@ -9,7 +9,7 @@
 namespace GLngin {
 namespace Material {
 
-class Silver : public Smooth {
+class GLNGIN_API Silver : public Smooth {
 public:
     Silver(const std::string (&_names)[6]);
 };

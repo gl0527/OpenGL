@@ -9,7 +9,7 @@
 namespace GLngin {
 namespace Material {
 
-class Skybox : public Material {
+class GLNGIN_API Skybox : public Material {
 public:
     Skybox(const std::string (&_names)[6]);
 

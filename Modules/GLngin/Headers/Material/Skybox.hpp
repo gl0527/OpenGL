@@ -11,7 +11,7 @@ namespace Material {
 
 class GLNGIN_API Skybox : public Material {
 public:
-    Skybox(const std::string (&_names)[6]);
+    explicit Skybox(const std::string (&_names)[6]);
 
     virtual void Bind() override;
     virtual void Bind(const PerObjectData &pod, const PerFrameData &pfd) override;

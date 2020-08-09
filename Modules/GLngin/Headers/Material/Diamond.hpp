@@ -11,7 +11,7 @@ namespace Material {
 
 class GLNGIN_API Diamond : public Smooth {
 public:
-    Diamond(const std::string (&_names)[6]);
+    explicit Diamond(const std::string (&_names)[6]);
 };
 
 }  // namespace Material

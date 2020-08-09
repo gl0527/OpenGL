@@ -11,7 +11,7 @@ namespace Material {
 
 class GLNGIN_API Copper : public Smooth {
 public:
-    Copper(const std::string (&_names)[6]);
+    explicit Copper(const std::string (&_names)[6]);
 };
 
 }  // namespace Material

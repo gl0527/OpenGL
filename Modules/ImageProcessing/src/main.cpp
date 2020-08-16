@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstring>
 
+#include <IL/il.h>
+
 #include "Shader.hpp"
 #include "Debug.hpp"
 #include "Quad.hpp"
@@ -62,6 +64,7 @@ static void onKeyboard(unsigned char key, int /*pX*/, int /*pY*/)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
+    IL_CALL(ilInit());
 
     glutInitWindowSize(windowWidth, windowHeight);
     glutInitWindowPosition(100, 100);

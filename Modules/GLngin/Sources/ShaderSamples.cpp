@@ -101,7 +101,7 @@ const char *const SmoothFS = R"(
     //in vec2 tPos;
 
     uniform samplerCube skybox;
-    uniform vec4 eyePos;
+    uniform vec3 eyePos;
     uniform vec3 idxOfRefr;
     uniform vec3 absorptCoeff;
 
@@ -120,7 +120,7 @@ const char *const SmoothFS = R"(
 
     void main()
     {
-        vec3 rayDir = normalize(wPos - eyePos.xyz);
+        vec3 rayDir = normalize(wPos - eyePos);
         vec3 norm = normalize(wNorm);
         vec3 R = Reflectance(norm, -rayDir);
 

@@ -12,8 +12,9 @@
 #include "Mat4.hpp"
 #include "RenderState.hpp"
 
-Cloth::Cloth(const std::string &id, const GLngin::Math::Vec3 &_position /*= GLngin::Math::Vec3::Zero ()*/)
-    : GameObject(id, _position)
+Cloth::Cloth(const std::string &_id, const std::shared_ptr<GLngin::Material::Material> &_material,
+             const GLngin::Math::Vec3 &_position /*= GLngin::Math::Vec3::Zero ()*/)
+    : GameObject(_id, _material, _position)
     , particleCountOnOneSide(64)
     , vertexCount(particleCountOnOneSide * particleCountOnOneSide)
     , workGroupCount(32)
@@ -154,7 +155,7 @@ void Cloth::InitImpl()
     GL_CALL(glBindVertexArray(0));
 }
 
-void Cloth::DrawImpl(const GLngin::RenderState &renderState)
+void Cloth::DrawImpl(const GLngin::PerFrameData &pfd)
 {
     GL_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, positionBuffer));
     GL_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, positionBufferTmp));
@@ -181,8 +182,7 @@ void Cloth::DrawImpl(const GLngin::RenderState &renderState)
 
     // Render the particles
     renderProgram.Bind();
-    renderProgram.SetUniformMat4(
-        "MVP", GLngin::Math::Mat4::Translate(GLngin::Math::Vec3(0, 1, 0)) * renderState.viewProj.value());
+    renderProgram.SetUniformMat4("MVP", GLngin::Math::Mat4::Translate(GLngin::Math::Vec3(0, 1, 0)) * pfd.VP);
     GL_CALL(glBindVertexArray(vao));
     GL_CALL(glDrawArrays(GL_POINTS, 0, vertexCount));
     GL_CALL(glBindVertexArray(0));

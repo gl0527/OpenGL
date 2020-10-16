@@ -24,11 +24,8 @@ add_custom_target(
         ${ALL_CXX_FILES}
 )
 
-set (ASSIMP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/include" "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/include")
-set (ASSIMP_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../3rdParty/assimp-4.0.1/build/code")
-
-include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIRS})
-link_directories (${OPENGL_LIBRARIES} ${ASSIMP_LIBRARY_DIR})
+include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
+link_directories (${OPENGL_LIBRARIES})
 
 add_definitions (${OPENGL_DEFINITIONS})
 

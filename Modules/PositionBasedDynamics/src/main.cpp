@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
     const std::string currFolder(FOLDER);
     auto &scene = GLngin::Scene::Instance();
-    scene.PreInit(argc, argv, "Cloth simulation", 800, 600);
+    scene.PreInit(argc, argv, 800, 600);
 
     std::string names[6] = {currFolder + "../assets/morning_rt.tga", currFolder + "../assets/morning_lf.tga",
                             currFolder + "../assets/morning_up.tga", currFolder + "../assets/morning_dn.tga",

@@ -21,7 +21,7 @@ public:
     Scene(const Scene &) = delete;
     Scene &operator=(const Scene &) = delete;
 
-    void PreInit(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight);
+    void PreInit(int argc, char *argv[], int windowWidth, int windowHeight);
     void Init();
     void Start() const;
 

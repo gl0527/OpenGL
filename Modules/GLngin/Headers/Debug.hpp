@@ -63,8 +63,6 @@ GLNGIN_API const char *GetGLEnumStr(unsigned int enumElem);
 GLNGIN_API const char *GetILEnumStr(unsigned int enumElem);
 GLNGIN_API std::string GetFolderName(const std::string &filePath);
 GLNGIN_API std::optional<std::string> GetFileContent(const std::string &filePath);
-// TODO call stack kiiratasa hiba eseten!!!
-// TODO FPS, haromszogszam, ... kiiratasa a kepernyore
 }  // namespace GLngin
 
 #endif  // #ifndef GLNGIN_DEBUG_HPP

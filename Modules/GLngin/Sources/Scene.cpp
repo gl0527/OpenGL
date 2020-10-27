@@ -39,22 +39,24 @@ void Update()
     auto &scene = Scene::Instance();
 
     static float tEnd = 0.0f;
-    float tStart = tEnd;
-    const float dt = 1e-2f;
+    const float tStart = tEnd;
     tEnd = glutGet(GLUT_ELAPSED_TIME) * 1e-3f;
+    const float dt = tEnd - tStart;
     InputManager &input = InputManager::Instance();
 
-    for (float t = tStart; t < tEnd; t += dt) {
-        float Dt = Math::Min(dt, tEnd - tStart);
-        if (scene.camera != nullptr) {
-            scene.camera->Control(t, Dt, input);
-        }
-        for (const auto &[id, obj] : scene.gameObjectMap) {
-            obj->Control(t, Dt, input);
-        }
-        for (const auto &[id, obj] : scene.gameObjectMap) {
-            obj->Animate(t, Dt);
-        }
+    if (fabsf(roundf(tStart) - tStart) < 1e-2f) {
+        char fps[16];
+        sprintf(fps, "%.2fFPS", 1 / dt);
+        glutSetWindowTitle(fps);
+    }
+    if (scene.camera != nullptr) {
+        scene.camera->Control(tStart, dt, input);
+    }
+    for (const auto &[id, obj] : scene.gameObjectMap) {
+        obj->Control(tStart, dt, input);
+    }
+    for (const auto &[id, obj] : scene.gameObjectMap) {
+        obj->Animate(tStart, dt);
     }
 
     if (input.IsKeyReleased(InputManager::Key::ESCAPE)) {
@@ -106,14 +108,14 @@ Scene &Scene::Instance()
     return instance;
 }
 
-void Scene::PreInit(int argc, char *argv[], const char *windowTitle, int windowWidth, int windowHeight)
+void Scene::PreInit(int argc, char *argv[], int windowWidth, int windowHeight)
 {
     glutInit(&argc, argv);
     IL_CALL(ilInit());
 
     glutInitWindowSize(windowWidth, windowHeight);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutCreateWindow(windowTitle);
+    glutCreateWindow(nullptr);
 
     glewExperimental = true;
     if (glewInit() != GLEW_OK) {

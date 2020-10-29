@@ -77,11 +77,11 @@ InputManager::InputManager()
     , dMouseY(0)
     , SCROLL(2)
 {
-    for (auto &s : keyState) {
-        s = {false, false};
+    for (auto &ks : keyState) {
+        ks = {false, false};
     }
-    for (auto &s : mouseState) {
-        s = -1;
+    for (auto &ms : mouseState) {
+        ms = -1;
     }
 }
 

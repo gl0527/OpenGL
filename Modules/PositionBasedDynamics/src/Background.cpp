@@ -4,9 +4,9 @@
 #include "Material.hpp"
 #include "RenderState.hpp"
 
-Background::Background(const std::string &id, const std::shared_ptr<GLngin::Material::Material> &_material,
+Background::Background(const std::string &_id, const std::shared_ptr<GLngin::Material::Material> &_material,
                        const std::string (&_names)[6])
-    : GameObject(id, _material, GLngin::Math::Vec3(0, 0, 0))
+    : GameObject(_id, _material, GLngin::Math::Vec3(0, 0, 0))
 {
     for (unsigned char i = 0; i < 6; ++i) {
         names[i] = _names[i];

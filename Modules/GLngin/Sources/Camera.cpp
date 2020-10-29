@@ -8,12 +8,13 @@
 
 namespace GLngin {
 
-Camera::Camera(const Math::Vec3 &eye, const Math::Vec3 &lookat, const Math::Vec3 &up, int windowWidth, int windowHeight)
-    : eye(eye)
-    , lookat(lookat)
-    , up(up)
+Camera::Camera(const Math::Vec3 &_eye, const Math::Vec3 &_lookat, const Math::Vec3 &_up, int _windowWidth,
+               int _windowHeight)
+    : eye(_eye)
+    , lookat(_lookat)
+    , up(_up)
     , fov(Math::DegToRad(60.0f))
-    , asp(static_cast<float>(windowWidth) / windowHeight)
+    , asp(static_cast<float>(_windowWidth) / _windowHeight)
     , fp(0.1f)
     , bp(100.0f)
     , moveSpeed(3.0f)

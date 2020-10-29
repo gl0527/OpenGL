@@ -15,7 +15,8 @@ class InputManager;
 
 class GLNGIN_API Camera {
 public:
-    Camera(const Math::Vec3 &eye, const Math::Vec3 &lookat, const Math::Vec3 &up, int windowWidth, int windowHeight);
+    Camera(const Math::Vec3 &_eye, const Math::Vec3 &_lookat, const Math::Vec3 &_up, int _windowWidth,
+           int _windowHeight);
 
     Math::Mat4 View() const;
     Math::Mat4 Proj() const;

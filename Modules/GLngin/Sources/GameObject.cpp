@@ -58,48 +58,48 @@ void GameObject::GetTransform(Math::Mat4 &M, Math::Mat4 &Minv) const
 void GameObject::Init()
 {
     InitImpl();
-    for (auto &[id, child] : children) {
-        child->Init();
+    for (auto &[_id, _child] : children) {
+        _child->Init();
     }
 }
 
 void GameObject::Interact(GameObject *other)
 {
     InteractImpl(other);
-    for (auto &[id, child] : children) {
-        child->Interact(other);
+    for (auto &[_id, _child] : children) {
+        _child->Interact(other);
     }
 }
 
 void GameObject::Control(float t, float dt, const InputManager &input)
 {
     ControlImpl(t, dt, input);
-    for (auto &[id, child] : children) {
-        child->Control(t, dt, input);
+    for (auto &[_id, _child] : children) {
+        _child->Control(t, dt, input);
     }
 }
 
 void GameObject::Animate(float t, float dt)
 {
     AnimateImpl(t, dt);
-    for (auto &[id, child] : children) {
-        child->Animate(t, dt);
+    for (auto &[_id, _child] : children) {
+        _child->Animate(t, dt);
     }
 }
 
 void GameObject::Draw(const PerFrameData &pfd)
 {
     DrawImpl(pfd);
-    for (const auto &[id, child] : children) {
-        child->Draw(pfd);
+    for (const auto &[_id, _child] : children) {
+        _child->Draw(pfd);
     }
 }
 
 void GameObject::Terminate()
 {
     TerminateImpl();
-    for (auto &[id, child] : children) {
-        child->Terminate();
+    for (auto &[_id, _child] : children) {
+        _child->Terminate();
     }
 }
 

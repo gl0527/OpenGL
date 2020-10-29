@@ -8,7 +8,7 @@
 
 class Background : public GLngin::GameObject {
 public:
-    Background(const std::string &id, const std::shared_ptr<GLngin::Material::Material> &_material,
+    Background(const std::string &_id, const std::shared_ptr<GLngin::Material::Material> &_material,
                const std::string (&_names)[6]);
 
 private:

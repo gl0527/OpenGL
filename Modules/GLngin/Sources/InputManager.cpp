@@ -139,18 +139,18 @@ Math::Vec2 InputManager::GetMouseCoordsInNDC() const
 Math::Vec2 InputManager::GetMouseCoordsInOpenGLWindowSpace() const
 {
     // Mouse coordinates in a coordinate system where the origin is at the bottom left corner of the window
-    return {mouseX, glutGet(GLUT_WINDOW_HEIGHT) - mouseY};
+    return {static_cast<float>(mouseX), glutGet(GLUT_WINDOW_HEIGHT) - static_cast<float>(mouseY)};
 }
 
 Math::Vec2 InputManager::GetMouseCoordsInGLUTWindowSpace() const
 {
     // Mouse coordinates in a coordinate system where the origin is at the top left corner of the window
-    return {mouseX, mouseY};
+    return {static_cast<float>(mouseX), static_cast<float>(mouseY)};
 }
 
 Math::Vec2 InputManager::GetMouseDelta() const
 {
-    return {dMouseX, -dMouseY};  // coordinate transform from GLUT to OpenGL
+    return {static_cast<float>(dMouseX), static_cast<float>(-dMouseY)};  // coordinate transform from GLUT to OpenGL
 }
 
 bool InputManager::IsLeftMouseButtonDown() const

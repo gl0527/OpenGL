@@ -15,14 +15,14 @@ Use CMake to build the source. For more information please visit https://cmake.o
 
 #### Install
 A possible way for installation:
-```
+```bash
 $ git clone https://github.com/gl0527/OpenGL.git
 $ cd OpenGL
 $ mkdir build && cd build
 $ cmake ../Modules
 $ make
 ```
-The generated binaries can be found in the ```Bin``` directory created by
+The generated binaries can be found in the `Bin` directory created by
 CMake.
 
 ### Content

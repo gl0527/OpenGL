@@ -21,7 +21,7 @@ void Skybox::Bind()
     shader.SetUniformTextureCube("skybox", TextureCube::GetID(names), 0);
 }
 
-void Skybox::Bind(const PerObjectData &pod, const PerFrameData &pfd)
+void Skybox::Bind(const PerObjectData &pod, const PerFrameData & /* pfd */)
 {
     shader.Bind();
     shader.SetUniformMat4("MVP", pod.MVP);

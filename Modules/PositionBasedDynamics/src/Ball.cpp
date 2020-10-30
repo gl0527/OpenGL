@@ -6,8 +6,6 @@
 
 void Ball::InitImpl()
 {
-    const std::string currFolder(FOLDER);
-
     auto sphere = std::make_unique<GLngin::Sphere>(position, 0.5f);
     sphere->Init();
     sphere->Create(32, 32);

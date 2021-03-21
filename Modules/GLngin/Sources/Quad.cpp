@@ -39,9 +39,9 @@ void Quad::Init()
     // clang-format off
     constexpr Vertex2D vertices[] = {
         {{-1.0f,  1.0f}, {0.0f, 1.0f}},
-        {{ 1.0f,  1.0f}, {1.0f, 1.0f}},
-        {{ 1.0f, -1.0f}, {1.0f, 0.0f}},
         {{-1.0f, -1.0f}, {0.0f, 0.0f}},
+        {{ 1.0f, -1.0f}, {1.0f, 0.0f}},
+        {{ 1.0f,  1.0f}, {1.0f, 1.0f}},
     };
     constexpr unsigned char indices[] = {
         0, 1, 3, 2

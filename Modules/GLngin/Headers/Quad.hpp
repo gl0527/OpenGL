@@ -18,8 +18,7 @@ public:
 
 private:
     unsigned int m_vertexArrayID;
-    unsigned int m_vertexBufferID;
-    unsigned int m_texCoordBufferID;
+    unsigned int m_vertexBufferID, m_indexBufferID;
     bool m_inited;
 
     void RenderImpl() const;

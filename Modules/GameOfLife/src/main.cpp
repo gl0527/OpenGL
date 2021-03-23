@@ -10,6 +10,7 @@
 #include "Shader.hpp"
 #include "Quad.hpp"
 #include "FrameBuffer.hpp"
+#include "Vec2.hpp"
 
 static GLngin::Quad quad;
 static GLngin::Shader render, calc;
@@ -52,6 +53,9 @@ static void onInitialization(char const *const imgPath)
     fbo[1].Create(imgPath);
 
     glutReshapeWindow(fbo[0].GetWidth(), fbo[0].GetHeight());
+    calc.Bind();
+    calc.SetUniformVec2("step", {1.0f / fbo[0].GetWidth(), 1.0f / fbo[0].GetHeight()});
+    calc.UnBind();
 }
 
 static void onDisplay()

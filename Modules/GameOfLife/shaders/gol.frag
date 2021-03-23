@@ -4,30 +4,30 @@ in vec2 fTexCoord;
 out vec4 outColor;
 
 uniform sampler2D tex;
+uniform vec2 step;
 
-int isAlive(vec2 uv)
+int isAlive(float x, float y)
 {
-    return texture2D(tex, uv).r > 0.5 ? 1 : 0;
+    return int(texture2D(tex, fTexCoord + vec2(x, y) * step).r);
 }
 
 void main()
 {
-    vec2 px = 1.0 / textureSize(tex, 0);
-
-    int aliveNeighbors = 0;
-    for (int y = -1; y <= 1; ++y) {
-        for (int x = -1; x <= 1; ++x) {
-            aliveNeighbors += isAlive(fTexCoord + vec2(float(x), float(y)) * px);
-        }
-    }
-    int isCurrentAlive = isAlive(fTexCoord);
-    aliveNeighbors -= isCurrentAlive;
+    int aliveNeighbors =    isAlive(-1.0, -1.0) +
+                            isAlive( 0.0, -1.0) +
+                            isAlive( 1.0, -1.0) +
+                            isAlive(-1.0,  0.0) +
+                            isAlive( 1.0,  0.0) +
+                            isAlive(-1.0,  1.0) +
+                            isAlive( 0.0,  1.0) +
+                            isAlive( 1.0,  1.0);
 
     if (aliveNeighbors == 3) {
-        outColor = vec4(1, 1, 1, 1);
+        outColor = vec4(1.0, 1.0, 1.0, 1.0);
     } else if (aliveNeighbors == 2) {
-        outColor = vec4(isCurrentAlive, isCurrentAlive, isCurrentAlive, 1);
+        float current = float(isAlive(0.0, 0.0));
+        outColor = vec4(current, current, current, 1.0);
     } else {
-        outColor = vec4(0, 0, 0, 1);
+        outColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 }

@@ -24,6 +24,9 @@
 
 #define LOG(msg) std::cerr << __FILE__ << "(" << __LINE__ << "): " << msg << std::endl
 
+#define TOSTR_HELPER(x) (#x)
+#define TOSTR(x) (TOSTR_HELPER(x))
+
 #define ASSERT(b) \
     if (!(b)) DBBREAK
 
@@ -52,9 +55,12 @@
             DBBREAK;                                                                     \
         }                                                                                \
     } while (0)
+
+#define DEBUG_SHOW(x) (LOG(TOSTR(x) << " = " << (x)))
 #else
 #define GL_CALL(glExpr) glExpr
 #define IL_CALL(ilExpr) ilExpr
+#define DEBUG_SHOW(x)
 #endif
 
 namespace GLngin {

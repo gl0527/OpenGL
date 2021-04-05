@@ -32,3 +32,4 @@ CMake.
   * NBody: Performs N-body simulation using compute shader.
   * PositionBasedDynamics: Performs cloth simulation using compute shaders.
   * Splines: Draws control polygon and bezier curve using geometry shader.
+  * GameOfLife: Applies the rules of Game of Life onto an input texture using fragment shader.

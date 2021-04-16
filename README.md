@@ -3,7 +3,12 @@ A rendering engine for trying out new OpenGL features.
 
 ## Installation
 ### Supported operating systems
-Theoretically all Linux distributions. Tested on `Linux Mint 19` and `Linux Mint 20.1`.
+Theoretically all Linux distributions.
+
+Tested on the following distros:
+* Linux Mint 19
+* Linux Mint 20.1
+* Debian 10
 
 ### Prerequisites
 The following packages are required to go on with the installation process: `git`, `cmake` and `g++`.

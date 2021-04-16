@@ -20,7 +20,7 @@ add_custom_target(
 )
 
 include_directories (${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
-link_directories (${OPENGL_LIBRARIES})
+link_libraries(${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 
 add_definitions (${OPENGL_DEFINITIONS})
 

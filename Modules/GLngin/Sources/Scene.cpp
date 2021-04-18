@@ -39,16 +39,27 @@ void Update()
     auto &scene = Scene::Instance();
 
     static float tEnd = 0.0f;
+    static float tLast = 0.0f;
+    static unsigned short nFrames = 0;
+    static float sumDt = 0.0f;
+
     const float tStart = tEnd;
     tEnd = glutGet(GLUT_ELAPSED_TIME) * 1e-3f;
     const float dt = tEnd - tStart;
-    InputManager &input = InputManager::Instance();
 
-    if (fabsf(roundf(tStart) - tStart) < 1e-2f) {
+    ++nFrames;
+    sumDt += dt;
+
+    if (tEnd - tLast > 1.0f) {
         char fps[16];
-        sprintf(fps, "%.2fFPS", 1 / dt);
+        sprintf(fps, "%.2f ms/frame", 1000.0f * sumDt / nFrames);
         glutSetWindowTitle(fps);
+        nFrames = 0;
+        sumDt = 0.0f;
+        tLast += 1.0f;
     }
+
+    InputManager &input = InputManager::Instance();
     if (scene.camera != nullptr) {
         scene.camera->Control(tStart, dt, input);
     }
